@@ -58,9 +58,14 @@ const websocketSetData = 'ws://104.248.90.19:8080/ws_set'
 class APIInterface {
   ws_get = null
   ws_set = null
+  current_id = ''
 
   constructor () {
     // open a get data websocket
+    
+  }
+
+  getUserId () {
     
   }
 

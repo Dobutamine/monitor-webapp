@@ -9,9 +9,9 @@
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="showImage">show imaging</q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">save profile</q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">load profile</q-btn>
-            <q-btn class="bg-blue-grey-8" disable style="height: 60px; width: 85px">
+            <!-- <q-btn class="bg-blue-grey-8" disable style="height: 60px; width: 85px">
                 <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>
-            </q-btn>
+            </q-btn> -->
             <q-btn :class="connectedColor" @click="connect" style="height: 60px; width: 100px; font-size: 10px">
                 {{ connectedLabel }}
                 <q-icon :name="icon" style="font-size: 32px"></q-icon>
@@ -129,8 +129,8 @@ export default {
         connect () {
             if (!this.connected) {
                 // try to establish a connection
-                this.ws = new WebSocket('ws://104.248.90.19:8080/ws')
-                //this.ws = new WebSocket('ws://localhost:2340/ws')
+                // this.ws = new WebSocket('ws://104.248.90.19:8080/ws')
+                this.ws = new WebSocket('ws://localhost:8080/api')
                 // attach a message handler
                 this.ws.onmessage = this.receiveDataFromServer
                 // start the check connection timer
