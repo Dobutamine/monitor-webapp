@@ -77,8 +77,8 @@ export default {
         connect () {
             if (!this.connected) {
                 // try to establish a connection
-                this.ws = new WebSocket('ws://104.248.90.19:8080/ws')
-                //this.ws = new WebSocket('ws://localhost:2340/ws')
+                // this.ws = new WebSocket('ws://104.248.90.19:8080/ws')
+                this.ws = new WebSocket('ws://localhost:8080/api')
                 // attach a message handler
                 this.ws.onmessage = this.receiveDataFromServer
                 // start the check connection timer
@@ -119,11 +119,25 @@ export default {
             }
         },
         sendDataToServer () {
+            /*
+                this.currentDataObject.abpDiast = data['abpDiast']
+                this.currentDataObject.abpSyst = data['abpSyst']
+                this.currentDataObject.cvp = data['cvp']
+                this.currentDataObject.etco2 = data['etco2']
+                this.currentDataObject.heartrate = data['heartrate']
+                this.currentDataObject.papDiast = data['papDiast']
+                this.currentDataObject.papSyst = data['papSyst']
+                this.currentDataObject.pfi = data['pfi']
+                this.currentDataObject.respRate = data['respRate']
+                this.currentDataObject.satPost = data['satPost']
+                this.currentDataObject.satPre = data['satPre']
+                this.currentDataObject.satVen = data['satVen']
+                this.currentDataObject.temp = data['temp']
+            */
             if (this.connected) {
                 // make the data object
                 this.currentDataObject.command = 'set'
                 this.currentDataObject.id = this.id
-                this.currentDataObject.error = ''
                 this.currentDataObject.heartrate = this.$store.state.dataPool.heartrate
                 this.currentDataObject.satPre = this.$store.state.dataPool.satPre
                 this.currentDataObject.satPost = this.$store.state.dataPool.satPost
@@ -137,13 +151,6 @@ export default {
                 this.currentDataObject.cvp = this.$store.state.dataPool.cvp
                 this.currentDataObject.papSyst = this.$store.state.dataPool.papSyst
                 this.currentDataObject.papDiast = this.$store.state.dataPool.papDiast
-                this.currentDataObject.imageNo = this.$store.state.dataPool.imageNo
-                this.currentDataObject.resusState = this.$store.state.dataPool.resusState
-                this.currentDataObject.rhythmType = this.$store.state.dataPool.rhythmType
-                this.currentDataObject.rhythmParameter = this.$store.state.dataPool.rhythmParameter
-                this.currentDataObject.alarmEnabled = this.$store.state.dataPool.alarmEnabled
-                this.currentDataObject.channelConfigChanged = this.$store.state.dataPool.channelConfigChanged
-                this.currentDataObject.channelConfigurations = this.$store.state.dataPool.channelConfigurations
 
                 this.ws.send(JSON.stringify(this.currentDataObject))
             }

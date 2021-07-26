@@ -12,7 +12,7 @@
             <!-- <q-btn class="bg-blue-grey-8" disable style="height: 60px; width: 85px">
                 <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>
             </q-btn> -->
-            <q-btn :class="connectedColor" @click="connect" style="height: 60px; width: 100px; font-size: 10px">
+            <q-btn :class="connectedColor" style="height: 60px; width: 100px; font-size: 10px">
                 {{ connectedLabel }}
                 <q-icon :name="icon" style="font-size: 32px"></q-icon>
             </q-btn>
@@ -48,7 +48,6 @@ export default {
             currentDataObject: {
                 command: '',
                 id: '',
-                error: '',
                 heartrate: 123,
                 satPre: 97,
                 satPost: 95,
@@ -62,13 +61,7 @@ export default {
                 cvp: 4,
                 papSyst: 40,
                 papDiast: 20,
-                imageNo: 0,
-                resusState: 0,
                 rhythmType: 0,
-                rhythmParameter: 0,
-                channelConfigChanged: true,
-                channelConfigurations: {},
-                alarmEnabled: true
             }
         }
     },
@@ -124,7 +117,6 @@ export default {
                 this.$store.commit('dataPool/alarmEnabled', false)
                 clearTimeout(this.checkConnectionTimer)
             }
-
         },
         connect () {
             if (!this.connected) {
@@ -158,6 +150,7 @@ export default {
                 this.connectedLabel = 'OFFLINE'
                 this.icon = 'sentiment_very_dissatisfied'
                 this.connectedColor = 'bg-red-10'
+                // try to reconnect
                 this.connect()
             }
 
@@ -179,7 +172,7 @@ export default {
             const processed_data = JSON.parse(data.data)
             if (typeof processed_data  === 'string'){
                 switch (processed_data) {
-                    case "bo data":
+                    case "no data":
                         this.connectedLabel = 'NO DATA'
                         this.connectedColor = 'bg-red-10'
                         this.icon = 'sentiment_very_dissatisfied'
@@ -199,7 +192,7 @@ export default {
             this.connectedLabel = ''
             this.icon = 'sentiment_satisfied_alt'
             this.connectedColor = 'bg-green-10'
-            
+
             if (data.hasOwnProperty('heartrate')) {
                 this.currentDataObject.abpDiast = data['abpDiast']
                 this.currentDataObject.abpSyst = data['abpSyst']
@@ -213,24 +206,12 @@ export default {
                 this.currentDataObject.satPost = data['satPost']
                 this.currentDataObject.satPre = data['satPre']
                 this.currentDataObject.satVen = data['satVen']
-                this.currentDataObject.channelConfigChanged = data['channelConfigChanged']
-                this.currentDataObject.channelConfigurations = data['channelConfigurations']
                 this.currentDataObject.temp = data['temp']
-            }
-            
+            }   
             this.updateModel()
-            this.updateConfiguration()
-        },
-        updateConfiguration () {
-            // process the channel configuration
-            if (this.currentDataObject.channelConfigChanged) {
-                
-            }
-
         },
         updateModel () {
             this.$model.setEmulatorData(this.currentDataObject)
-
         },
         silenceAlarms () {
             //this.$root.$on('hires_on', () => { this.hires = true })

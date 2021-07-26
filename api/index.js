@@ -1,3 +1,4 @@
+const { Monitor } = require('./models/monitor')
 const express = require('express')
 const ws = require('ws');
 const app = express();
@@ -47,9 +48,39 @@ server.on('upgrade', (request, socket, head) => {
 });
 
 // handle the websocket server requests
-wsServer.on('connection', socket => {
+wsServer.on('connection', async socket => {
   // on message
-  socket.on('message', message => console.log(message));
+  socket.on('message', async message => {
+    const convertedMessage = JSON.parse(message)
+    switch (convertedMessage.command) {
+      case 'get':
+        let monitor = await Monitor.findOne( { id: convertedMessage.id })
+        if (monitor) {
+          socket.send(JSON.stringify(monitor))
+        }
+        break
+      case 'set':
+        let monitor2 = await Monitor.findOne( { id: convertedMessage.id })
+        if (monitor2) {
+          monitor2.heartrate = convertedMessage.heartrate
+          monitor2.satPre = convertedMessage.satPre
+          monitor2.satPost = convertedMessage.satPost
+          monitor2.satVen = convertedMessage.satVen
+          monitor2.respRate = convertedMessage.respRate
+          monitor2.etco2 = convertedMessage.etco2
+          monitor2.abpSyst = convertedMessage.abpSyst
+          monitor2.abpDiast = convertedMessage.abpDiast
+          monitor2.pfi = convertedMessage.pfi
+          monitor2.temp = convertedMessage.temp
+          monitor2.cvp = convertedMessage.cvp
+          monitor2.papSyst = convertedMessage.papSyst
+          monitor2.papDiast = convertedMessage.papDiast
+          
+          await monitor2.save()
+        }
+        break
+    }
+  });
 });
 
 
