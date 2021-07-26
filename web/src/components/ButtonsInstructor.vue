@@ -119,21 +119,7 @@ export default {
             }
         },
         sendDataToServer () {
-            /*
-                this.currentDataObject.abpDiast = data['abpDiast']
-                this.currentDataObject.abpSyst = data['abpSyst']
-                this.currentDataObject.cvp = data['cvp']
-                this.currentDataObject.etco2 = data['etco2']
-                this.currentDataObject.heartrate = data['heartrate']
-                this.currentDataObject.papDiast = data['papDiast']
-                this.currentDataObject.papSyst = data['papSyst']
-                this.currentDataObject.pfi = data['pfi']
-                this.currentDataObject.respRate = data['respRate']
-                this.currentDataObject.satPost = data['satPost']
-                this.currentDataObject.satPre = data['satPre']
-                this.currentDataObject.satVen = data['satVen']
-                this.currentDataObject.temp = data['temp']
-            */
+
             if (this.connected) {
                 // make the data object
                 this.currentDataObject.command = 'set'
