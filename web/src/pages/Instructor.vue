@@ -2,7 +2,7 @@
   <q-page padding class="bg-black">
     <div class="row justify-center q-ma-es">
         <div class="q-ma-sm col">
-            <SingleSlider :value=125 :min=0 :max=240 :step=1 label="HEARTRATE"></SingleSlider>
+            <SingleSlider :value=hr :min=0 :max=240 :step=1 label="HEARTRATE"></SingleSlider>
         </div>
         <div class="q-ma-sm col">
             <SingleSlider :value=97 :min=0 :max=100 :step=1 label="SAT PRE"></SingleSlider>
@@ -47,7 +47,8 @@ export default {
   },
   data () {
     return {
-      height: '2024px'
+      height: '2024px',
+      hr: 125
     }
   },
   methods: {},
@@ -57,6 +58,7 @@ export default {
     this.max_width = this.$q.screen.width
     this.$q.dark.set(true)
   },
-  beforeDestroy () {}
+  beforeDestroy () {
+  }
 }
 </script>

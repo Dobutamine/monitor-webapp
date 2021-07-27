@@ -260,32 +260,38 @@ export default {
                 return 1
             }
         },
+        setDataFromOutside (data) {
+            switch (this.label) {
+                
+                case "ABP":
+                    this.currentValue = data.abpSyst
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.abpSyst
+
+                    this.currentValue2 = data.abpDiast
+                    this.currentValueText2 = this.currentValue2.toString()
+                    this.targetValue2 = data.abpDiast
+                    break
+                case "PAP":
+                    this.currentValue = data.papSyst
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.papSyst
+
+                    this.currentValue2 = data.papDiast
+                    this.currentValueText2 = this.currentValue2.toString()
+                    this.targetValue2 = data.papDiast
+                    break
+            }
+        },
         updateValues () {
             switch (this.label) {
-                case "HEARTRATE":
-                    this.$store.commit('dataPool/heartrate', this.currentValue)
-                    break
-                case "SAT PRE":
-                    this.$store.commit('dataPool/satPre', this.currentValue)
-                    break
-                case "SAT POST":
-                    this.$store.commit('dataPool/satPost', this.currentValue)
-                    break
-                case "RESP RATE":
-                    this.$store.commit('dataPool/respRate', this.currentValue)
-                    break
                 case "ABP":
                     this.$store.commit('dataPool/abpSyst', this.currentValue)
                     this.$store.commit('dataPool/abpDiast', this.currentValue2)
                     break
-                case "ETCO2":
-                    this.$store.commit('dataPool/etco2', this.currentValue)
-                    break
-                case "TEMPERATURE":
-                    this.$store.commit('dataPool/temp', this.currentValue)
-                    break
-                case "PFI":
-                    this.$store.commit('dataPool/pfi', this.currentValue)
+                case "PAP":
+                    this.$store.commit('dataPool/papSyst', this.currentValue)
+                    this.$store.commit('dataPool/papDiast', this.currentValue2)
                     break
             }
         },
@@ -352,9 +358,17 @@ export default {
         this.currentValueText = this.currentValue
         this.targetValue = this.value
         this.targetValue2 = this.value2
+
+        this.$root.$on('instructorupdate', (newdata) => {
+            this.setDataFromOutside(newdata)
+        })
+
         setInterval(() => {
             this.blinker()
         }, 1000);
+    },
+    beforeDestroy () {
+        this.$root.$off('instructorupdate')
     }
 
 }

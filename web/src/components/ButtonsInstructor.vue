@@ -35,6 +35,7 @@ export default {
             connectedLabel: 'OFFLINE',
             connectedColor: 'bg-red-10',
             checkConnectionTimer: null,
+            serverUpdateTimer: null,
             id_unknown: true,
             ws: null,
             allIsFine: false,
@@ -71,6 +72,8 @@ export default {
     },
     beforeDestroy () {
         clearTimeout(this.checkConnectionTimer)
+        clearTimeout(this.serverUpdateTimer)
+        this.serverUpdateTimer = null
         this.ws.send(JSON.stringify({ command: 'close', id: this.id }))
         this.ws.close()
     },
@@ -85,7 +88,7 @@ export default {
                 this.ws = new WebSocket('ws://localhost:8080/api')
                 // attach a message handler
                 this.ws.onmessage = this.receiveDataFromServer
-                // start the check connection timer
+                // check connection and ask for data
                 this.checkConnectionTimer = setTimeout(this.checkConnectionStatus, 1000)
                 // update the user interface
                 this.connectedLabel = ''
@@ -116,14 +119,13 @@ export default {
             if (this.ws.readyState === WebSocket.OPEN) {
                 // set the state to false
                 this.connected = true
-                // try to pull some data from the server to check the id
-                this.requestDataFromServer()
+                // // try to pull some data from the server to check the id
+                this.ws.send(JSON.stringify({ command: 'get', id: this.id }))
                 // set the time for a new check
-                this.checkConnectionTimer = setTimeout(this.checkConnectionStatus, 2000)
+                this.serverUpdateTimer = setTimeout(this.sendDataToServer, 1000)
             }
         },
         sendDataToServer () {
-
             if (this.connected) {
                 // make the data object
                 this.currentDataObject.command = 'set'
@@ -143,18 +145,16 @@ export default {
                 this.currentDataObject.papDiast = this.$store.state.dataPool.papDiast
 
                 this.ws.send(JSON.stringify(this.currentDataObject))
+
+                this.serverUpdateTimer = setTimeout(this.sendDataToServer, 1000)
             }
         },
-        requestDataFromServer () {
-            if (this.connected) {
-                this.ws.send(JSON.stringify({ command: 'get', id: this.id }))
-            }
-        },
+
         receiveDataFromServer (data) {
             const processed_data = JSON.parse(data.data)
             if (typeof processed_data  === 'string'){
                 switch (processed_data) {
-                    case "bo data":
+                    case "no data":
                         this.connectedLabel = 'NO DATA'
                         this.connectedColor = 'bg-red-10'
                         this.icon = 'sentiment_very_dissatisfied'
@@ -176,7 +176,10 @@ export default {
             this.connectedLabel = ''
             this.icon = 'sentiment_satisfied_alt'
             this.connectedColor = 'bg-teal-10'
-            this.sendDataToServer()
+            this.$store.commit('dataPool/heartrate', data.heartrate)
+            this.$root.$emit('instructorupdate', data)
+            
+            //this.sendDataToServer()
         },
         silenceAlarms () {
             //this.$root.$on('hires_on', () => { this.hires = true })

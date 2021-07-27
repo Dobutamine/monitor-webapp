@@ -240,6 +240,45 @@ export default {
                 return 1
             }
         },
+        setDataFromOutside (data) {
+            switch (this.label) {
+                case "HEARTRATE":
+                    this.currentValue = data.heartrate
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.heartrate
+                    break
+                case "SAT PRE":
+                    this.currentValue = data.satPre
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.satPre
+                    break
+                case "SAT POST":
+                    this.currentValue = data.satPost
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.satPost
+                    break
+                case "RESP RATE":
+                    this.currentValue = data.respRate
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.respRate
+                    break
+                case "ETCO2":
+                    this.currentValue = data.etco2
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.etco2
+                    break
+                case "TEMPERATURE":
+                    this.currentValue = data.temp
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.temp
+                    break
+                case "PFI":
+                    this.currentValue = data.pfi
+                    this.currentValueText = this.currentValue.toString()
+                    this.targetValue = data.pfi
+                    break
+            }
+        },
         updateValues () {
             switch (this.label) {
                 case "HEARTRATE":
@@ -307,9 +346,17 @@ export default {
         this.currentValue = this.value
         this.currentValueText = this.currentValue
         this.targetValue = this.value
+
+        this.$root.$on('instructorupdate', (newdata) => {
+            this.setDataFromOutside(newdata)
+        })
+
         setInterval(() => {
             this.blinker()
         }, 1000);
+    },
+    beforeDestroy () {
+        this.$root.$off('instructorupdate')
     }
 
 }
