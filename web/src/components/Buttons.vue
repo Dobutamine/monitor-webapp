@@ -9,6 +9,7 @@
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="showImage">show imaging</q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">save profile</q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">load profile</q-btn>
+            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="goToInstructor">CONTROL VIEW</q-btn>
             <!-- <q-btn class="bg-blue-grey-8" disable style="height: 60px; width: 85px">
                 <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>
             </q-btn> -->
@@ -77,11 +78,21 @@ export default {
         this.connect()
     },
     beforeDestroy () {
+        this.checkConnectionTimer = null
         clearTimeout(this.checkConnectionTimer)
-        this.ws.send(JSON.stringify({ command: 'close', id: this.id }))
         this.ws.close()
     },
     methods: {
+        cleanUp () {
+            clearTimeout(this.checkConnectionTimer)
+            this.ws.send(JSON.stringify({ command: 'close', id: this.id }))
+            this.ws.close()
+
+        },
+        goToInstructor () {
+            this.cleanUp()
+            this.$router.push("/instructor")
+        },
         showImage () {
             this.$root.$emit('showimage', 2)
         },

@@ -248,6 +248,7 @@ export default {
   beforeUnmount () {
     this.$root.$off('trends', (state) => { this.switchTrends(state) })
     this.$root.$off('resize')
+    this.$root.$off('showimage')
   },
   beforeDestroy () {
     clearInterval(this.blinkerTimer)

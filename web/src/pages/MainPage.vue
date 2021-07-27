@@ -24,8 +24,10 @@
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                <q-input v-model="password" type="password" :value="id" stack-label autofocus label="PASSWORD">
-                </q-input>
+                <q-form @submit="getUserId">
+                    <q-input v-model="password" type="password" :value="id" stack-label autofocus label="PASSWORD">
+                    </q-input>
+                </q-form>
             </div>
             <div class="col text-center">
             </div>
@@ -45,7 +47,9 @@
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                {{ errorText }}
+                <q-card v-if='errorText != ""' class='q-pa-sm'>
+                    {{ errorText }}
+                </q-card>
             </div>
             <div class="col text-center">
             </div>
@@ -62,9 +66,10 @@
         <div class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
-            <div class="col text-center">
-                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-blue-10" @click="monitor" style="width: 150px" size=sm>MONITOR</q-btn>
-                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="instructor" style="width: 150px" size=sm>INSTRUCTOR</q-btn>
+            <div class="col2 text-center">
+                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-teal-10" @click="monitor" style="width: 150px" size=sm>MONITOR</q-btn>
+                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="instructor" style="width: 150px" size=sm>INSTRUCTOR</q-btn>
+                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="instructor" style="width: 150px" size=sm>MEDIA</q-btn>
             </div>
             <div class="col text-center">
             </div>

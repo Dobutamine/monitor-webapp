@@ -177,6 +177,15 @@ export default {
         channel.updateSize(this.width, this.height / this.noOfChannels)
       })
     },
+    updater (message) {
+      if (message.data.target === 'monitor') {
+        if (this.updateChannelsCounter > this.updateChannelsInterval) {
+          this.updateChannelsCounter = 0
+          this.updateData(message.data.data)
+        }
+        this.updateChannelsCounter += this.dataUpdateInterval
+      }
+    },
     updateData (data) {
       let alarmCounterChange = { yellow: 0, red: 0}
       this.channels.forEach(channel => {
@@ -272,16 +281,21 @@ export default {
 
     this.$root.$on('shownibd', () => this.showNIBD = true)
 
-    this.modelEventListener = this.$model.engine.addEventListener('message', (message) => {
-      if (message.data.target === 'monitor') {
-        if (this.updateChannelsCounter > this.updateChannelsInterval) {
-          this.updateChannelsCounter = 0
-          this.updateData(message.data.data)
-        }
-        this.updateChannelsCounter += this.dataUpdateInterval
-      }
-    })
+    this.modelEventListener = this.$model.engine.addEventListener('message', this.updater)
 
+  },
+  beforeDestroy () {
+    // clean up
+    this.$root.$off('resize')
+    this.$root.$off('opensettings')
+    this.$root.$off('newchannelconfig')
+    this.$root.$off('shownibd')
+    this.$model.engine.removeEventListener('message', this.updater)
+    this.modelEventListener = null
+    this.$el.removeChild(this.pixiApp.view)
+    this.channels = []
+    this.pixiApp.destroy()
+    this.pixiApp = null
   }
 
 }

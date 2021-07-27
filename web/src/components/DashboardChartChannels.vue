@@ -118,6 +118,11 @@ export default {
         }
       })
     },
+    updater (message) {
+      if (message.data.target === 'monitor') {
+        this.updateData(message.data.data)
+      }
+    },
     updateData (data) {
       this.channels.forEach(channel => {
         channel.update(data)
@@ -191,15 +196,19 @@ export default {
     this.$root.$on('switchchannel', (newconfig) => this.changeChannelState(newconfig))
 
     // add a data update event handler
-    this.modelEventListener = this.$model.engine.addEventListener('message', (message) => {
-      if (message.data.target === 'monitor') {
-        this.updateData(message.data.data)
-      }
-    })
+    this.modelEventListener = this.$model.engine.addEventListener('message', this.updater)
   },
   beforeDestroy () {
     // clean up
+    this.$root.$off('resize')
+    this.$root.$off('newlayout')
+    this.$root.$off('changechannelchart')
+    this.$root.$off('switchchannel')
+    this.$model.engine.removeEventListener('message', this.updater)
+    this.modelEventListener = null
     this.$el.removeChild(this.pixiApp.view)
+    this.channels = []
+    this.pixiApp.destroy()
     this.pixiApp = null
   }
 }

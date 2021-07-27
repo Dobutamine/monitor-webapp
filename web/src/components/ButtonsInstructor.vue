@@ -8,6 +8,7 @@
             <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">SHOW IMAGE</q-btn>
             <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">STORE STATE</q-btn>
             <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">LOAD STATE</q-btn>
+            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px" @click="goToMonitor">MONITOR VIEW</q-btn>
             <!-- <q-btn class="bg-blue-grey-10" disable style="height: 60px; width: 85px">
                 <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>
             </q-btn> -->
@@ -74,6 +75,9 @@ export default {
         this.ws.close()
     },
     methods: {
+        goToMonitor () {
+            this.$router.push("/monitor")
+        },
         connect () {
             if (!this.connected) {
                 // try to establish a connection

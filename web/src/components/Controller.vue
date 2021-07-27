@@ -46,7 +46,7 @@ export default {
     this.$root.$off('rt_watch_diagram')
     this.$root.$off('rt_watch_chart')
     this.$root.$off('rt_watch_chart2')
-    this.$root.$ff('forceupdate')
+    this.$root.$off('forceupdate')
   },
   methods: {
     toggleIsEnabled () {
