@@ -285,6 +285,9 @@ export default {
 
   },
   beforeDestroy () {
+    // reset the alarm counters
+    this.$store.commit('dataPool/ResetAlarmCounter')
+    this.$store.commit('dataPool/ResetRedAlarmCounter')
     // clean up
     this.$root.$off('resize')
     this.$root.$off('opensettings')

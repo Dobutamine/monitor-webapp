@@ -79,12 +79,20 @@ export function channelConfigurations (state, newConfig) {
     state.channelConfigurations = newConfig
 }
 
+export function ResetAlarmCounter (state) {
+    state.alarmCounter = 0
+}
+
 export function IncreaseAlarmCounter (state, value) {
     state.alarmCounter += value
 }
 
 export function DecreaseAlarmCounter (state, value) {
     state.alarmCounter -= value
+}
+
+export function ResetRedAlarmCounter (state) {
+    state.redAlarmCounter = 0
 }
 
 export function IncreaseRedAlarmCounter (state, value) {
