@@ -1,6 +1,16 @@
 <template>
     <q-page padding class="bg-black">
-        <div class="row justify-center items-start q-ma-lg">
+        <div v-if="newUserEntry" class="row justify-center items-start q-ma-lg">
+            <div class="col text-center">
+            </div>
+            <div class="col text-center">
+                <q-input v-model="name" :value="name" stack-label autofocus label="NAME">
+                </q-input>
+            </div>
+            <div class="col text-center">
+            </div>
+        </div>
+        <div v-if="login" class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
             <div class="col text-center">
@@ -10,7 +20,7 @@
             <div class="col text-center">
             </div>
         </div>
-        <div class="row justify-center items-start q-ma-lg">
+        <div v-if="login" class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
             <div class="col text-center">
@@ -20,13 +30,15 @@
             <div class="col text-center">
             </div>
         </div>
-        <div class="row justify-center items-start q-ma-lg">
+        <div v-if="login" class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                    <q-btn class="q-pl-lg q-pr-lg bg-red-10" @click="getUserId" style="width: 200px" size=md>LOG IN</q-btn>
+                    <q-btn v-if="!newUserEntry" class="q-pl-lg q-pr-lg bg-teal-10" @click="getUserId" style="width: 150px" size=sm>LOG IN</q-btn>
+                    <q-btn class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="newUser" style="width: 150px" size=sm>{{ newUserText }}</q-btn>
             </div>
             <div class="col text-center">
+                
             </div>
         </div>
         <div class="row justify-center items-start q-ma-lg">
@@ -51,7 +63,8 @@
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-teal-10" @click="monitor" style="width: 200px" size=md>MONITOR</q-btn>
+                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-blue-10" @click="monitor" style="width: 150px" size=sm>MONITOR</q-btn>
+                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="instructor" style="width: 150px" size=sm>INSTRUCTOR</q-btn>
             </div>
             <div class="col text-center">
             </div>
@@ -60,7 +73,7 @@
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                 <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-teal-10" @click="instructor" style="width: 200px" size=md>INSTRUCTOR</q-btn>
+                 
             </div>
             <div class="col text-center">
             </div>
@@ -75,27 +88,61 @@ import axios from 'axios'
 export default {
     data () {
         return {
+            name: '',
             email: '',
             password: '',
             id: '',
             errorText: '',
             connected: false,
-            showChoices: false
+            showChoices: false,
+            newUserEntry: false,
+            newUserText: 'NEW USER',
+            login: true
         }
     },
     methods: {
+        newUser () {
+            if (!this.newUserEntry) {
+                this.newUserEntry = true
+                this.newUserText = 'REGISTER'
+            } else {
+                this.registerNewUser()
+            }
+        },
+        registerNewUser () {
+            axios.post('http://localhost:8080/api/users', {
+                name: this.name,
+                email: this.email,
+                password: this.password
+            }).then(res => {
+                this.errorText = 'Thank you for registering. Have fun!'
+                this.id = res.data
+                this.login = true
+                this.newUserText = 'NEW USER'
+                this.newUserEntry = false
+            }).catch(error => {
+                this.errorText = error.response.data
+                this.id =''
+                this.showChoices = false
+                this.login = true
+                this.newUserEntry = true
+            })
+        },
         getUserId () {
             axios.post('http://localhost:8080/api/auth', {
                 email: this.email,
                 password: this.password
             }).then(res => {
-                this.errorText = ''
-                this.id = res.data
+                this.name = res.data.name
+                this.errorText = `Welcome ${this.name}`
+                this.id = res.data.id
                 this.showChoices = true
+                this.login = false
             }).catch(error => {
                 this.errorText = error.response.data
                 this.id =''
                 this.showChoices = false
+                this.login = true
             })
         },
         monitor () {

@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
   const token = jwt.sign({ _id : user._id }, 'jwtPrivateKey')
 
   // return the token
-  res.send(user.id)
+  res.send({ name: user.name, id: user.id })
 })
 
 // validate function the validate the request
