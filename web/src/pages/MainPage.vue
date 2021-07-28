@@ -69,7 +69,7 @@
             <div class="col2 text-center">
                     <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-teal-10" @click="monitor" style="width: 150px" size=sm>MONITOR</q-btn>
                     <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="instructor" style="width: 150px" size=sm>INSTRUCTOR</q-btn>
-                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="instructor" style="width: 150px" size=sm>MEDIA</q-btn>
+                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="media" style="width: 150px" size=sm>MEDIA</q-btn>
             </div>
             <div class="col text-center">
             </div>
@@ -157,6 +157,10 @@ export default {
         instructor () {
             this.$store.commit('dataPool/id', this.id)
             this.$router.push("/instructor")
+        },
+        media () {
+            this.$store.commit('dataPool/id', this.id)
+            this.$router.push("/media")
         }
     },
     mounted () {

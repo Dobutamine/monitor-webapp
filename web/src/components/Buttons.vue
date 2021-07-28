@@ -7,8 +7,9 @@
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">qrs sound</q-btn>
             <!-- <q-btn class="bg-blue-grey-8" @click="trends"  style="height: 60px; width: 85px">trends</q-btn> -->
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="showImage">show imaging</q-btn>
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">save profile</q-btn>
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">load profile</q-btn>
+            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
+            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
+            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="goToInstructor">CONTROL VIEW</q-btn>
             <!-- <q-btn class="bg-blue-grey-8" disable style="height: 60px; width: 85px">
                 <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>

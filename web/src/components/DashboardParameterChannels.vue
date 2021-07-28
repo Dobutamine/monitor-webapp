@@ -97,7 +97,7 @@ export default {
           upperAlarm: 75
         },
         {
-          label: 'Tskin',
+          label: 'Temp',
           source1: 'temp',
           source2: '',
           channelNo: 12,
