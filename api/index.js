@@ -12,6 +12,7 @@ const home = require('./routes/home')
 const users = require('./routes/users')
 const auth = require('./routes/auth')
 const content = require('./routes/content')
+const configs = require('./routes/configs')
 
 // use som of the inbuild middleware
 app.use(express.json())
@@ -28,6 +29,8 @@ app.use('/api', home)
 app.use('/api/users', users)
 app.use('/api/auth', auth)
 app.use('/api/content', content)
+app.use('/api/configs', configs)
+
 
 // define the port to 3000 if not set by an enviroinment variable
 const port = process.env.PORT || 8080

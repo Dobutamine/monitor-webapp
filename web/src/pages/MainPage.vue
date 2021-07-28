@@ -25,7 +25,7 @@
             </div>
             <div class="col text-center">
                 <q-form @submit="getUserId">
-                    <q-input v-model="password" type="password" :value="id" stack-label autofocus label="PASSWORD">
+                    <q-input v-model="password" type="password" :value="id" stack-label label="PASSWORD">
                     </q-input>
                 </q-form>
             </div>
@@ -35,7 +35,7 @@
         <div v-if="login" class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
-            <div class="col text-center">
+            <div class="col2 text-center">
                     <q-btn v-if="!newUserEntry" class="q-pl-lg q-pr-lg bg-teal-10" @click="getUserId" style="width: 150px" size=sm>LOG IN</q-btn>
                     <q-btn class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="newUser" style="width: 150px" size=sm>{{ newUserText }}</q-btn>
             </div>

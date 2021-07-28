@@ -1,5 +1,6 @@
 const { User, validate } = require ('../models/user')
 const { Monitor } = require('../models/monitor')
+const { Config } = require('../models/config')
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
 const express = require('express')
@@ -33,10 +34,20 @@ router.post('/', async (req, res) => {
   // save it
   await monitor.save()
 
+  // create a default configuration entry
+  configuration = new Config()
+
+  // attach the user id to the configuration object
+  configuration.id = user._id
+
+  // save it
+  await configuration.save()
+
   // use lodash to modify the response
   // res.send(_.pick(user, ['_id', 'name', 'email', 'password']))
 
   // use lodash to return a the monitor object
+  console.log(user._id)
   res.send(monitor)
 })
 

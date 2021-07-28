@@ -6,6 +6,7 @@
 
 <script>
 /* eslint-disable */
+import axios from 'axios'
 import { Quasar, Dialog } from 'quasar'
 import * as PIXI from 'pixi.js'
 import ParameterChannel from '../classes/ParameterChannel'
@@ -32,6 +33,7 @@ export default {
   },
   data () {
     return {
+      id: '',
       settings: false,
       pixiApp: null,
       canvas: null,
@@ -144,24 +146,47 @@ export default {
           lowerAlarm: 30,
           upperAlarm: 75
         },
-
       ],
       updateChannelsCounter: 0,
       updateChannelsInterval: 0.750
     }
   },
   methods: {
-    changeChannelConfiguration (newconfig) {
+    changeChannelConfiguration (newconfig, save=true) {
       this.channels.forEach(channel => {
         if (channel.channelNo === newconfig.channelNo) {
           channel.updateConfiguration(newconfig)
           this.$root.$emit("changechannelchart", newconfig)
         }
       })
-
+      if (save) {
+        this.buildConfigurationObjectFromChannels()
+      }
     },
-    parameterChange () {
-
+    buildConfigurationObjectFromChannels () {
+      const newConfiguration = []
+      this.channels.forEach(channel => {
+        const channelObject = {
+          label: channel.caption,
+          source1: channel.source1,
+          source2: channel.source2,
+          channelNo: channel.channelNo,
+          color: channel.color,
+          alarmEnabled: channel.alarmEnabled,
+          lowerAlarm: channel.lowerAlarm,
+          upperAlarm: channel.upperAlarm
+        }
+        newConfiguration.push(channelObject)
+      })
+      this.id = this.$store.state.dataPool.id
+      const configuration = JSON.stringify(newConfiguration)
+      axios.post('http://localhost:8080/api/configs/new', { id: this.id, configuration: configuration})
+        .then(res => {
+          console.log(res)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     onResize (newSize) {
       // get the current width of the canvas
@@ -218,7 +243,7 @@ export default {
     },
     initializeChannels () {
       while(this.pixiApp.stage.children[0]) { 
-        this.pixiApp.stage.removeChild(this.app.children[0]);
+        this.pixiApp.stage.removeChild(this.pixiApp.stage.children[0]);
       }
       this.channels = []
       this.channelConfigurations.forEach((channelConfiguration) => {
@@ -247,6 +272,24 @@ export default {
       })
       
     },
+    getConfigurationFromServer () {
+      this.id = this.$store.state.dataPool.id
+      axios.post('http://localhost:8080/api/configs', { id: this.id,})
+        .then(res => {
+          this.channelConfigurations = JSON.parse(res.data.configuration)
+          this.processNewConfiguration()
+        })
+        .catch(error => {
+              console.log(error)
+        })
+    },
+    processNewConfiguration () {
+      this.channelConfigurations.forEach(configuration => {
+        this.changeChannelConfiguration(configuration, false)
+      })
+      this.buildConfigurationObjectFromChannels()
+      
+    },
     initialize () {
        // get the reference to the canvas
       this.canvas = document.getElementById(this.chartId)
@@ -266,23 +309,27 @@ export default {
       this.pixiApp.stage.interactive = false
 
       this.width = this.canvas.getBoundingClientRect().width
+
+      // add a resize event handler
+      this.$root.$on('resize', (newSize) => this.onResize(newSize))
+
+      this.$root.$on('opensettings', (e) => this.settings = true)
+
+      this.$root.$on('newchannelconfig', (e) => this.changeChannelConfiguration(e))
+
+      this.$root.$on('shownibd', () => this.showNIBD = true)
+
+      this.modelEventListener = this.$model.engine.addEventListener('message', this.updater)
+
     }
   },
   mounted () {
     this.initialize()
 
     this.initializeChannels()
-    // add a resize event handler
-    this.$root.$on('resize', (newSize) => this.onResize(newSize))
 
-    this.$root.$on('opensettings', (e) => this.settings = true)
-
-    this.$root.$on('newchannelconfig', (e) => this.changeChannelConfiguration(e))
-
-    this.$root.$on('shownibd', () => this.showNIBD = true)
-
-    this.modelEventListener = this.$model.engine.addEventListener('message', this.updater)
-
+    this.getConfigurationFromServer()
+    
   },
   beforeDestroy () {
     // reset the alarm counters
