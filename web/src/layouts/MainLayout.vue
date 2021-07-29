@@ -12,15 +12,15 @@
               </div>
 
               <div v-if="visible" class="col text-center">
-                  <q-btn  :class="btnHome" @click="gotoHome" style="width: 100px" dense size=sm>LOGIN</q-btn>
-                    <q-btn  :class="btnMonitor" @click="gotoMonitor" style="width: 100px" dense size=sm>MONITOR</q-btn>
-                    <q-btn  :class="btnInstructor" @click="gotoInstructor" style="width: 100px" dense size=sm>INSTRUCTOR</q-btn>
-                    <q-btn  :class="btnImages" @click="gotoImages" style="width: 100px" dense size=sm>IMAGES</q-btn>
+                    <q-btn v-if='btnMonitorVisibility'  :class="btnMonitor" @click="gotoMonitor" style="width: 100px" dense size=sm>MONITOR</q-btn>
+                    <q-btn v-if='btnInstructorVisibility'  :class="btnInstructor" @click="gotoInstructor" style="width: 100px" dense size=sm>INSTRUCTOR</q-btn>
+                    <q-btn v-if='btnImagesVisibility'  :class="btnImages" @click="gotoImages" style="width: 100px" dense size=sm>IMAGES</q-btn>
 
               </div>
             </div>
             <div class="col text-right text-size-sm">
-                    {{ userName }}
+                    <q-btn :class="btnHome" @click="gotoHome" style="width: 100px" dense size=sm>
+                    {{ userName }}</q-btn>
             </div>
         </q-bar>
       </q-header>
@@ -44,9 +44,13 @@ export default {
       leftDrawerOpen: false,
       height: 1300,
       btnHome: 'q-ma-sm bg-red-9',
+      btnHomeVisibility: false,
       btnMonitor: 'q-ma-sm bg-blue-9',
+      btnMonitorVisibility: false,
       btnInstructor: 'q-ma-sm bg-blue-9',
+      btnInstructorVisibility: false,
       btnImages: 'q-ma-sm bg-blue-9',
+      btnImagesVisibility: false,
       blue: 'q-ma-sm bg-blue-9',
       red: 'q-ma-sm bg-red-9'
 
@@ -59,15 +63,32 @@ export default {
     },
     gotoHome () {
       this.$router.push("/")
+      this.btnHomeVisibility = false
+      this.btnMonitorVisibility = false
+      this.btnInstructorVisibility = false
+      this.btnImagesVisibility = false
     },
     gotoMonitor () {
       this.$router.push("/monitor")
+      this.btnHomeVisibility = true
+      this.btnMonitorVisibility = true
+      this.btnInstructorVisibility = true
+      this.btnImagesVisibility = true
     },
     gotoInstructor () {
       this.$router.push("/instructor")
+      this.btnHomeVisibility = true
+      this.btnMonitorVisibility = true
+      this.btnInstructorVisibility = true
+      this.btnImagesVisibility = true
     },
     gotoImages () {
+      this.btnHomeVisibility = true
+      this.btnMonitorVisibility = true
+      this.btnInstructorVisibility = true
+      this.btnImagesVisibility = true
       this.$router.push("/media")
+      
     },
   },
   mounted () {
@@ -89,6 +110,13 @@ export default {
       this.btnMonitor = this.blue
       this.btnInstructor = this.blue
       this.btnImages = this.blue
+
+      this.btnHomeVisibility = false
+      this.btnMonitorVisibility = false
+      this.btnInstructorVisibility = false
+      this.btnImagesVisibility = false
+
+
     })
     this.$root.$on('monitor', () => {
       this.barVisibility = true
@@ -96,6 +124,11 @@ export default {
       this.btnMonitor = this.red
       this.btnInstructor = this.blue
       this.btnImages = this.blue
+
+      this.btnHomeVisibility = true
+      this.btnMonitorVisibility = true
+      this.btnInstructorVisibility = true
+      this.btnImagesVisibility = true
       
     })
     this.$root.$on('instructor', () => {
@@ -104,6 +137,11 @@ export default {
       this.btnMonitor = this.blue
       this.btnInstructor = this.red
       this.btnImages = this.blue
+
+      this.btnHomeVisibility = true
+      this.btnMonitorVisibility = true
+      this.btnInstructorVisibility = true
+      this.btnImagesVisibility = true
       
     })
     this.$root.$on('images', () => {
@@ -111,6 +149,11 @@ export default {
       this.btnMonitor = this.blue
       this.btnInstructor = this.blue
       this.btnImages = this.red
+
+      this.btnHomeVisibility = true
+      this.btnMonitorVisibility = true
+      this.btnInstructorVisibility = true
+      this.btnImagesVisibility = true
       
     })
 

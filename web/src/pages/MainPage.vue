@@ -68,8 +68,6 @@
             </div>
             <div class="col2 text-center">
                     <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-blue-10" @click="monitor" style="width: 150px" size=sm>MONITOR</q-btn>
-                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="instructor" style="width: 150px" size=sm>INSTRUCTOR</q-btn>
-                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="media" style="width: 150px" size=sm>IMAGES</q-btn>
             </div>
             <div class="col text-center">
             </div>
@@ -77,8 +75,26 @@
         <div class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
+            <div class="col2 text-center">
+                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-blue-10" @click="instructor" style="width: 150px" size=sm>INSTRUCTOR</q-btn>
+            </div>
             <div class="col text-center">
-                 
+            </div>
+        </div>
+        <div class="row justify-center items-start q-ma-lg">
+            <div class="col text-center">
+            </div>
+            <div class="col2 text-center">
+                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-blue-10" @click="media" style="width: 150px" size=sm>IMAGES</q-btn>
+            </div>
+            <div class="col text-center">
+            </div>
+        </div>
+        <div class="row justify-center items-start q-ma-lg">
+            <div class="col text-center">
+            </div>
+            <div class="col2 text-center">
+                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-red-10" @click="logout" style="width: 150px" size=sm>LOG OUT</q-btn>
             </div>
             <div class="col text-center">
             </div>
@@ -106,6 +122,11 @@ export default {
         }
     },
     methods: {
+        logout () {
+            this.id = ''
+            this.showChoices = false
+            this.login = true
+        },
         newUser () {
             if (!this.newUserEntry) {
                 this.newUserEntry = true
@@ -155,14 +176,17 @@ export default {
         },
         monitor () {
             this.$store.commit('dataPool/id', this.id)
+            this.$root.$emit('monitor')
             this.$router.push("/monitor")
         },
         instructor () {
             this.$store.commit('dataPool/id', this.id)
+            this.$root.$emit('instructor')
             this.$router.push("/instructor")
         },
         media () {
             this.$store.commit('dataPool/id', this.id)
+            this.$root.$emit('images')
             this.$router.push("/media")
         }
     },
