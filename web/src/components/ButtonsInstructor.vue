@@ -1,27 +1,29 @@
 <template>
     <q-card class="bg-dark">
         <div class="q-gutter-xs">
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">MONITOR RUNNING</q-btn>
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">ALARMS ON</q-btn>
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">SINUS RHYTHM</q-btn>
+            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px">RHYTHM SINUS</q-btn>
             <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px">CHEST COMPRESSIONS</q-btn>
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">SHOW IMAGE</q-btn>
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">STORE STATE</q-btn>
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px">LOAD STATE</q-btn>
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 85px" @click="goToMonitor">MONITOR VIEW</q-btn>
+            <q-btn :class="intubationButtonColor" @click="toggleIntubation" style="height: 60px; width: 120px">{{ intubationButtonText }}
+
+            </q-btn>
             <!-- <q-btn class="bg-blue-grey-10" disable style="height: 60px; width: 85px">
                 <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>
             </q-btn> -->
-            <q-btn :class="connectedColor" @click="connect" style="height: 60px; width: 85px; font-size: 8px">
+            <q-btn class="bg-blue-grey-10" @click="showImageSelector" style="height: 60px; width: 120px">SELECT IMAGE</q-btn>
+             <q-btn :class="connectedColor" @click="connect" style="height: 60px; width: 85px; font-size: 8px">
                 {{ connectedLabel }}
                 <q-icon :name="icon" style="font-size: 32px"></q-icon>
             </q-btn>
+        </div>
+        <div style="font-size: 12px">
+           selected image file : {{ selectedMediaFile }}
         </div>
     </q-card>
 </template>
 
 <script>
 /* eslint-disable */
+import axios from 'axios'
 export default {
     data () {
         return {
@@ -39,6 +41,11 @@ export default {
             id_unknown: true,
             ws: null,
             allIsFine: false,
+            bluegreay: 'bg-blue-grey-10',
+            red: 'bg-red-10',
+            intubationButtonColor: 'bg-blue-grey-10',
+            intubationButtonText: 'MECHANICAL VENTILATION',
+            selectedMediaFile: '',
             currentDataObject: {
                 command: '',
                 id: '',
@@ -56,9 +63,13 @@ export default {
                 cvp: 4,
                 papSyst: 40,
                 papDiast: 20,
-                imageNo: 0,
+                imageName: '',
+                compressionsFrequency: 0,
+                alarmOverride: false,
                 resusState: 0,
                 rhythmType: 0,
+                rhythmParameter: 0,
+                intubated: false,
                 rhythmParameter: 0,
                 channelConfigChanged: true,
                 channelConfigurations: {},
@@ -143,6 +154,14 @@ export default {
                 this.currentDataObject.cvp = this.$store.state.dataPool.cvp
                 this.currentDataObject.papSyst = this.$store.state.dataPool.papSyst
                 this.currentDataObject.papDiast = this.$store.state.dataPool.papDiast
+                this.currentDataObject.imageName = this.$store.state.dataPool.imageName
+                this.currentDataObject.rhythmType = this.$store.state.dataPool.rhythmType
+                this.currentDataObject.intubated = this.$store.state.dataPool.intubated
+                this.currentDataObject.compressionsFrequency = this.$store.dataPool.compressionsFrequency
+                this.currentDataObject.rhythmParameter = this.$store.data.rhythmParameter
+                this.currentDataObject.alarmOverride = this.$store.data.alarmOverride
+
+                this.selectedMediaFile = this.currentDataObject.imageName
 
                 this.ws.send(JSON.stringify(this.currentDataObject))
 
@@ -172,14 +191,42 @@ export default {
                 this.processData(processed_data)
             }
         },
+        showImageSelector () {
+            this.$root.$emit('imageselector')
+        },
+        getMediaFilelistFromServer () {
+            axios.get('http://localhost:8080/api/media/list')
+                .then( res => {
+                    this.mediaFilelist = res.data.filter(file => file.endsWith('jpg'));
+                })
+        },
+        toggleIntubation () {
+            this.currentDataObject.intubated = !this.currentDataObject.intubated
+            if (this.currentDataObject.intubated) {
+                this.intubationButtonText = 'MECHANICAL VENTILATION'
+                this.intubationButtonColor = this.red
+            } else {
+                this.intubationButtonText = 'MECHANICAL VENTILATION'
+                this.intubationButtonColor = this.bluegreay
+            }
+            this.$store.commit('dataPool/intubated', this.currentDataObject.intubated)
+        },
         processData (data) {
             this.connectedLabel = ''
             this.icon = 'sentiment_satisfied_alt'
             this.connectedColor = 'bg-teal-10'
-            this.$store.commit('dataPool/heartrate', data.heartrate)
-            this.$root.$emit('instructorupdate', data)
+            // set the parameters not set by the sliders
+            this.currentDataObject.intubated = data.intubated
+            this.currentDataObject.rhythmType = data.rhythmType
+            this.currentDataObject.rhythmParameter = data.rhythmParameter
+            this.currentDataObject.imageName = data.imageName
+            this.currentDataObject.pfi = data.pfi
+            this.currentDataObject.compressionsFrequency = data.compressionsFrequency
+            this.currentDataObject.alarmOverride = data.alarmOverride
             
-            //this.sendDataToServer()
+            // update the parameters with sliders
+            this.$root.$emit('instructorupdate', data)
+
         },
         silenceAlarms () {
             //this.$root.$on('hires_on', () => { this.hires = true })

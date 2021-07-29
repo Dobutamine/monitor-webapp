@@ -82,6 +82,8 @@ wsServer.on('connection', async socket => {
           monitor2.cvp = convertedMessage.cvp
           monitor2.papSyst = convertedMessage.papSyst
           monitor2.papDiast = convertedMessage.papDiast
+          monitor2.rhythmType = convertedMessage.rhythmType
+          monitor2.intubated = convertedMessage.intubated
           
           await monitor2.save()
         }

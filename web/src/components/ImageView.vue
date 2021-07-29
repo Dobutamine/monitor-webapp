@@ -28,8 +28,9 @@ export default {
   },
   data() {
     return {
-      url: 'http://www.monitoremulator.com:8080/images/pneumothorax_right',
+      url: '',
       confirm: false,
+      imageName: ''
     }
   },
   methods: {
@@ -51,6 +52,8 @@ export default {
         }
     },
     mounted () {
+      this.imageName = this.$store.state.dataPool.imageName
+      this.url = `http://localhost:8080/${this.imageName}`
     },
     beforeDestroy () {
     }

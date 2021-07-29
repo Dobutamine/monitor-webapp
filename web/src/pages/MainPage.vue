@@ -211,10 +211,10 @@ export default {
     mounted () {
         this.$q.dark.set(true)
         this.id = ''
+        this.$store.commit('dataPool/id', this.id)
         this.email = ''
         this.password = ''
         this.name = ''
-        this.$store.commit('dataPool/id', this.id)
         this.$root.$emit('home')
         this.$root.$emit('login', 'not logged in')
         this.$root.$emit('hide')

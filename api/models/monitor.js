@@ -16,6 +16,11 @@ const monitorSchema = mongoose.Schema( {
   papSyst: { type: Number, default: 40 },
   papDiast: { type: Number, default: 20 },
   rhythmType: { type: Number, default: 0 },
+  rhythmParameter: { type: Number, default: 0 },
+  intubated: { type: Boolean, default: false},
+  imageName: { type: String, default: '' },
+  compressionsFrequency: { type: String, default: 0 },
+  alarmOverride: { type: Boolean, default: false}
 })
 
 const Monitor = mongoose.model('Monitor', monitorSchema)

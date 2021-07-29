@@ -22,9 +22,9 @@
         <div class="q-ma-sm col">
             <SingleSlider :value=36.6 :min=28 :max=42 :step=0.1 label="TEMPERATURE"></SingleSlider>
         </div>
-        <div class="q-ma-sm col">
+        <!-- <div class="q-ma-sm col">
             <SingleSlider :value=0 :min=0 :max=5 :step=0.1 label="PFI"></SingleSlider>
-        </div>
+        </div> -->
     </div>
      <div class="row justify-center q-ma-es">
         <ButtonsInstructor></ButtonsInstructor>
@@ -37,13 +37,15 @@
 import SingleSlider from 'components/SingleSlider'
 import DoubleSlider from 'components/DoubleSlider'
 import ButtonsInstructor from 'components/ButtonsInstructor'
+import ImageSelector from 'components/ImageSelector'
 
 export default {
   name: 'PageInstructor',
   components: {
       SingleSlider,
       DoubleSlider,
-      ButtonsInstructor
+      ButtonsInstructor,
+      ImageSelector
   },
   data () {
     return {
@@ -58,8 +60,15 @@ export default {
     this.height = (this.$q.screen.height - 50) + 'px'
     this.max_width = this.$q.screen.width
     this.$q.dark.set(true)
+
+    this.$root.$on('imageselector', (name) => {
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`
+      console.log(styleImg)
+      this.$q.dialog({ component: ImageSelector, parent: this, image_no: 2, imgSize: styleImg})
+    })
   },
   beforeDestroy () {
+    this.$root.$off('imageselector')
   }
 }
 </script>

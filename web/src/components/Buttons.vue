@@ -66,6 +66,10 @@ export default {
                 papSyst: 40,
                 papDiast: 20,
                 rhythmType: 0,
+                rhythmParameter: 0,
+                compressionsFrequency: 0,
+                alarmOverride: false,
+                intubated: false
             }
         }
     },
@@ -227,6 +231,12 @@ export default {
                 this.currentDataObject.satPre = data['satPre']
                 this.currentDataObject.satVen = data['satVen']
                 this.currentDataObject.temp = data['temp']
+                this.currentDataObject.imageName = data['imageName']
+                this.currentDataObject.rhythmType = data['rhythmType']
+                this.currentDataObject.intubated = data['intubated']
+                this.currentDataObject.compressionsFrequency = data['compressionsFrequency']
+                this.currentDataObject.rhythmParameter = data['rhythmParameter']
+                this.currentDataObject.alarmOverride = data['alarmOverride']
             }   
             this.updateModel()
         },

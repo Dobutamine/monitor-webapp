@@ -51,8 +51,8 @@ export function papDiast (state, value) {
     state.papDiast = value
 }
 
-export function imageNo (state, value) {
-    state.imageNo = value
+export function imageName (state, value) {
+    state.imageName = value
 }
 
 export function resusState (state, value) {
@@ -63,8 +63,20 @@ export function rhythmType (state, value) {
     state.rhythmType = value
 }
 
+export function intubated (state, value) {
+    state.intubated = value
+}
+
 export function rhythmParameter (state, value) {
     state.rhythmParameter = value
+}
+
+export function compressionsFrequency (state, value) {
+    state.compressionsFrequency = value
+}
+
+export function alarmOverride (state, value) {
+    state.alarmOverride = value
 }
 
 export function alarmEnabled (state, value) {
