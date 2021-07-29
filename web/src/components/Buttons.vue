@@ -10,7 +10,7 @@
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="goToInstructor">CONTROL VIEW</q-btn>
+            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="goToInstructor">{{ barText }}</q-btn>
             <!-- <q-btn class="bg-blue-grey-8" disable style="height: 60px; width: 85px">
                 <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>
             </q-btn> -->
@@ -28,6 +28,8 @@
 export default {
     data () {
         return {
+            barText: 'HIDE TOP',
+            barVisibility: true,
             silenceState: false,
             silenceDuration: 30,
             trendsState: true,
@@ -79,6 +81,7 @@ export default {
         this.connect()
     },
     beforeDestroy () {
+        this.cleanUp()
         this.checkConnectionTimer = null
         clearTimeout(this.checkConnectionTimer)
         this.ws.close()
@@ -91,8 +94,13 @@ export default {
 
         },
         goToInstructor () {
-            this.cleanUp()
-            this.$router.push("/instructor")
+            this.barVisibility = !this.barVisibility
+            if (this.barVisibility) {
+                this.barText = 'HIDE TOP'
+            } else {
+                this.barText = 'SHOW TOP'
+            }
+            this.$root.$emit('barvisible', this.barVisibility)
         },
         showImage () {
             this.$root.$emit('showimage', 2)

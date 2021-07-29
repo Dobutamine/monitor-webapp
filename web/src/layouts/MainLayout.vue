@@ -2,11 +2,14 @@
   <div class="q-pa-es">
     <q-layout view="lHh lpr lFf" container v-bind:style="{ height: height + 'px'}" class="shadow-2 rounded-borders">
       <q-header elevated>
-        <q-bar  class="bg-blue-10">
+        <q-bar v-if="barVisibility" class="bg-blue-10">
             <div class="col text-left">
               <q-icon name="laptop_chromebook" />
             </div>
             <div class="col3 text-center">
+              <div v-if="!visible" class="col text-center">
+                  EXPLAIN! patient monitor emulator
+              </div>
 
               <div v-if="visible" class="col text-center">
                   <q-btn  :class="btnHome" @click="gotoHome" style="width: 100px" dense size=sm>LOGIN</q-btn>
@@ -35,6 +38,7 @@ export default {
 
   data () {
     return {
+      barVisibility: true,
       visible: false,
       userName: 'not logged in',
       leftDrawerOpen: false,
@@ -80,12 +84,14 @@ export default {
     })
 
     this.$root.$on('home', () => {
+      this.barVisibility = true
       this.btnHome = this.red
       this.btnMonitor = this.blue
       this.btnInstructor = this.blue
       this.btnImages = this.blue
     })
     this.$root.$on('monitor', () => {
+      this.barVisibility = true
       this.btnHome = this.blue
       this.btnMonitor = this.red
       this.btnInstructor = this.blue
@@ -93,6 +99,7 @@ export default {
       
     })
     this.$root.$on('instructor', () => {
+      this.barVisibility = true
       this.btnHome = this.blue
       this.btnMonitor = this.blue
       this.btnInstructor = this.red
@@ -106,6 +113,11 @@ export default {
       this.btnImages = this.red
       
     })
+
+    this.$root.$on('barvisible', (toggle) => {
+      this.barVisibility = toggle
+      
+    })
   },
   beforeDestroy() {
     this.$root.$off('login')
@@ -115,6 +127,7 @@ export default {
     this.$root.$off('images')
     this.$root.$off('hide')
     this.$root.$off('show')
+    this.$root.$off('barvisible')
 
   }
 }
