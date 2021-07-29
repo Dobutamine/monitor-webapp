@@ -37,7 +37,8 @@
             </div>
             <div class="col2 text-center">
                     <q-btn v-if="!newUserEntry" class="q-pl-lg q-pr-lg bg-blue-10" @click="getUserId" style="width: 150px" size=sm>LOG IN</q-btn>
-                    <q-btn class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="newUser" style="width: 150px" size=sm>{{ newUserText }}</q-btn>
+                    <q-btn class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="newUser" style="width: 150px" size=sm>REGISTER</q-btn>
+                    <q-btn v-if="newUserEntry" class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="cancelRegistration" style="width: 150px" size=sm>CANCEL</q-btn>
             </div>
             <div class="col text-center">
                 
@@ -117,20 +118,35 @@ export default {
             connected: false,
             showChoices: false,
             newUserEntry: false,
-            newUserText: 'NEW USER',
             login: true
         }
     },
     methods: {
-        logout () {
+        cancelRegistration () {
             this.id = ''
+            this.newUserEntry = false
             this.showChoices = false
             this.login = true
+            this.email = ''
+            this.password = ''
+            this.name = ''
+        },
+        logout () {
+            this.id = ''
+            this.$store.commit('dataPool/id', this.id)
+            this.showChoices = false
+            this.login = true
+            this.email = ''
+            this.password = ''
+            this.name = ''
+            this.errorText = ''
+            this.$root.$emit('home')
+            this.$root.$emit('login', 'not logged in')
+            this.$root.$emit('hide')
         },
         newUser () {
             if (!this.newUserEntry) {
                 this.newUserEntry = true
-                this.newUserText = 'REGISTER'
             } else {
                 this.registerNewUser()
             }
@@ -144,7 +160,6 @@ export default {
                 this.errorText = 'Thank you for registering. Have fun!'
                 this.id = res.data
                 this.login = true
-                this.newUserText = 'NEW USER'
                 this.newUserEntry = false
             }).catch(error => {
                 this.errorText = error.response.data
@@ -152,6 +167,9 @@ export default {
                 this.showChoices = false
                 this.login = true
                 this.newUserEntry = true
+                this.email = ''
+                this.password = ''
+                this.name = ''
             })
         },
         getUserId () {
@@ -193,6 +211,9 @@ export default {
     mounted () {
         this.$q.dark.set(true)
         this.id = ''
+        this.email = ''
+        this.password = ''
+        this.name = ''
         this.$store.commit('dataPool/id', this.id)
         this.$root.$emit('home')
         this.$root.$emit('login', 'not logged in')
