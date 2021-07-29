@@ -1,38 +1,84 @@
 <template>
     <q-page padding class="bg-black">
-        <div v-if="newUserEntry" class="row justify-center items-start q-ma-lg">
+        <div v-if="id ==='' " class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                <q-input v-model="name" :value="name" stack-label autofocus label="IMAGE">
-                </q-input>
+                <q-btn class="q-pl-lg q-pr-lg bg-red-10" @click="gotoLogin" style="width: 150px" size=sm>LOG IN</q-btn>
             </div>
             <div class="col text-center">
             </div>
         </div>
 
-        <div class="row justify-center items-start q-ma-lg">
+        <div v-if="id != ''" class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
-            <div class="col2 text-center">
+            <div class="col text-center">
+                <q-card  class='q-pa-sm'>
+                    UPLOAD IMAGES
+                </q-card>
+            </div>
+            <div class="col text-center">
+            </div>
+        </div>
+        
+          <div v-if="id != ''" class="row justify-center items-start q-ma-lg">
+            <div class="col text-center">
+            </div>
+            <div class="col4">
                     <q-uploader
+                        style="max-width: 300px; margin-left: auto; margin-right: auto"
                         url="http://localhost:8080/api/media/upload"
-                        label="media upload"
-                        style="max-width: 300px"
+                        label="max file size (500k)"
+                        max-file-size=500000
+                        dark
+                        flat
+                        color="blue-10"
+                        accept=".jpg"
+                        @finish="getMediaFilelistFromServer"
+                        @rejected="onRejected"
                     />
             </div>
             <div class="col text-center">
             </div>
         </div>
-        <div class="row justify-center items-start q-ma-lg">
+
+        <div v-if="id != ''" class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                 
+                <q-card  class='q-pa-sm'>
+                    AVAILABLE IMAGES
+                </q-card>
             </div>
             <div class="col text-center">
             </div>
         </div>
+
+        <div v-if="id != ''" class="row justify-center items-center q-ma-lg">
+            <div class="col text-center">
+            </div>
+            <div class="col justify-center">
+                <q-select v-model="selectedMediaFile" :options="mediaFilelist" style="max-width: 300px; margin-left: auto; margin-right: auto" @input="displayImage" @click="getMediaFilelistFromServer" stack-label label="select image" />
+            
+            </div>
+            <div class="col text-center">
+            </div>
+        </div>
+
+        <div v-if="id != ''" class="row justify-center items-start q-ma-lg">
+            <div class="col text-center">
+            </div>
+            <div class="col text-center">
+                <q-img
+                    :src="imgUrl"
+                    :style="imgSize">
+                </q-img>
+            </div>
+            <div class="col text-center">
+            </div>
+        </div>       
+        
     </q-page>
 </template>
 
@@ -43,36 +89,48 @@ import axios from 'axios'
 export default {
     data () {
         return {
-            name: '',
-            email: '',
-            password: '',
             id: '',
-
+            imgUrl: '',
+            imgSize: `height: 200px; width: 200px`,
+            selectedMediaFile: '',
+            mediaFilelist: []
         }
     },
     methods: {
+        gotoLogin() {
+            this.$router.push("/")
+        },
+        onRejected () {
+            console.log('rejected')
+        },
+        displayImage (selectedFile) {
+            this.imgUrl = `http://localhost:8080/${selectedFile}`
+            console.log(this.imgUrl)
+        },
+        getMediaFilelistFromServer () {
+            axios.get('http://localhost:8080/api/media/list')
+                .then( res => {
+                    this.mediaFilelist = res.data.filter(file => file.endsWith('jpg'));
+                })
+        },
         uploadNewMedia () {
             axios.post('http://localhost:8080/api/users', {
                 name: this.name,
                 email: this.email,
                 password: this.password
             }).then(res => {
-                this.errorText = 'Thank you for registering. Have fun!'
-                this.id = res.data
-                this.login = true
-                this.newUserText = 'NEW USER'
-                this.newUserEntry = false
+                console.log(res)
             }).catch(error => {
-                this.errorText = error.response.data
-                this.id =''
-                this.showChoices = false
-                this.login = true
-                this.newUserEntry = true
+                console.log(error)
             })
         }
     },
     mounted () {
+        this.$root.$emit('images')
+        this.$root.$emit('show')
+        this.id = this.$store.state.dataPool.id
         this.$q.dark.set(true)
+        this.getMediaFilelistFromServer()
     }
 }
 </script>

@@ -36,8 +36,8 @@
             <div class="col text-center">
             </div>
             <div class="col2 text-center">
-                    <q-btn v-if="!newUserEntry" class="q-pl-lg q-pr-lg bg-teal-10" @click="getUserId" style="width: 150px" size=sm>LOG IN</q-btn>
-                    <q-btn class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="newUser" style="width: 150px" size=sm>{{ newUserText }}</q-btn>
+                    <q-btn v-if="!newUserEntry" class="q-pl-lg q-pr-lg bg-blue-10" @click="getUserId" style="width: 150px" size=sm>LOG IN</q-btn>
+                    <q-btn class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="newUser" style="width: 150px" size=sm>{{ newUserText }}</q-btn>
             </div>
             <div class="col text-center">
                 
@@ -67,9 +67,9 @@
             <div class="col text-center">
             </div>
             <div class="col2 text-center">
-                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-teal-10" @click="monitor" style="width: 150px" size=sm>MONITOR</q-btn>
-                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="instructor" style="width: 150px" size=sm>INSTRUCTOR</q-btn>
-                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-teal-10" @click="media" style="width: 150px" size=sm>MEDIA</q-btn>
+                    <q-btn v-if="showChoices" class="q-pl-lg q-pr-lg bg-blue-10" @click="monitor" style="width: 150px" size=sm>MONITOR</q-btn>
+                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="instructor" style="width: 150px" size=sm>INSTRUCTOR</q-btn>
+                    <q-btn v-if="showChoices" class="q-ml-lg q-pl-lg q-pr-lg bg-blue-10" @click="media" style="width: 150px" size=sm>IMAGES</q-btn>
             </div>
             <div class="col text-center">
             </div>
@@ -139,10 +139,13 @@ export default {
                 password: this.password
             }).then(res => {
                 this.name = res.data.name
-                this.errorText = `Welcome ${this.name}`
                 this.id = res.data.id
+                this.$store.commit('dataPool/id', this.id)
+                this.errorText = `Welcome ${this.name}`
+                this.$root.$emit('login', res.data.name)
                 this.showChoices = true
                 this.login = false
+                this.$root.$emit('show')
             }).catch(error => {
                 this.errorText = error.response.data
                 this.id =''
@@ -165,6 +168,11 @@ export default {
     },
     mounted () {
         this.$q.dark.set(true)
+        this.id = ''
+        this.$store.commit('dataPool/id', this.id)
+        this.$root.$emit('home')
+        this.$root.$emit('login', 'not logged in')
+        this.$root.$emit('hide')
     }
 }
 </script>

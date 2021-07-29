@@ -53,6 +53,7 @@ export default {
   },
   methods: {},
   mounted () {
+    this.$root.$emit('instructor')
     // attach an event handler to the model instance
     this.height = (this.$q.screen.height - 50) + 'px'
     this.max_width = this.$q.screen.width

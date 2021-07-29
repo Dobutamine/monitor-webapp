@@ -10,14 +10,22 @@ const mediaFolder = path.join(process.cwd(), 'public')
 
 router.get('/list', async (req, res) => {
 
-  // try to determine if a configuration for this id is found
-  let allmedia = await Media.find()
+  fs.readdir(mediaFolder, (err, files) => {
+    if (err) {
+      res.status(400).send('no media files found')
+    }
+    // process the filelist to only show jpg or mp4
+    res.send(files)
+  })
 
-  // if not found then there's no configuration for this id
-  if (!allmedia) res.status(404).send('no media files found')
+})
 
-  // return all users
-  res.send(allmedia)
+router.get('/', async (req, res) => {
+
+  const filename = req.query.item
+  console.log(filename)
+  res.send('OK')
+
 })
 
 router.post('/new', async (req, res) => {
@@ -43,6 +51,7 @@ router.post('/upload', async (req, res) => {
     const key = Object.keys(files)
     const currentFileName = files[key].path
     const newFilename = mediaFolder + '/' + files[key].name
+    console.log(files[key])
     fs.renameSync(currentFileName, newFilename, (err) => { console.log(err)});
     res.send('Thank you')
   })
