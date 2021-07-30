@@ -241,10 +241,10 @@ export default {
 
     this.blinkerTimer = setInterval(this.blinker, 750)
 
-    this.$root.$on('showimage', (no) => {
+    this.$root.$on('showimage', (name) => {
+      console.log(name)
       const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`
-      console.log(styleImg)
-      this.$q.dialog({ component: ImageView, parent: this, image_no: 2, imgSize: styleImg})
+      this.$q.dialog({ component: ImageView, parent: this, imgName: name, imgSize: styleImg})
     })
   },
   beforeUnmount () {

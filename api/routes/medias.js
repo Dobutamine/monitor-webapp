@@ -10,51 +10,66 @@ const mediaFolder = path.join(process.cwd(), 'public')
 
 router.get('/list', async (req, res) => {
 
-  fs.readdir(mediaFolder, (err, files) => {
-    if (err) {
-      res.status(400).send('no media files found')
-    }
-    // process the filelist to only show jpg or mp4
-    res.send(files)
-  })
-
+  try {
+    fs.readdir(mediaFolder, (err, files) => {
+      if (err) {
+        res.status(400).send('no media files found')
+      }
+      // process the filelist to only show jpg or mp4
+      res.send(files)
+    })
+  } catch(error) {
+    if (error) res.status(400).send(error.details[0].message)
+  }
+  
 })
 
-router.get('/', async (req, res) => {
-
+router.get('/', (req, res) => {
   const filename = req.query.item
-  console.log(filename)
   res.send('OK')
 
 })
 
 router.post('/new', async (req, res) => {
 
-  // try to determine whether this user is already registered
-  let newMedia = await Media.findOne( { filename: req.body.filename })
+  try {
+    // try to determine whether this user is already registered
+    let newMedia = await Media.findOne( { filename: req.body.filename })
 
-  if (newMedia) res.status(400).send('file already exists on the server!')
+    if (newMedia) res.status(400).send('file already exists on the server!')
 
-  // create the media file
-  newMedia = new Media(_.pick(req.body, ['description', 'filename', 'mediaType', 'uploader']))
+    // create the media file
+    newMedia = new Media(_.pick(req.body, ['description', 'filename', 'mediaType', 'uploader']))
 
-  // return response
-  res.send('media added to library')
+    // return response
+    res.send('media added to library')
+
+  } catch (error) {
+    if (error) res.status(400).send(error.details[0].message)
+  }
+
+  
 })
 
 router.post('/upload', async (req, res) => {
-  const form = new formidable.IncomingForm()
+  try {
+    const form = new formidable.IncomingForm()
 
-  form.uploadDir = mediaFolder
+    form.uploadDir = mediaFolder
 
-  form.parse(req, (_, fields, files) => {
-    const key = Object.keys(files)
-    const currentFileName = files[key].path
-    const newFilename = mediaFolder + '/' + files[key].name
-    console.log(files[key])
-    fs.renameSync(currentFileName, newFilename, (err) => { console.log(err)});
-    res.send('Thank you')
-  })
+    form.parse(req, (_, fields, files) => {
+      const key = Object.keys(files)
+      const currentFileName = files[key].path
+      const newFilename = mediaFolder + '/' + files[key].name
+      console.log(files[key])
+      fs.renameSync(currentFileName, newFilename, (err) => { console.log(err)});
+      res.send('Thank you')
+    })
+    
+  } catch (error) {
+    if (error) res.status(400).send(error.details[0].message)
+  }
+  
 });
 
 module.exports = router

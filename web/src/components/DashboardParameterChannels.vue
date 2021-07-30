@@ -182,10 +182,8 @@ export default {
       const configuration = JSON.stringify(newConfiguration)
       axios.post('http://localhost:8080/api/configs/new', { id: this.id, configuration: configuration})
         .then(res => {
-          console.log(res)
         })
         .catch(error => {
-          console.log(error)
         })
     },
     onResize (newSize) {

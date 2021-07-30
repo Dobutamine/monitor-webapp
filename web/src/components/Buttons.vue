@@ -79,20 +79,16 @@ export default {
         this.standbyColor = 'bg-blue-10'
         this.$root.$emit('rt_on')
         this.standbyText = 'MONITOR RUNNING'
-        clearTimeout(this.checkConnectionTimer)
-        this.checkConnectionTimer = setTimeout(this.checkConnectionStatus, 1000)
-
         this.connect()
     },
     beforeDestroy () {
         this.cleanUp()
-        this.checkConnectionTimer = null
-        clearTimeout(this.checkConnectionTimer)
         this.ws.close()
     },
     methods: {
         cleanUp () {
             clearTimeout(this.checkConnectionTimer)
+            this.checkConnectionTimer = null
             this.ws.send(JSON.stringify({ command: 'close', id: this.id }))
             this.ws.close()
 
@@ -107,7 +103,7 @@ export default {
             this.$root.$emit('barvisible', this.barVisibility)
         },
         showImage () {
-            this.$root.$emit('showimage', 2)
+            this.$root.$emit('showimage', this.currentDataObject.imageName)
         },
         startNIBD () {
             this.nibdTimer = setInterval(() => {

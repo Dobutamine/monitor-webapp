@@ -10,45 +10,51 @@ router.post('/', async (req, res) => {
   const { error } = validate(req.body)
   if (error) res.status(400).send(error.details[0].message)
 
-  // try to determine whether this user is already registered
-  let user = await User.findOne( { email: req.body.email })
+  try {
+    // try to determine whether this user is already registered
+    let user = await User.findOne( { email: req.body.email })
 
-  if (user) res.status(400).send('User already registered!')
+    if (user) res.status(400).send('User already registered!')
 
-  // create the user
-  user = new User(_.pick(req.body, ['name', 'email', 'password']))
+    // create the user
+    user = new User(_.pick(req.body, ['name', 'email', 'password']))
 
-  // hash the password using a salt 
-  const salt = await bcrypt.genSalt(10)
-  user.password = await bcrypt.hash(user.password, salt)
+    // hash the password using a salt 
+    const salt = await bcrypt.genSalt(10)
+    user.password = await bcrypt.hash(user.password, salt)
 
-  // save it
-  await user.save()
+    // save it
+    await user.save()
 
-  // create a default monitor entry
-  monitor = new Monitor()
+    // create a default monitor entry
+    monitor = new Monitor()
 
-  // attach the user id to the monitor id object
-  monitor.id = user._id
+    // attach the user id to the monitor id object
+    monitor.id = user._id
 
-  // save it
-  await monitor.save()
+    // save it
+    await monitor.save()
 
-  // create a default configuration entry
-  configuration = new Config()
+    // create a default configuration entry
+    configuration = new Config()
 
-  // attach the user id to the configuration object
-  configuration.id = user._id
+    // attach the user id to the configuration object
+    configuration.id = user._id
 
-  // save it
-  await configuration.save()
+    // save it
+    await configuration.save()
 
-  // use lodash to modify the response
-  // res.send(_.pick(user, ['_id', 'name', 'email', 'password']))
+    // use lodash to modify the response
+    // res.send(_.pick(user, ['_id', 'name', 'email', 'password']))
 
-  // use lodash to return a the monitor object
-  console.log(user._id)
-  res.send(monitor)
+    // use lodash to return a the monitor object
+    console.log(user._id)
+    res.send(monitor)
+
+  } catch (error) {
+    if (error) res.status(400).send(error.details[0].message)
+  }
+  
 })
 
 module.exports = router

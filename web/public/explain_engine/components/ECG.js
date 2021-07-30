@@ -74,6 +74,8 @@ class ECG {
     this.driftValue = 0
     this.driftCounter = 0
 
+    this.rhythm_parameter = 0
+
   }
 
   qtc() {
@@ -147,11 +149,21 @@ class ECG {
       case 5:   // long qt
         this.qt_addition = this.qt_multiplier * this.qt_time
         break;
+      case 6: // vt
+        break;
+      case 7: // vf
+        break;
+      case 8: // svt
+        this.heart_rate = 240
 
     }
   }
 
   updateECG(model_interval) {
+
+    // determine rhythm properties
+    this.setRhythmProperties()
+
     // calculate the corrected qt time
     this.cqt_time = this.qtc() - this.qrs_time;
 
@@ -167,9 +179,6 @@ class ECG {
     } else {
       this._vent_escape_period = 6000000000
     }
-
-    // determine rhythm properties
-    this.setRhythmProperties()
 
     // has the sa node period elapsed
     if (this._sa_node_counter > this._sa_node_period) {

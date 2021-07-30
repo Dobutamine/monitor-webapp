@@ -24,13 +24,16 @@ export default {
     imgSize: {
       required: true,
       type: String
+    },
+    imgName: {
+      required: true,
+      type: String
     }
   },
   data() {
     return {
       url: '',
       confirm: false,
-      imageName: ''
     }
   },
   methods: {
@@ -52,8 +55,7 @@ export default {
         }
     },
     mounted () {
-      this.imageName = this.$store.state.dataPool.imageName
-      this.url = `http://localhost:8080/${this.imageName}`
+      this.url = `http://localhost:8080/${this.imgName}`
     },
     beforeDestroy () {
     }

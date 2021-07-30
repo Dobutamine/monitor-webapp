@@ -48,7 +48,17 @@ class MonitorEmulator {
         this.imageNo = 0
         this.resusState = 0
         this.rhythmType = 0
+        this.prevRhythmType = 0
+
         this.rhythmParameter = 0
+        this.prevRhythmParameter = 0
+
+        this.compressionsFrequency = 0
+        this.prevCompressionsFrequency = 0
+
+        this.intubated = false
+        this.prevIntubated = false
+
         this.curveSqueeze = 1
 
         this.driftDirectionCounter = 0
@@ -71,7 +81,33 @@ class MonitorEmulator {
         }
     }
 
-    startMechanicalVentilator () {
+    toggleMechanicalVentilator (state) {
+
+        if (state) {
+            console.log('intubation started')
+            this._model.components['OUT_NCA'].is_enabled = false
+            this._model.components['YPIECE_NCA'].is_enabled = true
+            this._model.components['YPIECE_NCA'].no_flow = false
+            this._model.components['Breathing'].spont_breathing_enabled = false
+            this._model.components['Ventilator'].is_enabled = true
+        } else {
+            console.log('intubation ended')
+            this._model.components['OUT_NCA'].is_enabled = true
+            this._model.components['YPIECE_NCA'].is_enabled = false
+            this._model.components['YPIECE_NCA'].no_flow = true
+            this._model.components['Breathing'].spont_breathing_enabled = true
+            this._model.components['Ventilator'].is_enabled = false
+        }
+
+    }
+
+    changeHeartRhythm (type, parameter) {
+        console.log('changed rhythm type : ', type)
+        this._model.components.ECG.rhythm_type = type
+        this._model.components.ECG.rhythm_parameter = parameter
+    }
+
+    toggleCompressions (state) {
 
     }
 
@@ -95,6 +131,8 @@ class MonitorEmulator {
         this.resusState =data.resusState
         this.rhythmType = data.rhythmType
         this.rhythmParameter = data.rhythmParameter
+        this.intubated = data.intubated
+        this.compressionsFrequency = parseInt(data.compressionsFrequency)
         this.curveSqueeze = data.curveSqueeze
 
         if (this.setHeartrate != this.prevHeartrate) {
@@ -125,11 +163,21 @@ class MonitorEmulator {
             this.etco2 = this.setEtco2
         }
 
-        
-        // update the model
-        // this._model.components.ECG.heart_rate = parseInt(this.heartrate)
-        // this._model.components.Breathing.setRespRate(parseInt(this.respRate))
+        if (this.intubated != this.prevIntubated) {
+            this.toggleMechanicalVentilator(this.intubated)
+        }
 
+        if (this.rhythmType != this.prevRhythmType) {
+            this.changeHeartRhythm(this.rhythmType, this.rhythmParameter)
+        }
+
+        if (this.compressionsFrequency != this.prevCompressionsFrequency) {
+            this.toggleCompressions(this.compressionsFrequency)
+        }
+        
+        this.prevIntubated = this.intubated
+        this.prevRhythmType = this.rhythmType
+        this.prevCompressionsFrequency = this.compressionsFrequency
         this.prevHeartrate = this.setHeartrate
         this.prevSatPre = this.setSatPre
         this.prevSatPost = this.setSatPost
@@ -202,13 +250,18 @@ class MonitorEmulator {
             this.satPost = newSatPost
         } 
 
+        
         let newRespRate = this.respRate + (this.driftValue * 1.5 * this.driftDirection)
+
+        if (this.intubated) {
+            newRespRate = this.respRate
+        }
         if (newRespRate < 0) {
             newRespRate = 0
         }
         if (Math.abs(this.setRespRate - newRespRate) < 0.10 * this.setRespRate) {
             this.respRate = newRespRate
-        } 
+        }
 
         let newAbpSyst = this.abpSyst + (this.driftValue / 2 * this.driftDirection)
         if (newAbpSyst < 0) {
@@ -236,7 +289,12 @@ class MonitorEmulator {
         
 
         this._model.components.ECG.heart_rate = parseInt(this.heartrate)
-        this._model.components.Breathing.setRespRate(parseInt(this.respRate))
+        if (this.intubated) {
+            this._model.components.Ventilator.setRespRate(parseInt(this.respRate))
+        } else {
+            this._model.components.Breathing.setRespRate(parseInt(this.respRate))
+        }
+        
 
         if (this.send_counter >= this.send_frequency) {
             this.send_counter = 0

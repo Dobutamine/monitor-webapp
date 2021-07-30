@@ -14,20 +14,26 @@ router.post('/', async (req, res) => {
   if (error) res.status(400).send(error.details[0].message)
 
   // find the user by looking at the email
-  let user = await User.findOne( { email: req.body.email })
+  try {
+    let user = await User.findOne( { email: req.body.email })
 
-  // if we don't have the user return an error message
-  if (!user) res.status(400).send('Invalid email or password!')
+    // if we don't have the user return an error message
+    if (!user) res.status(400).send('Invalid email or password!')
 
-  // validate the password
-  const validPassword = await bcrypt.compare(req.body.password, user.password)
-  if (!validPassword) res.status(400).send('Invalid email or password!')
+    // validate the password
+    const validPassword = await bcrypt.compare(req.body.password, user.password)
+    if (!validPassword) res.status(400).send('Invalid email or password!')
 
-  // return a JSON web token
-  const token = jwt.sign({ _id : user._id }, 'jwtPrivateKey')
+    // return a JSON web token
+    const token = jwt.sign({ _id : user._id }, 'jwtPrivateKey')
 
-  // return the token
-  res.send({ name: user.name, id: user.id })
+    // return the token
+    res.send({ name: user.name, id: user.id })
+
+  } catch (error) {
+    if (error) res.status(400).send(error.details[0].message)
+  }
+  
 })
 
 // validate function the validate the request

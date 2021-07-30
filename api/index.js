@@ -13,7 +13,8 @@ const users = require('./routes/users')
 const auth = require('./routes/auth')
 const content = require('./routes/content')
 const configs = require('./routes/configs')
-const medias = require('./routes/medias')
+const medias = require('./routes/medias');
+const { createWebSocketStream } = require('ws');
 
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -57,39 +58,54 @@ server.on('upgrade', (request, socket, head) => {
 // handle the websocket server requests
 wsServer.on('connection', async socket => {
   // on message
-  socket.on('message', async message => {
-    const convertedMessage = JSON.parse(message)
-    switch (convertedMessage.command) {
-      case 'get':
-        let monitor = await Monitor.findOne( { id: convertedMessage.id })
-        if (monitor) {
-          socket.send(JSON.stringify(monitor))
-        }
-        break
-      case 'set':
-        let monitor2 = await Monitor.findOne( { id: convertedMessage.id })
-        if (monitor2) {
-          monitor2.heartrate = convertedMessage.heartrate
-          monitor2.satPre = convertedMessage.satPre
-          monitor2.satPost = convertedMessage.satPost
-          monitor2.satVen = convertedMessage.satVen
-          monitor2.respRate = convertedMessage.respRate
-          monitor2.etco2 = convertedMessage.etco2
-          monitor2.abpSyst = convertedMessage.abpSyst
-          monitor2.abpDiast = convertedMessage.abpDiast
-          monitor2.pfi = convertedMessage.pfi
-          monitor2.temp = convertedMessage.temp
-          monitor2.cvp = convertedMessage.cvp
-          monitor2.papSyst = convertedMessage.papSyst
-          monitor2.papDiast = convertedMessage.papDiast
-          monitor2.rhythmType = convertedMessage.rhythmType
-          monitor2.intubated = convertedMessage.intubated
-          
-          await monitor2.save()
-        }
-        break
-    }
-  });
+  try {
+    socket.on('message', async message => {
+      const convertedMessage = JSON.parse(message)
+      switch (convertedMessage.command) {
+        case 'get':
+          try {
+            let monitor = await Monitor.findOne( { id: convertedMessage.id })
+            if (monitor) {
+              socket.send(JSON.stringify(monitor))
+            }
+          } catch(err) {
+            socket.send('get error')
+          }
+          break
+        case 'set':
+          try {
+            let monitor2 = await Monitor.findOne( { id: convertedMessage.id })
+  
+            if (monitor2) {
+              monitor2.heartrate = convertedMessage.heartrate
+              monitor2.satPre = convertedMessage.satPre
+              monitor2.satPost = convertedMessage.satPost
+              monitor2.satVen = convertedMessage.satVen
+              monitor2.respRate = convertedMessage.respRate
+              monitor2.etco2 = convertedMessage.etco2
+              monitor2.abpSyst = convertedMessage.abpSyst
+              monitor2.abpDiast = convertedMessage.abpDiast
+              monitor2.pfi = convertedMessage.pfi
+              monitor2.temp = convertedMessage.temp
+              monitor2.cvp = convertedMessage.cvp
+              monitor2.papSyst = convertedMessage.papSyst
+              monitor2.papDiast = convertedMessage.papDiast
+              monitor2.rhythmType = convertedMessage.rhythmType
+              monitor2.rhythmParameter = convertedMessage.rhythmParameter
+              monitor2.intubated = convertedMessage.intubated
+              monitor2.imageName = convertedMessage.imageName
+              await monitor2.save()
+            }
+            } catch (err) {
+              socket.send('set error')
+            }
+          break
+      }
+    });
+  } catch (error) {
+    console.log(error)
+  }
+  
 });
 
 

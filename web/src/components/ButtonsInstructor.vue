@@ -1,7 +1,7 @@
 <template>
     <q-card class="bg-dark">
         <div class="q-gutter-xs">
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px">RHYTHM SINUS</q-btn>
+            <q-btn class="bg-blue-grey-10" @click="changeRhythmType" style="height: 60px; width: 120px">RHYTHM SINUS</q-btn>
             <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px">CHEST COMPRESSIONS</q-btn>
             <q-btn :class="intubationButtonColor" @click="toggleIntubation" style="height: 60px; width: 120px">{{ intubationButtonText }}
 
@@ -89,6 +89,12 @@ export default {
         this.ws.close()
     },
     methods: {
+        changeRhythmType () {
+            this.currentDataObject.rhythmType = 6
+            this.$store.commit('dataPool/rhythmType', this.currentDataObject.rhythmType)
+            this.currentDataObject.rhythmParameter = 0
+            this.$store.commit('dataPool/rhythmParameter', this.currentDataObject.rhythmParameter)
+        },
         goToMonitor () {
             this.$router.push("/monitor")
         },
@@ -157,12 +163,10 @@ export default {
                 this.currentDataObject.imageName = this.$store.state.dataPool.imageName
                 this.currentDataObject.rhythmType = this.$store.state.dataPool.rhythmType
                 this.currentDataObject.intubated = this.$store.state.dataPool.intubated
-                this.currentDataObject.compressionsFrequency = this.$store.dataPool.compressionsFrequency
-                this.currentDataObject.rhythmParameter = this.$store.data.rhythmParameter
-                this.currentDataObject.alarmOverride = this.$store.data.alarmOverride
-
+                this.currentDataObject.compressionsFrequency = this.$store.state.dataPool.compressionsFrequency
+                this.currentDataObject.rhythmParameter = this.$store.state.dataPool.rhythmParameter
+                this.currentDataObject.alarmOverride = this.$store.state.dataPool.alarmOverride
                 this.selectedMediaFile = this.currentDataObject.imageName
-
                 this.ws.send(JSON.stringify(this.currentDataObject))
 
                 this.serverUpdateTimer = setTimeout(this.sendDataToServer, 1000)
@@ -224,6 +228,13 @@ export default {
             this.currentDataObject.compressionsFrequency = data.compressionsFrequency
             this.currentDataObject.alarmOverride = data.alarmOverride
             
+            if (this.intubated) {
+                this.intubationButtonText = 'MECHANICAL VENTILATION'
+                this.intubationButtonColor = this.red
+            } else {
+                this.intubationButtonText = 'MECHANICAL VENTILATION'
+                this.intubationButtonColor = this.bluegreay
+            }
             // update the parameters with sliders
             this.$root.$emit('instructorupdate', data)
 

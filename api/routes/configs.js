@@ -3,31 +3,38 @@ const express = require('express')
 const router = express.Router()
 
 router.post('/', async (req, res) => {
+  try {
+    // try to determine if a configuration for this id is found
+    let configuration = await Config.findOne( { id: req.body.id })
 
-  // try to determine if a configuration for this id is found
-  let configuration = await Config.findOne( { id: req.body.id })
+    // if not found then there's no configuration for this id
+    if (!configuration) res.status(400).send('no configuration found for this id')
 
-  // if not found then there's no configuration for this id
-  if (!configuration) res.status(400).send('no configuration found for this id')
-
-  // return all users
-  res.send(configuration)
+    // return all users
+    res.send(configuration)
+  } catch (error) {
+    if (error) res.status(400).send(error.details[0].message)
+  }
 })
 
 router.post('/new', async (req, res) => {
+  try {
+    // try to determine if a configuration for this id is found
+    let configuration = await Config.findOne( { id: req.body.id })
 
-  // try to determine if a configuration for this id is found
-  let configuration = await Config.findOne( { id: req.body.id })
+    // if not found then there's no configuration for this id
+    if (!configuration) res.status(400).send('no configuration found for this id')
 
-  // if not found then there's no configuration for this id
-  if (!configuration) res.status(400).send('no configuration found for this id')
+    configuration.configuration = req.body.configuration
 
-  configuration.configuration = req.body.configuration
+    configuration.save() 
 
-  configuration.save() 
+    // return all users
+    res.send('processed new configuration')
 
-  // return all users
-  res.send('processed new configuration')
+  } catch (error) {
+    if (error) res.status(400).send(error.details[0].message)
+  }  
 })
 
 
