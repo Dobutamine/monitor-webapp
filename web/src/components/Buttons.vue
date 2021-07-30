@@ -6,7 +6,7 @@
             <q-btn :class="nibdClass" style="height: 60px; width: 85px" @click="startNIBD">{{ nibdtext }}</q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="showImage">imaging</q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">labs</q-btn>
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">timers</q-btn>
+            <q-btn :class="timerBtnColor" style="height: 60px; width: 85px" @click="toggleTimer">{{ timerBtnText }}</q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="goToInstructor">{{ barText }}</q-btn>
             <q-btn :class="connectedColor" style="height: 60px; width: 100px; font-size: 10px">
                 {{ connectedLabel }}
@@ -22,6 +22,11 @@
 export default {
     data () {
         return {
+            timerState: false,
+            timerBtnText: 'SHOW TIMER',
+            timerBtnColor: 'bg-blue-grey-8',
+            gray: 'bg-blue-grey-8',
+            red: 'bg-red-10',
             barText: 'HIDE TOP',
             barVisibility: true,
             silenceState: false,
@@ -85,7 +90,18 @@ export default {
             this.checkConnectionTimer = null
             this.ws.send(JSON.stringify({ command: 'close', id: this.id }))
             this.ws.close()
-
+        },
+        toggleTimer () {
+            this.timerState = !this.timerState
+            if (this.timerState) {
+                this.$root.$emit('timeron')
+                this.timerBtnText = 'HIDE TIMER'
+                this.timerBtnColor = this.red
+            } else {
+                this.$root.$emit('timeroff')
+                this.timerBtnText = 'SHOW TIMER'
+                this.timerBtnColor = this.gray
+            }
         },
         goToInstructor () {
             this.barVisibility = !this.barVisibility

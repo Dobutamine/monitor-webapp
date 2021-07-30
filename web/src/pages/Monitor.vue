@@ -2,7 +2,7 @@
   <q-page padding class="bg-black">
     <div class="row justify-center items-start q-ma-es">
       <div class="col text-center">
-        <MessageBox></MessageBox>
+        <Timer></Timer>
       </div>
       <div class="col text-center">
         <Controller></Controller>
@@ -38,6 +38,7 @@ import AlarmBox from 'components/AlarmBox'
 import AlarmMessage from 'components/AlarmMessage'
 import MessageBox from 'components/MessageBox'
 import ImageView from 'components/ImageView'
+import Timer from 'components/Timer'
 
 export default {
   name: 'PageIndex',
@@ -50,7 +51,8 @@ export default {
     MessageBox,
     AlarmMessage,
     Buttons,
-    ImageView
+    ImageView,
+    Timer
   },
   data () {
     return {
