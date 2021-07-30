@@ -242,19 +242,17 @@ export default {
     this.blinkerTimer = setInterval(this.blinker, 750)
 
     this.$root.$on('showimage', (name) => {
-      console.log(name)
       const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`
       this.$q.dialog({ component: ImageView, parent: this, imgName: name, imgSize: styleImg})
     })
   },
   beforeUnmount () {
-    this.$root.$off('trends', (state) => { this.switchTrends(state) })
-    this.$root.$off('resize')
-    this.$root.$off('showimage')
+    
   },
   beforeDestroy () {
     clearInterval(this.blinkerTimer)
-    this.$root.$off('trends', (state) => { this.switchTrends(state) })
+    this.$root.$off('trends')
+    this.$root.$off('showimage')
   }
 }
 </script>

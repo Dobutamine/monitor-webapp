@@ -44,10 +44,10 @@ export default {
             this.$refs.dialog.hide();
         },
         onDialogHide() {
-            this.$emit("hide");
-
+           
         },
         onOKClick() {
+            this.$emit("hideimage");
             this.hide()
         },
         onCancelClick() {
