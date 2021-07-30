@@ -12,7 +12,6 @@ router.get('/', async (req, res) => {
     // return all content
     res.send(monitor)
   } catch {
-    if (error) res.status(400).send(error.details[0].message)
   }
 })
 

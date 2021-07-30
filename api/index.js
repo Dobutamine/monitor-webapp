@@ -69,7 +69,6 @@ wsServer.on('connection', async socket => {
               socket.send(JSON.stringify(monitor))
             }
           } catch(err) {
-            socket.send('get error')
           }
           break
         case 'set':
@@ -97,7 +96,6 @@ wsServer.on('connection', async socket => {
               await monitor2.save()
             }
             } catch (err) {
-              socket.send('set error')
             }
           break
       }

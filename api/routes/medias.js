@@ -19,7 +19,6 @@ router.get('/list', async (req, res) => {
       res.send(files)
     })
   } catch(error) {
-    if (error) res.status(400).send(error.details[0].message)
   }
   
 })
@@ -45,7 +44,6 @@ router.post('/new', async (req, res) => {
     res.send('media added to library')
 
   } catch (error) {
-    if (error) res.status(400).send(error.details[0].message)
   }
 
   
@@ -66,7 +64,6 @@ router.post('/upload', async (req, res) => {
     })
     
   } catch (error) {
-    if (error) res.status(400).send(error.details[0].message)
   }
   
 });

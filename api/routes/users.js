@@ -14,7 +14,11 @@ router.post('/', async (req, res) => {
     // try to determine whether this user is already registered
     let user = await User.findOne( { email: req.body.email })
 
-    if (user) res.status(400).send('User already registered!')
+    if (user) res.status(400).send('This email is already registered!')
+
+    user = await User.findOne( { email: req.body.name })
+
+    if (user) res.status(400).send('This user name is unavailable!')
 
     // create the user
     user = new User(_.pick(req.body, ['name', 'email', 'password']))
@@ -52,7 +56,7 @@ router.post('/', async (req, res) => {
     res.send(monitor)
 
   } catch (error) {
-    if (error) res.status(400).send(error.details[0].message)
+    if (error) res.status(400).send('oops!')
   }
   
 })

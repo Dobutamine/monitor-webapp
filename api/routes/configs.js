@@ -13,7 +13,6 @@ router.post('/', async (req, res) => {
     // return all users
     res.send(configuration)
   } catch (error) {
-    if (error) res.status(400).send(error.details[0].message)
   }
 })
 
@@ -33,7 +32,6 @@ router.post('/new', async (req, res) => {
     res.send('processed new configuration')
 
   } catch (error) {
-    if (error) res.status(400).send(error.details[0].message)
   }  
 })
 

@@ -1,16 +1,16 @@
 <template>
     <q-page padding class="bg-black">
-        <div v-if="newUserEntry" class="row justify-center items-start q-ma-lg">
+        <div v-if="login" class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                <q-input v-model="name" :value="name" stack-label autofocus label="NAME">
+                <q-input v-model="name" :value="name" stack-label autofocus label="USER NAME">
                 </q-input>
             </div>
             <div class="col text-center">
             </div>
         </div>
-        <div v-if="login" class="row justify-center items-start q-ma-lg">
+        <div v-if="newUserEntry" class="row justify-center items-start q-ma-lg">
             <div class="col text-center">
             </div>
             <div class="col text-center">
@@ -174,7 +174,7 @@ export default {
         },
         getUserId () {
             axios.post('http://localhost:8080/api/auth', {
-                email: this.email,
+                name: this.name,
                 password: this.password
             }).then(res => {
                 this.name = res.data.name
