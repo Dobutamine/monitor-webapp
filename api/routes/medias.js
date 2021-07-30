@@ -61,7 +61,6 @@ router.post('/upload', async (req, res) => {
       const key = Object.keys(files)
       const currentFileName = files[key].path
       const newFilename = mediaFolder + '/' + files[key].name
-      console.log(files[key])
       fs.renameSync(currentFileName, newFilename, (err) => { console.log(err)});
       res.send('Thank you')
     })

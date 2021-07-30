@@ -38,6 +38,9 @@ import SingleSlider from 'components/SingleSlider'
 import DoubleSlider from 'components/DoubleSlider'
 import ButtonsInstructor from 'components/ButtonsInstructor'
 import ImageSelector from 'components/ImageSelector'
+import RhythmSelector from 'components/RhythmSelector'
+import CompressionsSelector from 'components/CompressionsSelector'
+import LabSelector from 'components/LabSelector'
 
 export default {
   name: 'PageInstructor',
@@ -45,7 +48,10 @@ export default {
       SingleSlider,
       DoubleSlider,
       ButtonsInstructor,
-      ImageSelector
+      ImageSelector,
+      RhythmSelector,
+      CompressionsSelector,
+      LabSelector
   },
   data () {
     return {
@@ -63,12 +69,29 @@ export default {
 
     this.$root.$on('imageselector', (name) => {
       const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`
-      console.log(styleImg)
       this.$q.dialog({ component: ImageSelector, parent: this, image_no: 2, imgSize: styleImg})
+    })
+
+    this.$root.$on('rhythmselector', (name) => {
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`
+      this.$q.dialog({ component: RhythmSelector, parent: this, imgSize: styleImg})
+    })
+
+    this.$root.$on('compressionsselector', (name) => {
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`
+      this.$q.dialog({ component: CompressionsSelector, parent: this, imgSize: styleImg})
+    })
+
+    this.$root.$on('labselector', (name) => {
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`
+      this.$q.dialog({ component: LabSelector, parent: this, imgSize: styleImg})
     })
   },
   beforeDestroy () {
     this.$root.$off('imageselector')
+    this.$root.$off('rhythmselector')
+    this.$root.$off('compressionsselector')
+    this.$root.$off('labselector')
   }
 }
 </script>

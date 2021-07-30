@@ -1,16 +1,14 @@
 <template>
     <q-card class="bg-dark">
         <div class="q-gutter-xs">
-            <q-btn class="bg-blue-grey-10" @click="changeRhythmType" style="height: 60px; width: 120px">RHYTHM SINUS</q-btn>
-            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px">CHEST COMPRESSIONS</q-btn>
-            <q-btn :class="intubationButtonColor" @click="toggleIntubation" style="height: 60px; width: 120px">{{ intubationButtonText }}
-
-            </q-btn>
-            <!-- <q-btn class="bg-blue-grey-10" disable style="height: 60px; width: 85px">
-                <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>
-            </q-btn> -->
+            <q-btn class="bg-blue-grey-10" @click="changeRhythmType" style="height: 60px; width: 120px">CARDIAC RHYTHM</q-btn>
+            <q-btn class="bg-blue-grey-10" @click="openCompressionsSelector" style="height: 60px; width: 120px">CHEST COMPRESSIONS</q-btn>
+            <q-btn :class="intubationButtonColor" @click="toggleIntubation" style="height: 60px; width: 120px">{{ intubationButtonText }}</q-btn>
             <q-btn class="bg-blue-grey-10" @click="showImageSelector" style="height: 60px; width: 120px">SELECT IMAGE</q-btn>
-             <q-btn :class="connectedColor" @click="connect" style="height: 60px; width: 85px; font-size: 8px">
+            <q-btn class="bg-blue-grey-10" @click="openLabSelector" style="height: 60px; width: 120px">SELECT LAB RESULTS</q-btn>
+            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px">SAVE STATE</q-btn>
+            <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px">LOAD STATE</q-btn>
+            <q-btn :class="connectedColor" @click="connect" style="height: 60px; width: 85px; font-size: 8px">
                 {{ connectedLabel }}
                 <q-icon :name="icon" style="font-size: 32px"></q-icon>
             </q-btn>
@@ -90,10 +88,18 @@ export default {
     },
     methods: {
         changeRhythmType () {
-            this.currentDataObject.rhythmType = 6
-            this.$store.commit('dataPool/rhythmType', this.currentDataObject.rhythmType)
-            this.currentDataObject.rhythmParameter = 0
-            this.$store.commit('dataPool/rhythmParameter', this.currentDataObject.rhythmParameter)
+            // this.currentDataObject.rhythmType = 6
+            // this.$store.commit('dataPool/rhythmType', this.currentDataObject.rhythmType)
+            // this.currentDataObject.rhythmParameter = 0
+            // this.$store.commit('dataPool/rhythmParameter', this.currentDataObject.rhythmParameter)
+
+            this.$root.$emit('rhythmselector')
+        },
+        openCompressionsSelector () {
+            this.$root.$emit('compressionsselector')
+        },
+        openLabSelector () {
+            this.$root.$emit('labselector')
         },
         goToMonitor () {
             this.$router.push("/monitor")

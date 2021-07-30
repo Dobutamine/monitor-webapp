@@ -4,16 +4,10 @@
             <q-btn class="bg-warning" @click="silenceAlarms" style="height: 60px; width: 85px">silence</q-btn>
             <q-btn class="bg-blue-grey-8" @click="pauseAlarms" style="height: 60px; width: 85px">pause alarms</q-btn>
             <q-btn :class="nibdClass" style="height: 60px; width: 85px" @click="startNIBD">{{ nibdtext }}</q-btn>
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">qrs sound</q-btn>
-            <!-- <q-btn class="bg-blue-grey-8" @click="trends"  style="height: 60px; width: 85px">trends</q-btn> -->
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="showImage">show imaging</q-btn>
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
-            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px"></q-btn>
+            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="showImage">imaging</q-btn>
+            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">labs</q-btn>
+            <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px">timers</q-btn>
             <q-btn class="bg-blue-grey-8" style="height: 60px; width: 85px" @click="goToInstructor">{{ barText }}</q-btn>
-            <!-- <q-btn class="bg-blue-grey-8" disable style="height: 60px; width: 85px">
-                <q-input v-model="id" value="id" stack-label hide-bottom-space dense label="MON ID"></q-input>
-            </q-btn> -->
             <q-btn :class="connectedColor" style="height: 60px; width: 100px; font-size: 10px">
                 {{ connectedLabel }}
                 <q-icon :name="icon" style="font-size: 32px"></q-icon>
