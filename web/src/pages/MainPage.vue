@@ -24,7 +24,7 @@
             <div class="col text-center">
             </div>
             <div class="col text-center">
-                <q-form @submit="getUserId">
+                <q-form @submit="pressedEnter">
                     <q-input v-model="password" type="password" :value="id" stack-label label="PASSWORD">
                     </q-input>
                 </q-form>
@@ -143,6 +143,13 @@ export default {
             this.$root.$emit('home')
             this.$root.$emit('login', 'not logged in')
             this.$root.$emit('hide')
+        },
+        pressedEnter () {
+            if (this.newUserEntry) {
+                this.registerNewUser()
+            } else {
+                this.getUserId()
+            }
         },
         newUser () {
             if (!this.newUserEntry) {

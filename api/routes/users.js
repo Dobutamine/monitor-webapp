@@ -48,11 +48,6 @@ router.post('/', async (req, res) => {
     // save it
     await configuration.save()
 
-    // use lodash to modify the response
-    // res.send(_.pick(user, ['_id', 'name', 'email', 'password']))
-
-    // use lodash to return a the monitor object
-    console.log(user._id)
     res.send(monitor)
 
   } catch (error) {
