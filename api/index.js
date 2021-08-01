@@ -8,12 +8,13 @@ const db = require("./db");
 db.connect()
 
 // import the routes
-const home = require('./routes/home')
 const users = require('./routes/users')
 const auth = require('./routes/auth')
-const content = require('./routes/content')
 const configs = require('./routes/configs')
 const medias = require('./routes/medias');
+const labs = require('./routes/labs')
+const states = require('./routes/states')
+
 const { createWebSocketStream } = require('ws');
 
 app.use(function(req, res, next) {
@@ -26,15 +27,13 @@ app.use(function(req, res, next) {
 app.use(express.json())
 app.use(express.static('public'))
 
-
-
 // register the routes
-app.use('/api', home)
 app.use('/api/users', users)
 app.use('/api/auth', auth)
-app.use('/api/content', content)
 app.use('/api/configs', configs)
 app.use('/api/media', medias)
+app.use('/api/labs', labs)
+app.use('/api/states', states)
 
 
 // define the port to 3000 if not set by an enviroinment variable

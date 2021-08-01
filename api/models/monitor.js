@@ -21,7 +21,7 @@ const monitorSchema = mongoose.Schema( {
   imageName: { type: String, default: '' },
   compressionsFrequency: { type: String, default: 0 },
   alarmOverride: { type: Boolean, default: false}
-})
+  })
 
 const Monitor = mongoose.model('Monitor', monitorSchema)
 

@@ -1,6 +1,9 @@
 const { User, validate } = require ('../models/user')
 const { Monitor } = require('../models/monitor')
 const { Config } = require('../models/config')
+const { State } = require('../models/state')
+const { Lab } = require('../models/lab')
+
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
 const express = require('express')
@@ -47,6 +50,24 @@ router.post('/', async (req, res) => {
 
     // save it
     await configuration.save()
+
+    // // create a default state entry
+    state = new State()
+
+    // attach the user id to the state object
+    state.id = user._id
+
+    // save it
+    await state.save()
+
+    // create a default lab entry
+    lab = new Lab()
+
+    // attach the user id to the lab object
+    lab.id = user._id
+
+    // save it
+    await lab.save()
 
     res.send(monitor)
 
