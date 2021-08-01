@@ -1,41 +1,44 @@
-const { State } = require('../models/state')
-const express = require('express')
-const router = express.Router()
+const { State, validate } = require("../models/state");
+const express = require("express");
+const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    // try to determine if a configuration for this id is found
-    let state = await State.findOne( { id: req.query.id })
+    // find all states registered for this user and return an array with the names
+    let stateNames = await State.find({ id: req.query.id }, "name").exec();
 
     // if not found then there's no configuration for this id
-    if (!state) res.status(400).send('no states found for this id')
+    if (!stateNames) res.status(400).send("no states found for this id");
 
-    // return all users
-    res.send(state)
+    // return all state names
+    res.send(stateNames);
+  } catch (error) {}
+});
 
-  } catch (error) {
-  }
-})
-
-router.post('/new', async (req, res) => {
+router.post("/new", async (req, res) => {
   try {
-    // try to determine if a configuration for this id is found
-    let state = new State()
+    // validate the request
+    const { error } = validate(req.body);
+    if (error) res.status(400).send(error.details[0].message);
 
-    state.id = req.body.id
+    // configure a new state object
+    let state = new State();
 
-    state.name = req.body.name
+    // set the id
+    state.id = req.body.id;
 
-    state.configuration = req.body.configuration
+    // set the name
+    state.name = req.body.name;
 
-    state.save() 
+    // pass in the configuration
+    state.configuration = req.body.configuration;
+
+    // save the state
+    state.save();
 
     // return all users
-    res.send('processed new state')
+    res.send("processed new state");
+  } catch (error) {}
+});
 
-  } catch (error) {
-  }  
-})
-
-
-module.exports = router
+module.exports = router;

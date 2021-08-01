@@ -1,27 +1,24 @@
-const mongoose = require('mongoose')
+const Joi = require("joi");
+const mongoose = require("mongoose");
 
-const stateSchema = mongoose.Schema( {
-  id: { type: String, default: '0' },
-  name: { type: String, default: 'default' },
-  hr: { type: String, default: '[140, 0, 0]'},
-  satPre: { type: String, default: '[100, 0, 0]'},
-  satPost: { type: String, default: '[97, 0, 0]'},
-  abpSyst: { type: String, default: '[70, 0, 0]'},
-  abpDiast: { type: String, default: '[50, 0, 0]'},
-  papSyst: { type: String, default: '[40, 0, 0]'},
-  papDiast: { type: String, default: '[20, 0, 0]'},
-  cvp: { type: String, default: '[4, 0, 0]'},
-  respRate: { type: String, default: '[45, 0, 0]'},
-  etco2: { type: String, default: '[40, 0, 0]'},
-  temp: { type: String, default: '[37, 0, 0]'},
-  imageName: { type: String, default: ''},
-  rhythmType: { type: Number, default: 0},
-  rhythmParameter: { type: Number, default: 0},
-  intubated: { type: Boolean, default: false},
-  resus: { type: Boolean, default: false},
-  resusParameter: { type: String, default: 'continuous'}
-})
+const State = mongoose.model(
+  "State",
+  new mongoose.Schema({
+    id: { type: String, default: "0" },
+    name: { type: String, minLength: 5, maxLength: 50, default: "default" },
+    configuration: { type: String, default: " " },
+  })
+);
 
-const State = mongoose.model('State', stateSchema)
+function validateState(state) {
+  const schema = Joi.object({
+    id: Joi.string().min(3).max(50).required(),
+    name: Joi.string().min(3).max(255).required(),
+    configuration: Joi.string().required(),
+  });
 
-exports.State = State
+  return schema.validate(state);
+}
+
+exports.State = State;
+exports.validate = validateState;
