@@ -142,8 +142,9 @@ export default {
     });
 
     this.$root.$on("labselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
-        .screen.height / 2}px`;
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${
+        this.$q.screen.height
+      }px`;
       this.$q.dialog({
         component: LabSelector,
         parent: this,
