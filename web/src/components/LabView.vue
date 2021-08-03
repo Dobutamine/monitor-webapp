@@ -293,6 +293,7 @@ export default {
     return {
       id: "",
       url: "",
+      apiUrl: "",
       urea: 5,
       CRP: 1,
       kreatinine: 50,
@@ -357,8 +358,9 @@ export default {
       this.hide();
     },
     getLabSettingsFromServer() {
+      const url = `${this.apiUrl}/api/labs?id=${this.id}`;
       axios
-        .get(`http://localhost:8080/api/labs?id=${this.id}`)
+        .get(url)
         .then(res => {
           console.log(res.data);
           this.bloodgasAvailable = res.data.bloodgasAvailable;
@@ -400,6 +402,7 @@ export default {
   mounted() {
     // get the current id from the store
     this.id = this.$store.state.dataPool.id;
+    this.apiUrl = this.$store.state.dataPool.apiUrl;
 
     this.getLabSettingsFromServer();
   },

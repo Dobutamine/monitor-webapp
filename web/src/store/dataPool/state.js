@@ -1,6 +1,8 @@
 export default function() {
   return {
     id: "",
+    apiUrl: "http://localhost:8080",
+    apiWebSocketUrl: "ws://localhost:8080/api",
     heartrate: 123,
     hrEnabled: true,
     hrAlarmMax: 180,

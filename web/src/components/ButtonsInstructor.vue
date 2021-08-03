@@ -31,12 +31,12 @@
         style="height: 60px; width: 120px"
         >SELECT LAB RESULTS</q-btn
       >
-      <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px"
+      <!-- <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px"
         >SAVE STATE</q-btn
       >
       <q-btn class="bg-blue-grey-10" style="height: 60px; width: 120px"
         >LOAD STATE</q-btn
-      >
+      > -->
       <q-btn
         :class="connectedColor"
         @click="connect"
@@ -58,6 +58,8 @@ import axios from "axios";
 export default {
   data() {
     return {
+      webSocketUrl: "",
+      apiUrl: "",
       silenceState: false,
       silenceDuration: 30,
       trendsState: true,
@@ -111,6 +113,8 @@ export default {
   },
   mounted() {
     this.id = this.$store.state.dataPool.id;
+    this.webSocketUrl = this.$store.state.dataPool.apiWebSocketUrl;
+    this.apiUrl = this.$store.state.dataPool.apiUrl;
     this.$root.$on("compressionsenabled", () => {
       this.chestCompressionsColor = this.red;
     });
@@ -151,7 +155,7 @@ export default {
       if (!this.connected) {
         // try to establish a connection
         // this.ws = new WebSocket('ws://104.248.90.19:8080/ws')
-        this.ws = new WebSocket("ws://localhost:8080/api");
+        this.ws = new WebSocket(this.webSocketUrl);
         // attach a message handler
         this.ws.onmessage = this.receiveDataFromServer;
         // check connection and ask for data
@@ -251,7 +255,8 @@ export default {
       this.$root.$emit("imageselector");
     },
     getMediaFilelistFromServer() {
-      axios.get("http://localhost:8080/api/media/list").then(res => {
+      const url = `${this.apiUrl}/api/media/list`;
+      axios.get(url).then(res => {
         this.mediaFilelist = res.data.filter(file => file.endsWith("jpg"));
       });
     },

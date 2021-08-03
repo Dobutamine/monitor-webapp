@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       id: "",
+      apiUrl: "",
       settings: false,
       pixiApp: null,
       canvas: null,
@@ -190,8 +191,9 @@ export default {
       });
       this.id = this.$store.state.dataPool.id;
       const configuration = JSON.stringify(newConfiguration);
+      const url = `${this.apiUrl}/api/configs/new`;
       axios
-        .post("http://localhost:8080/api/configs/new", {
+        .post(url, {
           id: this.id,
           configuration: configuration
         })
@@ -314,8 +316,9 @@ export default {
     },
     getConfigurationFromServer() {
       this.id = this.$store.state.dataPool.id;
+      const url = `${this.apiUrl}/api/configs?id=${this.id}`;
       axios
-        .get(`http://localhost:8080/api/configs?id=${this.id}`)
+        .get(url)
         .then(res => {
           this.channelConfigurations = JSON.parse(res.data.configuration);
           this.processNewConfiguration();
@@ -368,6 +371,7 @@ export default {
     }
   },
   mounted() {
+    this.apiUrl = this.$store.state.dataPool.apiUrl;
     this.initialize();
 
     this.initializeChannels();

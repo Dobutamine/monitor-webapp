@@ -582,6 +582,7 @@ export default {
   data() {
     return {
       id: "",
+      apiUrl: "",
       url: "",
       stepSmall: 0.01,
       electrolytesAvailable: false,
@@ -813,8 +814,9 @@ export default {
         phosphate: this.phosphate,
         magnesium: this.magnesium
       };
+      const url = `${this.apiUrl}/api/labs/new`;
       axios
-        .post("http://localhost:8080/api/labs/new", {
+        .post(url, {
           id: this.id,
           bloodgas: JSON.stringify(newConfig),
           bloodgasAvailable: this.bloodgasAvailable,
@@ -829,8 +831,9 @@ export default {
         .catch(error => {});
     },
     getLabSettingsFromServer() {
+      const url = `${this.apiUrl}/api/labs?id=${this.id}`;
       axios
-        .get(`http://localhost:8080/api/labs?id=${this.id}`)
+        .get(url)
         .then(res => {
           this.bloodgasAvailable = res.data.bloodgasAvailable;
           if (this.bloodgasAvailable) {
@@ -907,6 +910,7 @@ export default {
   mounted() {
     // get the current id from the store
     this.id = this.$store.state.dataPool.id;
+    this.apiUrl = this.$store.state.dataPool.apiUrl;
 
     this.getLabSettingsFromServer();
   },

@@ -98,12 +98,14 @@ export default {
   },
   data() {
     return {
+      apiUrl: "",
       height: "2024px",
       hr: 125
     };
   },
   methods: {},
   mounted() {
+    this.apiUrl = this.$store.state.dataPool.apiUrl;
     this.$root.$emit("instructor");
     // attach an event handler to the model instance
     this.height = this.$q.screen.height - 50 + "px";

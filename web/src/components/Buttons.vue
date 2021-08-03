@@ -65,6 +65,7 @@
 export default {
   data() {
     return {
+      webSocketUrl: "",
       timerState: false,
       timerBtnText: "SHOW TIMER",
       timerBtnColor: "bg-blue-grey-8",
@@ -117,6 +118,7 @@ export default {
   },
   mounted() {
     this.id = this.$store.state.dataPool.id;
+    this.webSocketUrl = this.$store.state.dataPool.apiWebSocketUrl;
     this.model_running = true;
     this.standbyColor = "bg-blue-10";
     this.$root.$emit("rt_on");
@@ -199,7 +201,7 @@ export default {
       if (!this.connected) {
         // try to establish a connection
         // this.ws = new WebSocket('ws://104.248.90.19:8080/ws')
-        this.ws = new WebSocket("ws://localhost:8080/api");
+        this.ws = new WebSocket(this.webSocketUrl);
         // attach a message handler
         this.ws.onmessage = this.receiveDataFromServer;
         // start the check connection timer
