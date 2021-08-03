@@ -97,7 +97,8 @@ class MonitorEmulator {
   }
 
   changeHeartRhythm(type, parameter) {
-    console.log("changed rhythm type : ", type);
+    console.log("changed to rhythm type : ", type);
+    console.log("rhythm parameter: ", parameter);
     this._model.components.ECG.rhythm_type = type;
     this._model.components.ECG.rhythm_parameter = parameter;
   }
@@ -180,6 +181,11 @@ class MonitorEmulator {
     }
 
     if (this.rhythmType != this.prevRhythmType) {
+      this.prevRhythmParameter = this.rhythmParameter;
+      this.changeHeartRhythm(this.rhythmType, this.rhythmParameter);
+    }
+
+    if (this.rhythmParameter != this.prevRhythmParameter) {
       this.changeHeartRhythm(this.rhythmType, this.rhythmParameter);
     }
 
@@ -189,6 +195,7 @@ class MonitorEmulator {
 
     this.prevIntubated = this.intubated;
     this.prevRhythmType = this.rhythmType;
+    this.prevRhythmParameter = this.rhythmParameter;
     this.prevCompressionsFrequency = this.compressionsFrequency;
     this.prevHeartrate = this.setHeartrate;
     this.prevSatPre = this.setSatPre;
