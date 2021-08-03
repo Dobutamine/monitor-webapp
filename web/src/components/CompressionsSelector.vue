@@ -11,6 +11,10 @@
           label="chest compressions pattern"
         />
       </q-card-section>
+
+      <q-card-actions align="center">
+        <q-btn color="secondary" label="Close" size="sm" @click="onOKClick" />
+      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
@@ -41,7 +45,6 @@ export default {
       } else {
         this.$root.$emit("compressionsenabled");
       }
-      this.onOKClick();
     },
     show() {
       this.$refs.dialog.show();
