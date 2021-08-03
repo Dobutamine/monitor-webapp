@@ -21,7 +21,7 @@ const Monitor = mongoose.model(
     rhythmParameter: { type: Number, default: 0 },
     intubated: { type: Boolean, default: false },
     imageName: { type: String, default: "" },
-    compressionsFrequency: { type: String, default: 0 },
+    compressionsFrequency: { type: String, default: "none" },
     alarmOverride: { type: Boolean, default: false },
   })
 );

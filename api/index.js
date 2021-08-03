@@ -93,6 +93,8 @@ wsServer.on("connection", async (socket) => {
               monitor2.rhythmParameter = convertedMessage.rhythmParameter;
               monitor2.intubated = convertedMessage.intubated;
               monitor2.imageName = convertedMessage.imageName;
+              monitor2.compressionsFrequency =
+                convertedMessage.compressionsFrequency;
               await monitor2.save();
             }
           } catch (err) {}
