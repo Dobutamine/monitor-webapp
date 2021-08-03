@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <q-dialog v-model="confirm" ref="dialog" persistent buttons>
     <q-card class="q-ma-sm q-mb-md" style="width: 500px">
@@ -14,7 +15,7 @@
             />
           </div>
 
-          <div class="col">
+          <div v-if="bloodgasVisible" class="col">
             <q-select
               v-model="selectedPreset"
               :options="bloodgasPresets"
@@ -47,6 +48,7 @@
                   :value="sodium"
                   :min="115"
                   :max="155"
+                  :step="1"
                 ></q-slider>
               </div>
             </div>
@@ -64,7 +66,12 @@
                 </q-btn>
               </div>
               <div class="col  q-ml-sm">
-                <q-slider v-model="potassium" :min="1" :max="10"></q-slider>
+                <q-slider
+                  v-model="potassium"
+                  :min="1"
+                  :max="10"
+                  :step="0.1"
+                ></q-slider>
               </div>
             </div>
 
@@ -81,7 +88,12 @@
                 </q-btn>
               </div>
               <div class="col  q-ml-sm">
-                <q-slider v-model="chloride" :min="75" :max="150"></q-slider>
+                <q-slider
+                  v-model="chloride"
+                  :min="75"
+                  :max="150"
+                  :step="1"
+                ></q-slider>
               </div>
             </div>
 
@@ -98,7 +110,12 @@
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
-                <q-slider v-model="glucose" :min="0" :max="20"></q-slider>
+                <q-slider
+                  v-model="glucose"
+                  :min="0"
+                  :max="20"
+                  :step="0.1"
+                ></q-slider>
               </div>
             </div>
 
@@ -115,7 +132,12 @@
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
-                <q-slider v-model="lactate" :min="0" :max="20"></q-slider>
+                <q-slider
+                  v-model="lactate"
+                  :min="0"
+                  :max="20"
+                  :step="0.1"
+                ></q-slider>
               </div>
             </div>
           </div>
@@ -134,7 +156,12 @@
                 </q-btn>
               </div>
               <div class="col">
-                <q-slider v-model="ph" :min="6.75" :max="7.75"></q-slider>
+                <q-slider
+                  v-model="ph"
+                  :min="6.75"
+                  :max="7.75"
+                  :step="0.01"
+                ></q-slider>
               </div>
             </div>
 
@@ -150,7 +177,12 @@
                 </q-btn>
               </div>
               <div class="col">
-                <q-slider v-model="pco2" :min="10" :max="100"></q-slider>
+                <q-slider
+                  v-model="pco2"
+                  :min="10"
+                  :max="100"
+                  :step="1"
+                ></q-slider>
               </div>
             </div>
 
@@ -166,7 +198,12 @@
                 </q-btn>
               </div>
               <div class="col">
-                <q-slider v-model="po2" :min="10" :max="300"></q-slider>
+                <q-slider
+                  v-model="po2"
+                  :min="10"
+                  :max="300"
+                  :step="1"
+                ></q-slider>
               </div>
             </div>
 
@@ -182,7 +219,12 @@
                 </q-btn>
               </div>
               <div class="col">
-                <q-slider v-model="bic" :min="5" :max="45"></q-slider>
+                <q-slider
+                  v-model="bic"
+                  :min="5"
+                  :max="45"
+                  :step="0.1"
+                ></q-slider>
               </div>
             </div>
 
@@ -198,10 +240,323 @@
                 </q-btn>
               </div>
               <div class="col">
-                <q-slider v-model="be" :min="-40" :max="20"></q-slider>
+                <q-slider
+                  v-model="be"
+                  :min="-40"
+                  :max="20"
+                  :step="0.1"
+                ></q-slider>
               </div>
             </div>
           </div>
+        </div>
+        <div class="row">
+          <q-btn
+            class="q-mt-md"
+            @click="onClickAvailableBloodgas"
+            :color="btnAvailableBloodgasColor"
+            size="sm"
+            style="margin-left: auto; margin-right: auto"
+            >{{ btnAvailableBloodgasText }}</q-btn
+          >
+        </div>
+      </q-card-section>
+
+      <q-card-section v-if="cbcVisible">
+        <div class="row">
+          <div class="col">
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  hemoglobin: {{ hemoglobin }}
+                </q-btn>
+              </div>
+              <div class="col q-ml-sm">
+                <q-slider
+                  v-model="hemoglobin"
+                  :value="hemoglobin"
+                  :min="1"
+                  :max="15"
+                  :step="0.1"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  Ht: {{ hematocrit }}
+                </q-btn>
+              </div>
+              <div class="col  q-ml-sm">
+                <q-slider
+                  v-model="hematocrit"
+                  :min="0.05"
+                  :max="0.75"
+                  :step="0.01"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  leucocytes: {{ leucocytes }}
+                </q-btn>
+              </div>
+              <div class="col  q-ml-sm">
+                <q-slider
+                  v-model="leucocytes"
+                  :min="1"
+                  :max="40"
+                  :step="1"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  trombocytes: {{ trombocytes }}
+                </q-btn>
+              </div>
+              <div class="col q-ml-sm">
+                <q-slider
+                  v-model="trombocytes"
+                  :min="0"
+                  :max="400"
+                  :step="1"
+                ></q-slider>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <q-btn
+            class="q-mt-md"
+            @click="onClickAvailableCBC"
+            :color="btnAvailableCBCColor"
+            size="sm"
+            style="margin-left: auto; margin-right: auto"
+            >{{ btnAvailableCBCText }}</q-btn
+          >
+        </div>
+      </q-card-section>
+
+      <q-card-section v-if="otherVisible">
+        <div class="row">
+          <div class="col">
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  CRP: {{ CRP }}
+                </q-btn>
+              </div>
+              <div class="col q-ml-sm">
+                <q-slider
+                  v-model="CRP"
+                  :value="crp"
+                  :min="0"
+                  :max="150"
+                  :step="1"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  Urea (BUN): {{ urea }}
+                </q-btn>
+              </div>
+              <div class="col  q-ml-sm">
+                <q-slider
+                  v-model="urea"
+                  :min="5"
+                  :max="100"
+                  :step="1"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  creatinine: {{ kreatinine }}
+                </q-btn>
+              </div>
+              <div class="col  q-ml-sm">
+                <q-slider
+                  v-model="kreatinine"
+                  :min="1"
+                  :max="300"
+                  :step="1"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  calcium: {{ calcium }}
+                </q-btn>
+              </div>
+              <div class="col q-ml-sm">
+                <q-slider
+                  v-model="calcium"
+                  :min="0.5"
+                  :max="5"
+                  :step="0.1"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  magnesium: {{ magnesium }}
+                </q-btn>
+              </div>
+              <div class="col q-ml-sm">
+                <q-slider
+                  v-model="magnesium"
+                  :min="0.1"
+                  :max="2"
+                  :step="0.01"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  phosphate: {{ phosphate }}
+                </q-btn>
+              </div>
+              <div class="col q-ml-sm">
+                <q-slider
+                  v-model="phosphate"
+                  :min="0.5"
+                  :max="5"
+                  :step="0.1"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  ammonia: {{ ammonia }}
+                </q-btn>
+              </div>
+              <div class="col q-ml-sm">
+                <q-slider
+                  v-model="ammonia"
+                  :min="10"
+                  :max="500"
+                  :step="1"
+                ></q-slider>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col q-pt-sm">
+                <q-btn
+                  class="q-pa-es"
+                  :color="bloodgasColor"
+                  size="sm"
+                  style="width: 200px"
+                  @click="toggleBloodgas"
+                >
+                  albumin: {{ albumin }}
+                </q-btn>
+              </div>
+              <div class="col q-ml-sm">
+                <q-slider
+                  v-model="albumin"
+                  :min="5"
+                  :max="40"
+                  :step="1"
+                ></q-slider>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <q-btn
+            class="q-mt-md"
+            @click="onClickAvailableOther"
+            :color="btnAvailableOtherColor"
+            size="sm"
+            style="margin-left: auto; margin-right: auto"
+            >{{ btnAvailableOtherText }}</q-btn
+          >
         </div>
       </q-card-section>
 
@@ -228,8 +583,19 @@ export default {
     return {
       id: "",
       url: "",
+      stepSmall: 0.01,
+      electrolytesAvailable: false,
+      cbcAvailable: false,
+      btnAvailableCBCColor: "red-10",
+      btnAvailableCBCText: "NOT AVAILABLE ON MONITOR",
+      otherAvailable: false,
+      btnAvailableOtherColor: "red-10",
+      btnAvailableOtherText: "NOT AVAILABLE ON MONITOR",
+      bloodgasAvailable: false,
+      btnAvailableBloodgasColor: "red-10",
+      btnAvailableBloodgasText: "NOT AVAILABLE ON MONITOR",
       bloodgasEnabled: true,
-      bloodgasColor: "teal-10",
+      bloodgasColor: "blue-grey-8",
       red: "red-10",
       green: "teal-10",
       bloodgasVisible: true,
@@ -241,7 +607,13 @@ export default {
       leucocytes: 10,
       trombocytes: 245,
       CRP: 2,
-
+      urea: 5,
+      kreatinine: 40,
+      albumin: 35,
+      ammonia: 20,
+      calcium: 2.02,
+      phosphate: 1.8,
+      magnesium: 1.0,
       ph: 7.4,
       pco2: 35,
       po2: 100,
@@ -267,10 +639,40 @@ export default {
       ],
       selectedPreset: "",
       selectedLabTest: "bloodgas",
-      labTestList: ["bloodgas"]
+      labTestList: ["bloodgas", "complete blood count", "other"]
     };
   },
   methods: {
+    onClickAvailableBloodgas() {
+      this.bloodgasAvailable = !this.bloodgasAvailable;
+      if (this.bloodgasAvailable) {
+        this.btnAvailableBloodgasColor = "teal-10";
+        this.btnAvailableBloodgasText = "AVAILABLE ON MONITOR";
+      } else {
+        this.btnAvailableBloodgasColor = "red-10";
+        this.btnAvailableBloodgasText = "NOT AVAILABLE ON MONITOR";
+      }
+    },
+    onClickAvailableCBC() {
+      this.cbcAvailable = !this.cbcAvailable;
+      if (this.cbcAvailable) {
+        this.btnAvailableCBCColor = "teal-10";
+        this.btnAvailableCBCText = "AVAILABLE ON MONITOR";
+      } else {
+        this.btnAvailableCBCColor = "red-10";
+        this.btnAvailableCBCText = "NOT AVAILABLE ON MONITOR";
+      }
+    },
+    onClickAvailableOther() {
+      this.otherAvailable = !this.otherAvailable;
+      if (this.otherAvailable) {
+        this.btnAvailableOtherColor = "teal-10";
+        this.btnAvailableOtherText = "AVAILABLE ON MONITOR";
+      } else {
+        this.btnAvailableTherColor = "red-10";
+        this.btnAvailableOtherText = "NOT AVAILABLE ON MONITOR";
+      }
+    },
     selectBloodgasPreset(e) {
       switch (e) {
         case "normal":
@@ -359,17 +761,16 @@ export default {
       }
     },
     toggleBloodgas() {
-      this.bloodgasEnabled = !this.bloodgasEnabled;
-      if (this.bloodgasEnabled) {
-        this.bloodgasColor = this.green;
-      } else {
-        this.bloodgasColor = this.red;
-      }
+      // this.bloodgasEnabled = !this.bloodgasEnabled;
+      // if (this.bloodgasEnabled) {
+      //   this.bloodgasColor = this.green;
+      // } else {
+      //   this.bloodgasColor = this.red;
+      // }
     },
     selectionChanged(e) {
       this.bloodgasVisible = false;
       this.cbcVisible = false;
-      this.electrolytesVisible = false;
       this.otherVisible = false;
       switch (e) {
         case "bloodgas":
@@ -377,6 +778,9 @@ export default {
           break;
         case "complete blood count":
           this.cbcVisible = true;
+          break;
+        case "other":
+          this.otherVisible = true;
           break;
       }
     },
@@ -393,13 +797,33 @@ export default {
         glucose: this.glucose,
         lactate: this.lactate
       };
+      const cbcConfig = {
+        hb: this.hemoglobin,
+        ht: this.hematocrit,
+        leuco: this.leucocytes,
+        tht: this.trombocytes
+      };
+      const otherConfig = {
+        CRP: this.CRP,
+        urea: this.urea,
+        kreatinine: this.kreatinine,
+        albumin: this.albumin,
+        ammonia: this.ammonia,
+        calcium: this.calcium,
+        phosphate: this.phosphate,
+        magnesium: this.magnesium
+      };
       axios
         .post("http://localhost:8080/api/labs/new", {
           id: this.id,
           bloodgas: JSON.stringify(newConfig),
-          cbc: "empty",
+          bloodgasAvailable: this.bloodgasAvailable,
+          cbc: JSON.stringify(cbcConfig),
+          cbcAvailable: this.cbcAvailable,
           electrolytes: "empty",
-          other: "empty"
+          electrolytesAvailable: this.electrolytesAvailable,
+          other: JSON.stringify(otherConfig),
+          otherAvailable: this.otherAvailable
         })
         .then(res => {})
         .catch(error => {});
@@ -408,6 +832,31 @@ export default {
       axios
         .get(`http://localhost:8080/api/labs?id=${this.id}`)
         .then(res => {
+          this.bloodgasAvailable = res.data.bloodgasAvailable;
+          if (this.bloodgasAvailable) {
+            this.btnAvailableBloodgasColor = "teal-10";
+            this.btnAvailableBloodgasText = "AVAILABLE ON MONITOR";
+          } else {
+            this.btnAvailableBloodgasColor = "red-10";
+            this.btnAvailableBloodgasText = "NOT AVAILABLE ON MONITOR";
+          }
+          this.cbcAvailable = res.data.cbcAvailable;
+          if (this.cbcAvailable) {
+            this.btnAvailableCBCColor = "teal-10";
+            this.btnAvailableCBCText = "AVAILABLE ON MONITOR";
+          } else {
+            this.btnAvailableCBCColor = "red-10";
+            this.btnAvailableCBCText = "NOT AVAILABLE ON MONITOR";
+          }
+          this.otherAvailable = res.data.otherAvailable;
+          if (this.otherAvailable) {
+            this.btnAvailableOtherColor = "teal-10";
+            this.btnAvailableOtherText = "AVAILABLE ON MONITOR";
+          } else {
+            this.btnAvailableTherColor = "red-10";
+            this.btnAvailableOtherText = "NOT AVAILABLE ON MONITOR";
+          }
+
           const parsedBloodgas = JSON.parse(res.data.bloodgas);
           this.sodium = parsedBloodgas.na;
           this.potassium = parsedBloodgas.k;
@@ -419,6 +868,22 @@ export default {
           this.po2 = parsedBloodgas.po2;
           this.be = parsedBloodgas.be;
           this.bic = parsedBloodgas.bic;
+
+          const parsedCBC = JSON.parse(res.data.cbc);
+          this.hemoglobin = parsedCBC.hb;
+          this.hematocrit = parsedCBC.ht;
+          this.leucocytes = parsedCBC.leuco;
+          this.trombocytes = parsedCBC.tht;
+
+          const parsedOther = JSON.parse(res.data.other);
+          this.CRP = parsedOther.CRP;
+          this.urea = parsedOther.urea;
+          this.kreatinine = parsedOther.kreatinine;
+          this.albumin = parsedOther.albumin;
+          this.ammonia = parsedOther.ammonia;
+          this.calcium = parsedOther.calcium;
+          this.phosphate = parsedOther.phosphate;
+          this.magnesium = parsedOther.magnesium;
         })
         .catch(error => {
           console.log(error);

@@ -6,13 +6,17 @@
           <q-select
             v-model="selectedLabTest"
             :options="labTestList"
+            @input="selectionChanged"
             stack-label
-            label="laboratory category"
+            label="select laboratory test"
           />
         </div>
       </q-card-section>
 
-      <q-card-section class="text-grey-6">
+      <q-card-section
+        v-if="bloodgasVisible && bloodgasAvailable"
+        class="text-grey-6"
+      >
         <div class="row">
           <div class="col text-left">
             sodium
@@ -119,6 +123,154 @@
         </div>
       </q-card-section>
 
+      <q-card-section v-if="cbcVisible && cbcAvailable" class="text-grey-6">
+        <div class="row">
+          <div class="col text-left">
+            hemoglobin
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ hemoglobin }}
+          </div>
+          <div class="col text-left">
+            mmol/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            hematocrit
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ hematocrit }}
+          </div>
+          <div class="col text-left">
+            mmol/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            leucocytes
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ leucocytes }}
+          </div>
+          <div class="col text-left">
+            10^9/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            trombocytes
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ trombocytes }}
+          </div>
+          <div class="col text-left">
+            10^12/l
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-card-section v-if="otherVisible && otherAvailable" class="text-grey-6">
+        <div class="row">
+          <div class="col text-left">
+            CRP
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ CRP }}
+          </div>
+          <div class="col text-left">
+            mg/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            urea (BUN)
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ urea }}
+          </div>
+          <div class="col text-left">
+            mmol/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            creatinine
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ kreatinine }}
+          </div>
+          <div class="col text-left">
+            umol/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            albumin
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ albumin }}
+          </div>
+          <div class="col text-left">
+            g/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            ammonia
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ ammonia }}
+          </div>
+          <div class="col text-left">
+            mmol/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            calcium
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ calcium }}
+          </div>
+          <div class="col text-left">
+            mmol/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            phosphate
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ phosphate }}
+          </div>
+          <div class="col text-left">
+            mmol/l
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-left">
+            magnesium
+          </div>
+          <div class="col text-center text-grey-11">
+            {{ magnesium }}
+          </div>
+          <div class="col text-left">
+            mmol/l
+          </div>
+        </div>
+      </q-card-section>
+
       <q-card-actions align="center">
         <q-btn color="red-10" label="Close" size="sm" @click="onOKClick" />
       </q-card-actions>
@@ -141,6 +293,18 @@ export default {
     return {
       id: "",
       url: "",
+      urea: 5,
+      CRP: 1,
+      kreatinine: 50,
+      albumin: 35,
+      ammonia: 10,
+      calcium: 2.0,
+      phosphate: 1.9,
+      magnesium: 1.0,
+      hemoglobin: 9,
+      hematocrit: 0.45,
+      leucocytes: 15,
+      trombocytes: 250,
       ph: 7.4,
       pco2: 35,
       po2: 100,
@@ -152,11 +316,33 @@ export default {
       potassium: 3.8,
       chloride: 100,
       confirm: false,
-      selectedLabTest: "bloodgas",
-      labTestList: ["bloodgas"]
+      bloodgasVisible: false,
+      bloodgasAvailable: false,
+      cbcVisible: false,
+      cbcAvailable: false,
+      otherVisible: false,
+      otherAvailable: false,
+      selectedLabTest: "none",
+      labTestList: ["none", "bloodgas", "complete blood count", "other"]
     };
   },
   methods: {
+    selectionChanged(e) {
+      this.bloodgasVisible = false;
+      this.cbcVisible = false;
+      this.otherVisible = false;
+      switch (e) {
+        case "bloodgas":
+          this.bloodgasVisible = true;
+          break;
+        case "complete blood count":
+          this.cbcVisible = true;
+          break;
+        case "other":
+          this.otherVisible = true;
+          break;
+      }
+    },
     show() {
       this.$refs.dialog.show();
     },
@@ -174,6 +360,10 @@ export default {
       axios
         .get(`http://localhost:8080/api/labs?id=${this.id}`)
         .then(res => {
+          console.log(res.data);
+          this.bloodgasAvailable = res.data.bloodgasAvailable;
+          this.cbcAvailable = res.data.cbcAvailable;
+          this.otherAvailable = res.data.otherAvailable;
           const parsedBloodgas = JSON.parse(res.data.bloodgas);
           this.sodium = parsedBloodgas.na;
           this.potassium = parsedBloodgas.k;
@@ -185,6 +375,22 @@ export default {
           this.po2 = parsedBloodgas.po2;
           this.be = parsedBloodgas.be;
           this.bic = parsedBloodgas.bic;
+
+          const parsedCBC = JSON.parse(res.data.cbc);
+          this.hemoglobin = parsedCBC.hb;
+          this.hematocrit = parsedCBC.ht;
+          this.leucocytes = parsedCBC.leuco;
+          this.trombocytes = parsedCBC.tht;
+
+          const parsedOther = JSON.parse(res.data.other);
+          this.CRP = parsedOther.CRP;
+          this.urea = parsedOther.urea;
+          this.kreatinine = parsedOther.kreatinine;
+          this.albumin = parsedOther.albumin;
+          this.ammonia = parsedOther.ammonia;
+          this.calcium = parsedOther.calcium;
+          this.phosphate = parsedOther.phosphate;
+          this.magnesium = parsedOther.magnesium;
         })
         .catch(error => {
           console.log(error);

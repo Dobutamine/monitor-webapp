@@ -30,11 +30,17 @@ router.post("/new", async (req, res) => {
 
     lab.bloodgas = req.body.bloodgas;
 
+    lab.bloodgasAvailable = req.body.bloodgasAvailable;
+
     lab.cbc = req.body.cbc;
+
+    lab.cbcAvailable = req.body.cbcAvailable;
 
     lab.electrolytes = req.body.electrolytes;
 
     lab.other = req.body.other;
+
+    lab.otherAvailable = req.body.otherAvailable;
 
     lab.save();
 
