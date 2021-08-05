@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 class ECG {
   constructor(_model) {
     this._model = {};
@@ -110,6 +109,7 @@ class ECG {
         this.pq_addition = 0;
         this.qt_addition = 0;
         this.svt_multiplier = 1;
+        this.venticular_escape_rate = 0;
         break;
       case 1: // AV block 1
         this.pq_addition = 0.5 * this.pq_time;
@@ -117,6 +117,7 @@ class ECG {
         this.block_qrs = false;
         this.qt_addition = 0;
         this.svt_multiplier = 1;
+        this.venticular_escape_rate = 0;
         break;
       case 2: // AV block II - type 1 (wenckeback)
         if (this.block_counter < this.block_after_beats) {
@@ -127,6 +128,8 @@ class ECG {
           this.block_counter = 0;
           this.qt_addition = 0;
           this.svt_multiplier = 1;
+          this.venticular_escape_rate = 0;
+          this.block_after_beats = parseInt(this.rhythm_parameter);
         }
         break;
       case 3: // AV block II - type 2
@@ -136,6 +139,7 @@ class ECG {
           this.block_counter = 0;
           this.qt_addition = 0;
           this.svt_multiplier = 1;
+          this.venticular_escape_rate = 0;
         }
         break;
       case 4: // complete heartblock
@@ -144,8 +148,16 @@ class ECG {
         this.block_counter = 0;
         this.qt_addition = 0;
         this.svt_multiplier = 1;
+        this.venticular_escape_rate = parseInt(this.rhythm_parameter);
         break;
       case 5: // long qt
+        this.block_counter = 0;
+        this.block_qrs = false;
+        this.pq_addition = 0;
+        this.qt_addition = 0;
+        this.svt_multiplier = 1;
+        this.venticular_escape_rate = 0;
+        this.qt_time = parseFloat(this.rhythm_parameter);
         this.qt_addition = this.qt_multiplier * this.qt_time;
         break;
       case 6: // vt
@@ -153,7 +165,16 @@ class ECG {
       case 7: // vf
         break;
       case 8: // svt
+        this.block_counter = 0;
+        this.block_qrs = false;
+        this.pq_addition = 0;
+        this.qt_addition = 0;
+        this.svt_multiplier = 1;
+        this.venticular_escape_rate = 0;
         this.heart_rate = parseInt(this.rhythm_parameter);
+        break;
+      case 9: // ischemia
+        break;
     }
   }
 

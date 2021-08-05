@@ -51,7 +51,11 @@ export default {
       rhythmType: 0,
       parameter: 125,
       parameterText: "rate /min",
-      rhythmList: ["sinus", "supraventricular tachycardia"]
+      rhythmList: [
+        "sinus",
+        "supraventricular tachycardia",
+        "complete heart block"
+      ]
     };
   },
   methods: {
@@ -60,11 +64,17 @@ export default {
         case "sinus":
           this.rhythmType = 0;
           this.parameter = 125;
+          this.parameterText = "rate (/min)";
           break;
         case "supraventricular tachycardia":
           this.rhythmType = 8;
           this.parameter = 260;
+          this.parameterText = "rate (/min)";
           break;
+        case "complete heart block":
+          this.rhythmType = 4;
+          this.parameter = 60;
+          this.parameterText = "ventricular rate (/min)";
       }
     },
     show() {
@@ -99,6 +109,9 @@ export default {
     switch (this.rhythmType) {
       case 0:
         this.selectedRhythm = "sinus";
+        break;
+      case 4:
+        this.selectedRhythm = "complete heart block";
         break;
       case 8:
         this.selectedRhythm = "supraventricular tachycardia";
