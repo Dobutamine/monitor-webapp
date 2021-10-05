@@ -315,8 +315,7 @@ export default {
         this.currentDataObject.imageName = data["imageName"];
         this.currentDataObject.rhythmType = data["rhythmType"];
         this.currentDataObject.intubated = data["intubated"];
-        this.currentDataObject.compressionsFrequency =
-          data["compressionsFrequency"];
+        this.currentDataObject.compressionsFrequency = data["compressionsFrequency"];
         this.currentDataObject.rhythmParameter = data["rhythmParameter"];
         this.currentDataObject.alarmOverride = data["alarmOverride"];
       }
