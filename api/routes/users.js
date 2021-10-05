@@ -10,71 +10,74 @@ const express = require('express')
 const router = express.Router()
 
 router.post('/', async (req, res) => {
-  const { error } = validate(req.body)
-  if (error) res.status(400).send(error.details[0].message)
+    const { error } = validate(req.body)
 
-  try {
-    // try to determine whether this user is already registered
-    let user = await User.findOne( { email: req.body.email })
+    if (error) res.status(400).send(error.details[0].message)
 
-    if (user) res.status(400).send('This email is already registered!')
+    try {
+      // capitalize the user name
+      req.body.name = req.body.name.toUpperCase()
+      
+      // try to determine whether this user is already registered
+      let user = await User.findOne( { email: req.body.email })
 
-    user = await User.findOne( { email: req.body.name })
+      if (user) res.status(400).send('This email is already registered!')
 
-    if (user) res.status(400).send('This user name is unavailable!')
+      user = await User.findOne( { email: req.body.name })
 
-    // create the user
-    user = new User(_.pick(req.body, ['name', 'email', 'password']))
+      if (user) res.status(400).send('This user name is unavailable!')
 
-    // hash the password using a salt 
-    const salt = await bcrypt.genSalt(10)
-    user.password = await bcrypt.hash(user.password, salt)
+      // create the user
+      user = new User(_.pick(req.body, ['name', 'email', 'password']))
 
-    // save it
-    await user.save()
+      // hash the password using a salt 
+      const salt = await bcrypt.genSalt(10)
+      user.password = await bcrypt.hash(user.password, salt)
 
-    // create a default monitor entry
-    monitor = new Monitor()
+      // save it
+      await user.save()
 
-    // attach the user id to the monitor id object
-    monitor.id = user._id
+      // create a default monitor entry
+      monitor = new Monitor()
 
-    // save it
-    await monitor.save()
+      // attach the user id to the monitor id object
+      monitor.id = user._id
 
-    // create a default configuration entry
-    configuration = new Config()
+      // save it
+      await monitor.save()
 
-    // attach the user id to the configuration object
-    configuration.id = user._id
+      // create a default configuration entry
+      configuration = new Config()
 
-    // save it
-    await configuration.save()
+      // attach the user id to the configuration object
+      configuration.id = user._id
 
-    // // create a default state entry
-    state = new State()
+      // save it
+      await configuration.save()
 
-    // attach the user id to the state object
-    state.id = user._id
+      // create a default state entry
+      state = new State()
 
-    // save it
-    await state.save()
+      // attach the user id to the state object
+      state.id = user._id
 
-    // create a default lab entry
-    lab = new Lab()
+      // save it
+      await state.save()
 
-    // attach the user id to the lab object
-    lab.id = user._id
+      // create a default lab entry
+      lab = new Lab()
 
-    // save it
-    await lab.save()
+      // attach the user id to the lab object
+      lab.id = user._id
 
-    res.send(monitor)
+      // save it
+      await lab.save()
 
-  } catch (error) {
-    if (error) res.status(400).send('oops!')
-  }
-  
+      res.send(monitor)
+
+    } catch (error) {
+      if (error) res.status(400).send('oops!')
+    }  
 })
 
 module.exports = router

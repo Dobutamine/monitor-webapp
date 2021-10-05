@@ -8,30 +8,32 @@ const router = express.Router()
 
 router.post('/', async (req, res) => {
   // validate the request
-  const { error } = validate(req.body)
+    const { error } = validate(req.body)
 
-  // if the request is not validated then return 400 (bad request) and error mesage
-  if (error) res.status(400).send(error.details[0].message)
+    // if the request is not validated then return 400 (bad request) and error mesage
+    if (error) res.status(400).send(error.details[0].message)
 
-  // find the user by looking at the email
-  try {
-    let user = await User.findOne( { name: req.body.name })
+    // find the user by looking at the email
+    try {
+      // capitalize the user name
+      req.body.name = req.body.name.toUpperCase()
 
-    // if we don't have the user return an error message
-    if (!user) res.status(400).send('Invalid user name or password!')
+      let user = await User.findOne( { name: req.body.name })
 
-    // validate the password
-    const validPassword = await bcrypt.compare(req.body.password, user.password)
-    if (!validPassword) res.status(400).send('Invalid user name or password!')
+      // if we don't have the user return an error message
+      if (!user) res.status(400).send('Invalid user name or password!')
 
-    // return a JSON web token
-    const token = jwt.sign({ _id : user._id }, 'jwtPrivateKey')
+      // validate the password
+      const validPassword = await bcrypt.compare(req.body.password, user.password)
+      if (!validPassword) res.status(400).send('Invalid user name or password!')
 
-    // return the token
-    res.send({ name: user.name, id: user.id })
+      // return a JSON web token
+      const token = jwt.sign({ _id : user._id }, 'jwtPrivateKey')
 
-  } catch (error) {
-  }
+      // return the token
+      res.send({ name: user.name, id: user.id })
+
+    } catch (error) {}  
   
 })
 

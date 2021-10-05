@@ -96,18 +96,28 @@ export default {
         command: "",
         id: "",
         heartrate: 123,
+        heartrate_enabled: true,
         satPre: 97,
+        satPre_enabled: true,
         satPost: 95,
+        satPost_enabled: true,
         satVen: 80,
+        satVen_enabled: true,
         respRate: 45,
+        respRate_enabled: true,
         etco2: 55,
+        etco2_enabled: true,
         abpSyst: 70,
         abpDiast: 50,
+        abp_enabled: true,
         pfi: 0.8,
         temp: 37.1,
+        temp_enabled: true,
         cvp: 4,
+        cvp_enabled: true,
         papSyst: 40,
         papDiast: 20,
+        pap_enabled: true,
         rhythmType: 0,
         rhythmParameter: 0,
         compressionsFrequency: 0,
@@ -281,17 +291,27 @@ export default {
       if (data.hasOwnProperty("heartrate")) {
         this.currentDataObject.abpDiast = data["abpDiast"];
         this.currentDataObject.abpSyst = data["abpSyst"];
+        this.currentDataObject.abp_enabled = data["abp_enabled"];
         this.currentDataObject.cvp = data["cvp"];
+        this.currentDataObject.cvp_enabled = data["cvp_enabled"];
         this.currentDataObject.etco2 = data["etco2"];
+        this.currentDataObject.etco2_enabled = data["etco2_enabled"];
         this.currentDataObject.heartrate = data["heartrate"];
+        this.currentDataObject.heartrate_enabled = data["heartrate_enabled"];
         this.currentDataObject.papDiast = data["papDiast"];
         this.currentDataObject.papSyst = data["papSyst"];
+        this.currentDataObject.pap_enabled = data["pap_enabled"];
         this.currentDataObject.pfi = data["pfi"];
         this.currentDataObject.respRate = data["respRate"];
+        this.currentDataObject.respRate_enabled = data["respRate_enabled"];
         this.currentDataObject.satPost = data["satPost"];
+        this.currentDataObject.satPostenabled = data["satPost_enabled"];
         this.currentDataObject.satPre = data["satPre"];
+        this.currentDataObject.satPre_enabled = data["satPre_enabled"];
         this.currentDataObject.satVen = data["satVen"];
+        this.currentDataObject.satVen_enabled = data["satVen_enabled"];
         this.currentDataObject.temp = data["temp"];
+        this.currentDataObject.temp_enabled = data["temp_enabled"];
         this.currentDataObject.imageName = data["imageName"];
         this.currentDataObject.rhythmType = data["rhythmType"];
         this.currentDataObject.intubated = data["intubated"];

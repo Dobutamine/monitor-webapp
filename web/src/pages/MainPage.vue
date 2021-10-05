@@ -231,7 +231,7 @@ export default {
     },
     getUserId() {
       const url = `${this.apiUrl}/api/auth`;
-      axios
+        axios
         .post(url, {
           name: this.name,
           password: this.password
