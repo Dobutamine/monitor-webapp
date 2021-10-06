@@ -65,7 +65,8 @@ export default {
           color: "#5EEA32",
           alarmEnabled: true,
           lowerAlarm: 80,
-          upperAlarm: 180
+          upperAlarm: 180,
+          visible: true
         },
         {
           label: "SAT(1)",
@@ -75,7 +76,8 @@ export default {
           color: "#DF32EA",
           alarmEnabled: true,
           lowerAlarm: 88,
-          upperAlarm: 100
+          upperAlarm: 100,
+          visible: true
         },
         {
           label: "SAT(2)",
@@ -85,7 +87,8 @@ export default {
           color: "#DF32EA",
           alarmEnabled: true,
           lowerAlarm: 88,
-          upperAlarm: 100
+          upperAlarm: 100,
+          visible: true
         },
         {
           label: "ABP",
@@ -95,7 +98,8 @@ export default {
           color: "#FB0808",
           alarmEnabled: true,
           lowerAlarm: 35,
-          upperAlarm: 75
+          upperAlarm: 75,
+          visible: true
         },
         {
           label: "NIBD",
@@ -105,7 +109,8 @@ export default {
           color: "#FB0808",
           alarmEnabled: true,
           lowerAlarm: 35,
-          upperAlarm: 75
+          upperAlarm: 75,
+          visible: true
         },
         {
           label: "Temp",
@@ -115,7 +120,8 @@ export default {
           color: "#5EEA32",
           alarmEnabled: false,
           lowerAlarm: 35,
-          upperAlarm: 75
+          upperAlarm: 75,
+          visible: true
         },
         {
           label: "Pols",
@@ -125,7 +131,8 @@ export default {
           color: "#DF32EA",
           alarmEnabled: false,
           lowerAlarm: 35,
-          upperAlarm: 75
+          upperAlarm: 75,
+          visible: true
         },
         {
           label: "PFI",
@@ -135,7 +142,8 @@ export default {
           color: "#DF32EA",
           alarmEnabled: false,
           lowerAlarm: 35,
-          upperAlarm: 75
+          upperAlarm: 75,
+          visible: true
         },
         {
           label: "RF",
@@ -145,7 +153,8 @@ export default {
           color: "#FFFFFF",
           alarmEnabled: true,
           lowerAlarm: 20,
-          upperAlarm: 100
+          upperAlarm: 100,
+          visible: true
         },
         {
           label: "etCO2",
@@ -155,7 +164,8 @@ export default {
           color: "#FBE908",
           alarmEnabled: true,
           lowerAlarm: 30,
-          upperAlarm: 75
+          upperAlarm: 75,
+          visible: true
         }
       ],
       updateChannelsCounter: 0,
@@ -185,7 +195,8 @@ export default {
           color: channel.color,
           alarmEnabled: channel.alarmEnabled,
           lowerAlarm: channel.lowerAlarm,
-          upperAlarm: channel.upperAlarm
+          upperAlarm: channel.upperAlarm,
+          visible: channel.visible
         };
         newConfiguration.push(channelObject);
       });
@@ -322,6 +333,7 @@ export default {
         .then(res => {
           this.channelConfigurations = JSON.parse(res.data.configuration);
           this.processNewConfiguration();
+          console.log('monitor configuration was updated!')
         })
         .catch(error => {
           console.log(error);
@@ -376,6 +388,8 @@ export default {
 
     this.initializeChannels();
 
+    this.$root.$on('getconfiguration', () => this.getConfigurationFromServer())
+
     this.getConfigurationFromServer();
   },
   beforeDestroy() {
@@ -386,6 +400,7 @@ export default {
     this.$root.$off("resize");
     this.$root.$off("opensettings");
     this.$root.$off("newchannelconfig");
+    this.$root.$off("getconfiguration");
     this.$root.$off("shownibd");
     this.$model.engine.removeEventListener("message", this.updater);
     this.modelEventListener = null;

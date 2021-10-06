@@ -76,6 +76,7 @@ wsServer.on("connection", async (socket) => {
             let monitor2 = await Monitor.findOne({ id: convertedMessage.id });
 
             if (monitor2) {
+              
               monitor2.heartrate = convertedMessage.heartrate;
               monitor2.satPre = convertedMessage.satPre;
               monitor2.satPost = convertedMessage.satPost;
@@ -93,8 +94,9 @@ wsServer.on("connection", async (socket) => {
               monitor2.rhythmParameter = convertedMessage.rhythmParameter;
               monitor2.intubated = convertedMessage.intubated;
               monitor2.imageName = convertedMessage.imageName;
-              monitor2.compressionsFrequency =
-                convertedMessage.compressionsFrequency;
+              monitor2.compressionsFrequency = convertedMessage.compressionsFrequency;
+              monitor2.configurationUpdateCounter = convertedMessage.configurationUpdateCounter;
+
               await monitor2.save();
             }
           } catch (err) {}

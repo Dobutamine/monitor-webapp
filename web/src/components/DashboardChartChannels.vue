@@ -54,14 +54,12 @@ export default {
 
     },
     changeChannelState(newconfig) {
-      console.log(newconfig)
       this.channels.forEach(channel => {
         console.log(channel)
       })
     },
     changeChannelConfig(newconfig) {
       // process parameter change
-
       // convert the newconfig to the newconfig for charts
       switch (newconfig.source1) {
         case "empty":
@@ -107,6 +105,7 @@ export default {
         if (channelConfiguration.source1 === newconfig.source1) {
           channelConfiguration.order = newconfig.channelNo
           channelConfiguration.color = newconfig.color
+          channelConfiguration.visible = newconfig.visible
           combinedConfiguration = channelConfiguration
         }
       })

@@ -5,7 +5,7 @@
         class="q-ma-sm col"
         :color="buttonColorEnabled"
         size="sm"
-        @click="showPopUp"
+        @click="toggleParameter"
       >
         {{ label }}
       </q-btn>
@@ -133,6 +133,7 @@ export default {
   data() {
     return {
       enabled: true,
+      visibile: true,
       buttonColorEnabled: "teal-10",
       buttonColorArm: "blue-10",
       buttonTextArm: "ARM",
@@ -194,6 +195,14 @@ export default {
     };
   },
   methods: {
+    toggleParameter () {
+      this.visibile = !this.visibile
+      let setting = {
+        label: this.label,
+        state: this.visibile
+      }
+      this.$root.$emit('togglevisibility', setting)
+    },
     showPopUp() {
       this.$q.dialog({
         component: ChannelSettings,

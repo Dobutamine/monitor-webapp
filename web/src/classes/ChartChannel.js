@@ -35,6 +35,7 @@ class ChartChannel {
   maxLimit = 100
   minLimit = 0
   squeeze = 0.75
+  visible = true
 
 
   constructor (stage, configuration, dataUpdateInterval, dataPointsPerUpdate, width) {
@@ -57,6 +58,7 @@ class ChartChannel {
     this.limiterMax = configuration.limiterMax
     this.limiterMin = configuration.limiterMin
     this.squeezeFactor = configuration.squeezeFactor
+    this.visible = true
 
     this.stage.addChild(this.grid)
     this.stage.addChild(this.graphic1)
@@ -145,7 +147,6 @@ class ChartChannel {
   }
 
   updateConfiguration (configuration) {
-
     this.label = configuration.label
     this.source1 = configuration.source1
     this.order = configuration.order
@@ -161,6 +162,7 @@ class ChartChannel {
     this.limiterMax = configuration.limiterMax
     this.limiterMin = configuration.limiterMin
     this.squeezeFactor = configuration.squeezeFactor
+    this.visible = configuration.visible
 
     this.setChannelColor(this.color)
     this.updateSize(this.width, this.height)
@@ -212,9 +214,13 @@ class ChartChannel {
             this.dataCursor = 0
           }
           const yValue = newData[index][this.source1]
-          this.dataY1[this.dataCursor] = yValue
-
+          if (this.visible) {
+            this.dataY1[this.dataCursor] = yValue
+          } else {
+            this.dataY1[this.dataCursor] = 0
+          }
           
+
            // find the min and max
            if (yValue > this.tempMaxY) {
             this.tempMaxY = yValue

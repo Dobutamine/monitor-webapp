@@ -17,6 +17,7 @@ class ParameterChannelSmall {
   prevAlarmState = false
   redAlarmEnabled = true
   width = 100
+  visible = true
   styleLabel = null
   styleValue = null
   styleAlarm = null
@@ -121,6 +122,7 @@ class ParameterChannelSmall {
     this.source2 = newconfig.source2
     this.caption = newconfig.label
     this.label.text = this.caption
+    this.visible = newconfig.visible
     this.styleLabel.fill = this.color
 
     this.alarmLower.text = this.lowerAlarm
@@ -192,6 +194,12 @@ class ParameterChannelSmall {
   }
 
   update (data) {
+    if (!this.visible) {
+      this.currentValue = '-'
+      this.value.text = '-'
+      return
+  }
+
     if (this.source1 != 'empty') {
       if (this.source2 != '') {
         this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1]

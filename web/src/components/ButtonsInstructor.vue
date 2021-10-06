@@ -3,6 +3,18 @@
     <div class="q-gutter-xs">
       <q-btn
         class="bg-blue-grey-10"
+        @click="getConfigurationFromServer"
+        style="height: 60px; width: 120px"
+        >GET CONFIG</q-btn
+      >
+      <q-btn
+        class="bg-blue-grey-10"
+        @click="saveConfigurationToServer"
+        style="height: 60px; width: 120px"
+        >SAVE CONFIG</q-btn
+      >
+      <q-btn
+        class="bg-blue-grey-10"
         @click="changeRhythmType"
         style="height: 60px; width: 120px"
         >CARDIAC RHYTHM</q-btn
@@ -105,6 +117,7 @@ export default {
         rhythmParameter: 0,
         intubated: false,
         rhythmParameter: 0,
+        configurationUpdateCounter: 0,
         channelConfigChanged: true,
         channelConfigurations: {},
         alarmEnabled: true
@@ -121,19 +134,41 @@ export default {
     this.$root.$on("compressionsdisabled", () => {
       this.chestCompressionsColor = this.bluegreay;
     });
+    this.$root.$on("togglevisibility", (e) => this.toggleVisibility(e))
+    this.getConfigurationFromServer()
     this.connect();
   },
   beforeDestroy() {
+    this.cleanUp()
+    this.$root.$off("togglevisibility");
     this.$root.$off("compressionsenabled");
     this.$root.$off("compressionsdisabled");
-
-    clearTimeout(this.checkConnectionTimer);
-    clearTimeout(this.serverUpdateTimer);
-    this.serverUpdateTimer = null;
-    this.ws.send(JSON.stringify({ command: "close", id: this.id }));
-    this.ws.close();
   },
   methods: {
+    cleanUp() {
+      console.log('cleaning up instructor interface')
+      this.ws.send(JSON.stringify({ command: "close", id: this.id }));
+      this.ws.close();
+      clearTimeout(this.checkConnectionTimer);
+      clearTimeout(this.serverUpdateTimer);
+      this.serverUpdateTimer = null;
+      this.checkConnectionTimer = null
+    },
+    toggleVisibility(e) {
+      switch (e.label) {
+        case "HEARTRATE":
+          this.channelConfigurations.forEach((configuration) => {
+            if (configuration.label === 'HR') {
+              configuration.visible = e.state
+              console.log(e.state)
+            }
+          });
+          break;
+      }
+      console.log(this.channelConfigurations)
+      this.saveConfigurationToServer()
+
+    },
     changeRhythmType() {
       // this.currentDataObject.rhythmType = 6
       // this.$store.commit('dataPool/rhythmType', this.currentDataObject.rhythmType)
@@ -151,6 +186,37 @@ export default {
     goToMonitor() {
       this.$router.push("/monitor");
     },
+    getConfigurationFromServer() {
+      this.id = this.$store.state.dataPool.id;
+      const url = `${this.apiUrl}/api/configs?id=${this.id}`;
+      axios
+        .get(url)
+        .then(res => {
+          console.log('instructor got configuration')
+          this.channelConfigurations = JSON.parse(res.data.configuration);
+          console.log(this.channelConfigurations)
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    saveConfigurationToServer() {
+      // instructor saved configuration
+      this.id = this.$store.state.dataPool.id;
+      this.currentDataObject.configurationUpdateCounter += 1
+      this.sendDataToServer()
+      const configuration = JSON.stringify(this.channelConfigurations);
+      const url = `${this.apiUrl}/api/configs/new`;
+      axios
+        .post(url, {
+          id: this.id,
+          configuration: configuration
+        })
+        .then(res => {
+          console.log('instructor saved configuration')
+        })
+        .catch(error => {});
+     },
     connect() {
       if (!this.connected) {
         // try to establish a connection
@@ -223,12 +289,12 @@ export default {
         this.currentDataObject.rhythmParameter = this.$store.state.dataPool.rhythmParameter;
         this.currentDataObject.alarmOverride = this.$store.state.dataPool.alarmOverride;
         this.selectedMediaFile = this.currentDataObject.imageName;
+
         this.ws.send(JSON.stringify(this.currentDataObject));
 
         this.serverUpdateTimer = setTimeout(this.sendDataToServer, 1000);
       }
     },
-
     receiveDataFromServer(data) {
       const processed_data = JSON.parse(data.data);
       if (typeof processed_data === "string") {
@@ -286,6 +352,7 @@ export default {
       this.currentDataObject.pfi = data.pfi;
       this.currentDataObject.compressionsFrequency = data.compressionsFrequency;
       this.currentDataObject.alarmOverride = data.alarmOverride;
+      this.currentDataObject.configurationUpdateCounter = data.configurationUpdateCounter
 
       if (this.intubated) {
         this.intubationButtonText = "MECHANICAL VENTILATION";

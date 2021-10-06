@@ -10,6 +10,7 @@ class ParameterChannel {
   caption = ''
   lowerAlarm = 0
   upperAlarm = 100
+  visible = true
   alarmEnabled = false
   alarmState = false
   redAlarmState = false
@@ -120,6 +121,7 @@ class ParameterChannel {
     this.source1 = newconfig.source1
     this.source2 = newconfig.source2
     this.caption = newconfig.label
+    this.visible = newconfig.visible
     this.label.text = this.caption
     this.styleLabel.fill = this.color
 
@@ -189,6 +191,12 @@ class ParameterChannel {
   }
 
   update (data) {
+    if (!this.visible) {
+        this.currentValue = '-'
+        this.value.text = '-'
+        return
+    }
+
     if (this.source1 != 'empty') {
       if (this.source2 != '') {
         this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1]
@@ -197,8 +205,8 @@ class ParameterChannel {
         this.currentValue = this.meanValue
         this.value.text = data[this.dataPointsPerUpdate - 1][this.source1] + '/' + data[this.dataPointsPerUpdate - 1][this.source2] +  ' (' + this.meanValue + ')'
       } else {
-        this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1]
-        this.value.text = data[this.dataPointsPerUpdate - 1][this.source1]
+          this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1]
+          this.value.text = data[this.dataPointsPerUpdate - 1][this.source1]
       }
     } else {
       // now we have to change to state to empty and make sure the alarms are turned off
