@@ -8,6 +8,7 @@
           :max="240"
           :step="1"
           label="HEARTRATE"
+          mon_label = "HR"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col">
@@ -17,6 +18,7 @@
           :max="100"
           :step="1"
           label="SAT PRE"
+          mon_label = "SAT(1)"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col">
@@ -26,6 +28,7 @@
           :max="100"
           :step="1"
           label="SAT POST"
+          mon_label = "SAT(2)"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col-2">
@@ -36,6 +39,7 @@
           :max="100"
           :step="1"
           label="ABP"
+          mon_label = "ABP"
         ></DoubleSlider>
       </div>
       <div class="q-ma-sm col">
@@ -45,6 +49,7 @@
           :max="100"
           :step="1"
           label="RESP RATE"
+          mon_label = "RF"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col">
@@ -54,6 +59,7 @@
           :max="100"
           :step="1"
           label="ETCO2"
+          mon_label = "etCO2"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col">
@@ -63,6 +69,7 @@
           :max="42"
           :step="0.1"
           label="TEMPERATURE"
+          mon_label = "Temp"
         ></SingleSlider>
       </div>
       <!-- <div class="q-ma-sm col">
@@ -105,54 +112,58 @@ export default {
   },
   methods: {},
   mounted() {
-    this.apiUrl = this.$store.state.dataPool.apiUrl;
-    this.$root.$emit("instructor");
-    // attach an event handler to the model instance
-    this.height = this.$q.screen.height - 50 + "px";
-    this.max_width = this.$q.screen.width;
-    this.$q.dark.set(true);
+    this.id = this.$store.state.dataPool.id;
+    if (this.id === '') {
+      this.$router.push("/")
+    }
+      this.apiUrl = this.$store.state.dataPool.apiUrl;
+      this.$root.$emit("instructor");
+      // attach an event handler to the model instance
+      this.height = this.$q.screen.height - 50 + "px";
+      this.max_width = this.$q.screen.width;
+      this.$q.dark.set(true);
 
-    this.$root.$on("imageselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
-        .screen.height / 2}px`;
-      this.$q.dialog({
-        component: ImageSelector,
-        parent: this,
-        image_no: 2,
-        imgSize: styleImg
+      this.$root.$on("imageselector", name => {
+        const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
+          .screen.height / 2}px`;
+        this.$q.dialog({
+          component: ImageSelector,
+          parent: this,
+          image_no: 2,
+          imgSize: styleImg
+        });
       });
-    });
 
-    this.$root.$on("rhythmselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
-        .screen.height / 2}px`;
-      this.$q.dialog({
-        component: RhythmSelector,
-        parent: this,
-        imgSize: styleImg
+      this.$root.$on("rhythmselector", name => {
+        const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
+          .screen.height / 2}px`;
+        this.$q.dialog({
+          component: RhythmSelector,
+          parent: this,
+          imgSize: styleImg
+        });
       });
-    });
 
-    this.$root.$on("compressionsselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
-        .screen.height / 2}px`;
-      this.$q.dialog({
-        component: CompressionsSelector,
-        parent: this,
-        imgSize: styleImg
+      this.$root.$on("compressionsselector", name => {
+        const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
+          .screen.height / 2}px`;
+        this.$q.dialog({
+          component: CompressionsSelector,
+          parent: this,
+          imgSize: styleImg
+        });
       });
-    });
 
-    this.$root.$on("labselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${
-        this.$q.screen.height
-      }px`;
-      this.$q.dialog({
-        component: LabSelector,
-        parent: this,
-        imgSize: styleImg
+      this.$root.$on("labselector", name => {
+        const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${
+          this.$q.screen.height
+        }px`;
+        this.$q.dialog({
+          component: LabSelector,
+          parent: this,
+          imgSize: styleImg
+        });
       });
-    });
   },
   beforeDestroy() {
     this.$root.$off("imageselector");

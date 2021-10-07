@@ -13,6 +13,7 @@ const User = mongoose.model(
       unique: true,
     },
     password: { type: String, required: true, minLength: 5, maxLength: 1024 },
+    id: { type: String, default: "" },
   })
 );
 

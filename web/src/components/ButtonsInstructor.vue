@@ -3,18 +3,6 @@
     <div class="q-gutter-xs">
       <q-btn
         class="bg-blue-grey-10"
-        @click="getConfigurationFromServer"
-        style="height: 60px; width: 120px"
-        >GET CONFIG</q-btn
-      >
-      <q-btn
-        class="bg-blue-grey-10"
-        @click="saveConfigurationToServer"
-        style="height: 60px; width: 120px"
-        >SAVE CONFIG</q-btn
-      >
-      <q-btn
-        class="bg-blue-grey-10"
         @click="changeRhythmType"
         style="height: 60px; width: 120px"
         >CARDIAC RHYTHM</q-btn
@@ -146,6 +134,8 @@ export default {
   },
   methods: {
     cleanUp() {
+      clearTimeout(this.checkConnectionTimer);
+      clearTimeout(this.serverUpdateTimer);
       console.log('cleaning up instructor interface')
       this.ws.send(JSON.stringify({ command: "close", id: this.id }));
       this.ws.close();
@@ -155,16 +145,12 @@ export default {
       this.checkConnectionTimer = null
     },
     toggleVisibility(e) {
-      switch (e.label) {
-        case "HEARTRATE":
-          this.channelConfigurations.forEach((configuration) => {
-            if (configuration.label === 'HR') {
+      this.channelConfigurations.forEach((configuration) => {
+            if (configuration.label === e.label) {
               configuration.visible = e.state
               console.log(e.state)
             }
           });
-          break;
-      }
       console.log(this.channelConfigurations)
       this.saveConfigurationToServer()
 
@@ -192,9 +178,8 @@ export default {
       axios
         .get(url)
         .then(res => {
-          console.log('instructor got configuration')
+          console.log('instructor got configuration from server')
           this.channelConfigurations = JSON.parse(res.data.configuration);
-          console.log(this.channelConfigurations)
         })
         .catch(error => {
           console.log(error);
@@ -216,52 +201,43 @@ export default {
           console.log('instructor saved configuration')
         })
         .catch(error => {});
-     },
+    },
     connect() {
       if (!this.connected) {
         // try to establish a connection
-        // this.ws = new WebSocket('ws://104.248.90.19:8080/ws')
         this.ws = new WebSocket(this.webSocketUrl);
+
         // attach a message handler
         this.ws.onmessage = this.receiveDataFromServer;
-        // check connection and ask for data
-        this.checkConnectionTimer = setTimeout(
-          this.checkConnectionStatus,
-          1000
-        );
-        // update the user interface
-        this.connectedLabel = "";
-        this.icon = "settings_ethernet";
-        this.connectedColor = "bg-orange-10";
-      } else {
-        this.connected = false;
-        this.ws.send(JSON.stringify({ command: "close", id: this.id }));
-        this.ws.close();
-        clearTimeout(this.checkConnectionTimer);
-        this.connectedLabel = "OFFLINE";
-        this.icon = "sentiment_very_dissatisfied";
-        this.connectedColor = "bg-red-10";
-      }
-    },
-    checkConnectionStatus() {
-      // send a message to the server asking if it is still alive
-      if (this.ws.readyState === WebSocket.CLOSED) {
-        // set the state to false
-        this.connected = false;
-        // update the user interface
-        this.connectedLabel = "OFFLINE";
-        this.icon = "sentiment_very_dissatisfied";
-        this.connectedColor = "bg-red-10";
-        this.connect();
-      }
 
-      if (this.ws.readyState === WebSocket.OPEN) {
-        // set the state to false
-        this.connected = true;
-        // // try to pull some data from the server to check the id
-        this.ws.send(JSON.stringify({ command: "get", id: this.id }));
-        // set the time for a new check
-        this.serverUpdateTimer = setTimeout(this.sendDataToServer, 1000);
+        this.ws.onclose = () => {
+          console.log('instructor websocket closed')
+          this.connected = false
+          this.connectedLabel = "";
+          this.icon = "settings_ethernet";
+          this.connectedColor = "bg-orange-10";
+          clearTimeout(this.serverUpdateTimer)
+          this.serverUpdateTimer = null
+        }
+
+        this.ws.onopen = () => {
+          console.log('instructor websocket opened')
+          this.connected = true
+          this.connectedLabel = "";
+          this.icon = "sentiment_satisfied_alt";
+          this.connectedColor = "bg-teal-10";
+          this.serverUpdateTimer = setTimeout(this.sendDataToServer, 1000);
+        }
+
+        this.ws.onerror = (e) => {
+          console.log('instructor websocket error', e)
+          this.connected = false
+          this.connectedLabel = "ERROR";
+          this.icon = "sentiment_very_dissatisfied";
+          this.connectedColor = "bg-red-10";
+          clearTimeout(this.serverUpdateTimer)
+          this.serverUpdateTimer = null
+        };
       }
     },
     sendDataToServer() {
@@ -291,7 +267,7 @@ export default {
         this.selectedMediaFile = this.currentDataObject.imageName;
 
         this.ws.send(JSON.stringify(this.currentDataObject));
-
+        console.log('instructor updated the monitor id:', this.id)
         this.serverUpdateTimer = setTimeout(this.sendDataToServer, 1000);
       }
     },

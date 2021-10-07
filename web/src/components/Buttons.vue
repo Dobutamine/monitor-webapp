@@ -275,7 +275,9 @@ export default {
             break;
         }
       } else {
-        this.processData(processed_data);
+        if (processed_data.id === this.id) {
+          this.processData(processed_data);
+        }
       }
     },
     processData(data) {

@@ -1,9 +1,11 @@
+const Joi = require("joi");
 const mongoose = require("mongoose");
 
 const Monitor = mongoose.model(
   "Monitor",
   new mongoose.Schema({
-    id: { type: String, default: "0" },
+    id: { type: String, default: "" },
+    name: Joi.string().min(3).max(50).required(),
     heartrate: { type: Number, default: 125 },
     satPre: { type: Number, default: 97 },
     satPost: { type: Number, default: 95 },

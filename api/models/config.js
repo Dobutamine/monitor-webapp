@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const Config = mongoose.model(
   "Config",
   new mongoose.Schema({
-    id: { type: String, default: "0" },
+    id: { type: String, default: "" },
+    name: Joi.string().min(3).max(50).required(),
     configuration: {
       type: String,
       default:
@@ -16,6 +17,7 @@ const Config = mongoose.model(
 function validateConfig(config) {
   const schema = Joi.object({
     id: Joi.string().min(3).max(50).required(),
+    name: Joi.string().min(3).max(50).required(),
     configuration: Joi.string().required(),
   });
 

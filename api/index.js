@@ -14,6 +14,7 @@ const configs = require("./routes/configs");
 const medias = require("./routes/medias");
 const labs = require("./routes/labs");
 const states = require("./routes/states");
+const admin = require("./routes/admin");
 
 const { createWebSocketStream } = require("ws");
 
@@ -37,6 +38,7 @@ app.use("/api/configs", configs);
 app.use("/api/media", medias);
 app.use("/api/labs", labs);
 app.use("/api/states", states);
+app.use("/api/admin", admin);
 
 // define the port to 3000 if not set by an enviroinment variable
 const port = process.env.PORT || 8080;

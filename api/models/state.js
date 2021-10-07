@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const State = mongoose.model(
   "State",
   new mongoose.Schema({
-    id: { type: String, default: "0" },
+    id: { type: String, default: "" },
     name: { type: String, minLength: 5, maxLength: 50, default: "default" },
     configuration: { type: String, default: " " },
   })

@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const Lab = mongoose.model(
   "Lab",
   new mongoose.Schema({
-    id: { type: String, default: "0" },
+    id: { type: String, default: "" },
+    name: Joi.string().min(3).max(50).required(),
     bloodgas: {
       type: String,
       default:
@@ -23,6 +24,7 @@ const Lab = mongoose.model(
 function validateLab(lab) {
   const schema = Joi.object({
     id: Joi.string().min(3).max(255).required(),
+    name: Joi.string().min(3).max(50).required(),
     bloodgas: Joi.string().max(255).required(),
     bloodgasAvailable: Joi.boolean().required(),
     cbc: Joi.string().max(255).required(),

@@ -5,7 +5,7 @@
         class="q-ma-sm col"
         :color="buttonColorEnabled"
         size="sm"
-        @click="toggleParameter"
+        @click="toggleEnabled"
       >
         {{ label }}
       </q-btn>
@@ -41,6 +41,16 @@
       />
     </div>
     <div v-if="enabled" class="row">
+      <q-btn
+        class="q-ma-sm col"
+        :color="buttonColorVisibility"
+        size="sm"
+        @click="toggleVisibility"
+      >
+        {{ labelVisibility }}
+      </q-btn>
+    </div>
+    <div v-if="enabled" class="row">
       <q-card
         class="q-ml-sm q-mr-sm q-pl-sm q-pr-sm q-pb-sm col bg-black"
         style="font-size: 10px"
@@ -56,7 +66,7 @@
         ></q-select>
       </q-card>
     </div>
-    <div v-if="enabled" class="row">
+    <!-- <div v-if="enabled" class="row">
       <q-card
         class="q-ml-sm q-mr-sm q-pl-sm q-pr-sm q-pb-sm col bg-black"
         style="font-size: 10px"
@@ -71,7 +81,7 @@
           dense
         ></q-select>
       </q-card>
-    </div>
+    </div> -->
     <div v-if="enabled" class="row">
       <q-btn class="q-ma-sm col" :color="buttonColorArm" @click="arm" size="sm">
         {{ buttonTextArm }}
@@ -128,12 +138,18 @@ export default {
     label: {
       required: true,
       type: String
+    },
+    mon_label: {
+      required: true,
+      type: String
     }
   },
   data() {
     return {
       enabled: true,
       visibile: true,
+      labelVisibility: 'CONNECTED',
+      buttonColorVisibility: "teal-10",
       buttonColorEnabled: "teal-10",
       buttonColorArm: "blue-10",
       buttonTextArm: "ARM",
@@ -195,10 +211,17 @@ export default {
     };
   },
   methods: {
-    toggleParameter () {
+    toggleVisibility () {
       this.visibile = !this.visibile
+      if (this.visibile) {
+        this.labelVisibility = 'CONNECTED'
+        this.buttonColorVisibility = "teal-10"
+      } else {
+        this.labelVisibility = 'DISCONNECTED'
+        this.buttonColorVisibility = "red-10"
+      }
       let setting = {
-        label: this.label,
+        label: this.mon_label,
         state: this.visibile
       }
       this.$root.$emit('togglevisibility', setting)
@@ -240,8 +263,7 @@ export default {
           this.buttonColorArm = "red-10";
           this.buttonTextArm = "ARMED";
           this.armed = true;
-          this.currentValueText =
-            this.currentValue.toFixed(1) + " -> " + this.targetValue;
+          this.currentValueText = this.currentValue.toFixed(0)
         } else {
           this.currentValue = this.targetValue;
           this.buttonColorArm = "blue-10";
@@ -383,7 +405,7 @@ export default {
           this.currentValueText = this.currentValue;
         } else {
           this.currentValueText =
-            this.currentValue.toFixed(1) + " -> " + this.targetValue;
+            this.currentValue.toFixed(0)
           this.startBlinkStatus = !this.startBlinkStatus;
           if (this.startBlinkStatus) {
             this.buttonStartColor = "black-10";

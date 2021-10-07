@@ -35,12 +35,14 @@ router.post('/', async (req, res) => {
       user.password = await bcrypt.hash(user.password, salt)
 
       // save it
+      user.id = user._id
       await user.save()
 
       // create a default monitor entry
       monitor = new Monitor()
 
       // attach the user id to the monitor id object
+      monitor.name = user.name
       monitor.id = user._id
 
       // save it
@@ -50,6 +52,7 @@ router.post('/', async (req, res) => {
       configuration = new Config()
 
       // attach the user id to the configuration object
+      configuration.name = user.name
       configuration.id = user._id
 
       // save it
@@ -59,6 +62,7 @@ router.post('/', async (req, res) => {
       state = new State()
 
       // attach the user id to the state object
+      state.name = user.name
       state.id = user._id
 
       // save it
@@ -68,6 +72,7 @@ router.post('/', async (req, res) => {
       lab = new Lab()
 
       // attach the user id to the lab object
+      lab.name = user.name
       lab.id = user._id
 
       // save it
