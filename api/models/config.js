@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Config = mongoose.model(
   "Config",
   new mongoose.Schema({
+    mes_type: { type: String, default: "mon_config" },
     id: { type: String, default: "" },
     name: Joi.string().min(3).max(50).required(),
     configuration: {

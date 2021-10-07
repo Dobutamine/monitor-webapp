@@ -2,7 +2,6 @@ const { User } = require ('../models/user')
 const { Monitor } = require ('../models/monitor')
 const { Lab } = require ('../models/lab')
 const { Config } = require ('../models/config')
-const { State } = require ('../models/state')
 
 const jwt = require ('jsonwebtoken')
 const Joi = require('joi')
@@ -23,7 +22,6 @@ router.delete('/user', async(req, res) => {
   let config = await Config.findOneAndDelete({ id: user.id })
   let monitor = await Monitor.findOneAndDelete({ id: user.id })
   let lab = await Lab.findOneAndDelete({ id: user.id })
-  let state = await State.findOneAndDelete({ id: user.id })
 
   const id = user.id
   user = await User.findOneAndDelete( { name: req.query.name.toUpperCase() })
@@ -74,18 +72,6 @@ router.get('/configs', async(req, res) => {
 
   res.send({ configs })
 })
-
-router.get('/states', async(req, res) => {
-
-  // first get the id of this user name
-  let states = await State.find()
-
-  // if we don't have the user return an error message
-  if (!states) res.status(400).send('no monitors found!')
-
-  res.send({ states })
-})
-
 
 
 
@@ -142,20 +128,6 @@ router.get('/lab', async(req, res) => {
 
   res.send({ name: user.name, id: user.id, lab: lab })
 })
-
-router.get('/state', async(req, res) => {
-
-  // first get the id of this user name
-  let user = await User.findOne( { name: req.query.name.toUpperCase() })
-
-  // if we don't have the user return an error message
-  if (!user) res.status(400).send('user name not found!')
-
-  let state = await State.findOne({ id: user.id });
-
-  res.send({ name: user.name, id: user.id, state: state })
-})
-
 
 
 router.post('/', async (req, res) => {

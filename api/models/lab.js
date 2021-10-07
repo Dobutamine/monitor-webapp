@@ -4,8 +4,9 @@ const mongoose = require("mongoose");
 const Lab = mongoose.model(
   "Lab",
   new mongoose.Schema({
+    mes_type: { type: String, default: "mon_lab" },
     id: { type: String, default: "" },
-    name: Joi.string().min(3).max(50).required(),
+    name: Joi.string().min(3).max(50),
     bloodgas: {
       type: String,
       default:

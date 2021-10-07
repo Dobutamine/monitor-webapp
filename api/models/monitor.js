@@ -1,9 +1,8 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
-const Monitor = mongoose.model(
-  "Monitor",
-  new mongoose.Schema({
+const Monitor = mongoose.model("Monitor", new mongoose.Schema({
+    mes_type: { type: String, default: "mon_values" },
     id: { type: String, default: "" },
     name: Joi.string().min(3).max(50).required(),
     heartrate: { type: Number, default: 125 },
@@ -29,4 +28,34 @@ const Monitor = mongoose.model(
   })
 );
 
+function validateMonitor(monitor) {
+  const schema = Joi.object({
+    id: Joi.string().required(),
+    name: Joi.string().required(),
+    heartrate: Joi.number().required(),
+    satPre: Joi.number().required(),
+    satPost: Joi.number().required(),
+    satVen: Joi.number().required(),
+    respRate: Joi.number().required(),
+    etco2: Joi.number().required(),
+    abpSyst: Joi.number().required(),
+    abpDiast: Joi.number().required(),
+    pfi: Joi.number().required(),
+    temp: Joi.number().required(),
+    cvp: Joi.number().required(),
+    papSyst: Joi.number().required(),
+    papDiast: Joi.number().required(),
+    rhythmType: Joi.number().required(),
+    rhythmParameter: Joi.number().required(),
+    intubated: Joi.boolean().required(),
+    imageName: Joi.string().required(),
+    compressionsFrequency: Joi.string().required(),
+    alarmOverride: Joi.boolean().required(),
+    configurationUpdateCounter: Joi.number().required()
+  });
+
+  return schema.validate(monitor);
+}
+
+exports.validate = validateMonitor;
 exports.Monitor = Monitor;
