@@ -60,28 +60,12 @@
           label="in time"
           v-model="timeInOption"
           :options="timeInOptions"
-          @change="changeTimeIn"
           dark
           dense
         ></q-select>
       </q-card>
     </div>
-    <!-- <div v-if="enabled" class="row">
-      <q-card
-        class="q-ml-sm q-mr-sm q-pl-sm q-pr-sm q-pb-sm col bg-black"
-        style="font-size: 10px"
-        bordered
-      >
-        <q-select
-          label="at time"
-          v-model="timeAtOption"
-          :options="timeAtOptions"
-          @change="changeTimeAt"
-          dark
-          dense
-        ></q-select>
-      </q-card>
-    </div> -->
+
     <div v-if="enabled" class="row">
       <q-btn class="q-ma-sm col" :color="buttonColorArm" @click="arm" size="sm">
         {{ buttonTextArm }}
@@ -105,23 +89,17 @@ import ChannelSettings from "components/ChannelSettings";
 
 /* eslint-disable */
 export default {
-  computed: {
-    drawerState: {
-      get() {
-        return this.$store.state.dataPool.drawerState;
-      },
-      set(val) {
-        this.$store.commit("dataPool/updateDrawerState", val);
-      }
-    }
-  },
   components: {
     ChannelSettings
   },
   props: {
-    value: {
+    monitorValues: {
       required: true,
-      type: Number
+      type: Object
+    },
+    monitorConfiguration: {
+      required: true,
+      type: Array
     },
     min: {
       required: true,
@@ -139,10 +117,24 @@ export default {
       required: true,
       type: String
     },
-    mon_label: {
+    value_name: {
       required: true,
-      type: String
+      type: String,
+      default: ""
     }
+
+  },
+  watch: {
+    monitorValues: function (newVal, oldVal)  {
+      // watch if the monitor values are loaded from the server
+      this.currentValue = newVal[this.value_name]
+      this.currentValueText = newVal[this.value_name]
+      this.targetValue = newVal[this.value_name]
+    },
+    monitorConfiguration: function (newVal, oldVal) {
+      // console.log(newVal)
+    }
+
   },
   data() {
     return {
@@ -212,19 +204,7 @@ export default {
   },
   methods: {
     toggleVisibility () {
-      this.visibile = !this.visibile
-      if (this.visibile) {
-        this.labelVisibility = 'CONNECTED'
-        this.buttonColorVisibility = "teal-10"
-      } else {
-        this.labelVisibility = 'DISCONNECTED'
-        this.buttonColorVisibility = "red-10"
-      }
-      let setting = {
-        label: this.mon_label,
-        state: this.visibile
-      }
-      this.$root.$emit('togglevisibility', setting)
+  
     },
     showPopUp() {
       this.$q.dialog({
@@ -233,12 +213,6 @@ export default {
         channel: null
       });
     },
-    changeTimeIn(e) {
-      console.log(e);
-    },
-    changeTimeAt(e) {
-      console.log(e);
-    },
     toggleEnabled() {
       this.enabled = !this.enabled;
       if (this.enabled) {
@@ -246,66 +220,15 @@ export default {
       } else {
         this.buttonColorEnabled = "red-10";
       }
-      this.updateValues();
     },
     changeTargetValue() {
-      this.stepSize = 0;
-      this.running = false;
-      this.buttonStartColor = "teal-10";
-      this.buttonStartText = "START";
-
-      this.buttonColorArm = "blue-10";
-      this.buttonTextArm = "ARM";
-      this.armed = false;
-
-      if (this.targetValue != this.currentValue) {
-        if (this.timeInOption != "instant") {
-          this.buttonColorArm = "red-10";
-          this.buttonTextArm = "ARMED";
-          this.armed = true;
-          this.currentValueText = this.currentValue.toFixed(0)
-        } else {
-          this.currentValue = this.targetValue;
-          this.buttonColorArm = "blue-10";
-          this.buttonTextArm = "ARM";
-          this.armed = false;
-          this.currentValueText = this.currentValue;
-        }
-      } else {
-        this.buttonColorArm = "blue-10";
-        this.buttonTextArm = "ARM";
-        this.armed = false;
-        this.currentValueText = this.currentValue;
-      }
+      this.monitorValues[this.value_name] = this.targetValue
     },
     arm() {
-      this.stepSize = 0;
-      this.armed = false;
-      this.buttonColorArm = "blue-10";
-      this.buttonTextArm = "ARM";
-      this.running = false;
-      this.buttonStartColor = "teal-10";
-      this.buttonStartText = "START";
-      this.currentValueText = this.currentValue;
+
     },
     start() {
-      if (!this.running) {
-        this.armed = false;
-        this.buttonColorArm = "blue-10";
-        this.buttonTextArm = "ARM";
-        this.buttonStartColor = "red-10";
-        this.buttonStartText = "RUNNING";
-        this.running = true;
-        this.timeIn = this.getTheTimeInTime();
-        this.timeLeft = this.timeIn;
-        this.stepSize = (this.targetValue - this.currentValue) / this.timeIn;
-      } else {
-        this.stepSize = 0;
-        this.running = false;
-        this.buttonStartColor = "teal-10";
-        this.buttonStartText = "START";
-        this.currentValueText = this.currentValue;
-      }
+
     },
     getTheTimeInTime() {
       const foundIndex = this.timeInOptions.indexOf(this.timeInOption);
@@ -315,134 +238,13 @@ export default {
         return 1;
       }
     },
-    setDataFromOutside(data) {
-      switch (this.label) {
-        case "HEARTRATE":
-          this.currentValue = data.heartrate;
-          this.currentValueText = this.currentValue.toString();
-          this.targetValue = data.heartrate;
-          break;
-        case "SAT PRE":
-          this.currentValue = data.satPre;
-          this.currentValueText = this.currentValue.toString();
-          this.targetValue = data.satPre;
-          break;
-        case "SAT POST":
-          this.currentValue = data.satPost;
-          this.currentValueText = this.currentValue.toString();
-          this.targetValue = data.satPost;
-          break;
-        case "RESP RATE":
-          this.currentValue = data.respRate;
-          this.currentValueText = this.currentValue.toString();
-          this.targetValue = data.respRate;
-          break;
-        case "ETCO2":
-          this.currentValue = data.etco2;
-          this.currentValueText = this.currentValue.toString();
-          this.targetValue = data.etco2;
-          break;
-        case "TEMPERATURE":
-          this.currentValue = data.temp;
-          this.currentValueText = this.currentValue.toString();
-          this.targetValue = data.temp;
-          break;
-        case "PFI":
-          this.currentValue = data.pfi;
-          this.currentValueText = this.currentValue.toString();
-          this.targetValue = data.pfi;
-          break;
-      }
-    },
-    updateValues() {
-      switch (this.label) {
-        case "HEARTRATE":
-          this.$store.commit("dataPool/heartrate", this.currentValue);
-          break;
-        case "SAT PRE":
-          this.$store.commit("dataPool/satPre", this.currentValue);
-          break;
-        case "SAT POST":
-          this.$store.commit("dataPool/satPost", this.currentValue);
-          break;
-        case "RESP RATE":
-          this.$store.commit("dataPool/respRate", this.currentValue);
-          break;
-        case "ETCO2":
-          this.$store.commit("dataPool/etco2", this.currentValue);
-          break;
-        case "TEMPERATURE":
-          this.$store.commit("dataPool/temp", this.currentValue);
-          break;
-        case "PFI":
-          this.$store.commit("dataPool/pfi", this.currentValue);
-          break;
-      }
-    },
-    blinker() {
-      this.updateValues();
-      if (this.armed) {
-        this.armedBlinkStatus = !this.armedBlinkStatus;
-        if (this.armedBlinkStatus) {
-          this.buttonColorArm = "black-10";
-        } else {
-          this.buttonColorArm = "red-10";
-        }
-      }
 
-      if (this.running) {
-        this.timeLeft -= 1;
-        this.currentValue += this.stepSize;
-        if (
-          Math.abs(this.currentValue - this.targetValue) <
-          Math.abs(this.stepSize)
-        ) {
-          this.currentValue = this.targetValue;
-          this.stepSize = 0;
-          this.running = false;
-          this.buttonStartColor = "teal-10";
-          this.buttonStartText = "START";
-          this.currentValueText = this.currentValue;
-        } else {
-          this.currentValueText =
-            this.currentValue.toFixed(0)
-          this.startBlinkStatus = !this.startBlinkStatus;
-          if (this.startBlinkStatus) {
-            this.buttonStartColor = "black-10";
-            this.buttonStartText = "RUNNING (" + this.timeLeft + ")";
-          } else {
-            this.buttonStartColor = "red-10";
-            this.buttonStartText = "RUNNING (" + this.timeLeft + ")";
-          }
-        }
-      }
-    }
   },
   mounted() {
-    this.currentValue = this.value;
-    this.currentValueText = this.currentValue;
-    this.targetValue = this.value;
 
-    this.$root.$on("instructorupdate", newdata => {
-      this.setDataFromOutside(newdata);
-    });
-
-    this.$root.$on("newheartrate", newdata => {
-      if (this.label === "HEARTRATE") {
-        this.currentValue = newdata;
-        this.currentValueText = this.currentValue;
-        this.targetValue = newdata;
-        this.$store.commit("dataPool/heartrate", this.currentValue);
-      }
-    });
-
-    setInterval(() => {
-      this.blinker();
-    }, 1000);
   },
   beforeDestroy() {
-    this.$root.$off("instructorupdate");
-    this.$root.$off("newheartrate");
+
   }
 };
 </script>

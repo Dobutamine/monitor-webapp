@@ -2,81 +2,87 @@
   <q-page padding class="bg-black">
     <div class="row justify-center q-ma-es">
       <div class="q-ma-sm col">
-        <!-- <SingleSlider
-          :value="hr"
+        <SingleSlider
+          label="HEARTRATE"
+          value_name="heartrate"
+          :monitorValues="monitorValues"
+          :monitorConfiguration="monitorConfiguration"
           :min="0"
           :max="240"
           :step="1"
-          label="HEARTRATE"
-          mon_label = "HR"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col">
         <SingleSlider
-          :value="97"
-          :min="0"
-          :max="100"
-          :step="1"
           label="SAT PRE"
-          mon_label = "SAT(1)"
+          value_name="satPre"
+          :monitorValues="monitorValues"
+          :monitorConfiguration="monitorConfiguration"
+          :min="0"
+          :max="100"
+          :step="1"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col">
         <SingleSlider
-          :value="95"
+          label="SAT POST"
+          value_name="satPost"
+          :monitorValues="monitorValues"
+          :monitorConfiguration="monitorConfiguration"
           :min="0"
           :max="100"
           :step="1"
-          label="SAT POST"
-          mon_label = "SAT(2)"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col-2">
         <DoubleSlider
-          :value="70"
-          :value2="50"
-          :min="0"
-          :max="100"
-          :step="1"
           label="ABP"
-          mon_label = "ABP"
+          value_name1="abpSyst"
+          value_name2="abpDiast"
+          :monitorValues="monitorValues"
+          :monitorConfiguration="monitorConfiguration"
+          :min="0"
+          :max="200"
+          :step="1"
         ></DoubleSlider>
       </div>
       <div class="q-ma-sm col">
         <SingleSlider
-          :value="50"
-          :min="0"
-          :max="100"
-          :step="1"
           label="RESP RATE"
-          mon_label = "RF"
-        ></SingleSlider>
-      </div>
-      <div class="q-ma-sm col">
-        <SingleSlider
-          :value="45"
+          value_name="respRate"
+          :monitorValues="monitorValues"
+          :monitorConfiguration="monitorConfiguration"
           :min="0"
           :max="100"
           :step="1"
-          label="ETCO2"
-          mon_label = "etCO2"
         ></SingleSlider>
       </div>
       <div class="q-ma-sm col">
         <SingleSlider
-          :value="36.6"
-          :min="28"
-          :max="42"
-          :step="0.1"
-          label="TEMPERATURE"
-          mon_label = "Temp"
-        ></SingleSlider> -->
+          label="ETCO2"
+          value_name="etco2"
+          :monitorValues="monitorValues"
+          :monitorConfiguration="monitorConfiguration"
+          :min="0"
+          :max="100"
+          :step="1"
+        ></SingleSlider>
       </div>
-      <!-- <div class="q-ma-sm col">
-            <SingleSlider :value=0 :min=0 :max=5 :step=0.1 label="PFI"></SingleSlider>
-        </div> -->
-    </div>
+      <div class="q-ma-sm col">
+        <SingleSlider
+          label="TEMPERATURE"
+          value_name="temp"
+          :monitorValues="monitorValues"
+          :monitorConfiguration="monitorConfiguration"
+          :min="28"
+          :max="43"
+          :step="0.1"
+        ></SingleSlider>
+      </div>
+     </div>
+
     <div class="row justify-center q-ma-es">
+      <q-btn @click="debug">press me</q-btn>
       <!-- <ButtonsInstructor></ButtonsInstructor> -->
     </div>
   </q-page>
@@ -84,8 +90,8 @@
 
 <script>
 /* eslint-disable */
-// import SingleSlider from "components/SingleSlider";
-// import DoubleSlider from "components/DoubleSlider";
+import SingleSlider from "components/SingleSlider";
+import DoubleSlider from "components/DoubleSlider";
 // import ButtonsInstructor from "components/ButtonsInstructor";
 // import ImageSelector from "components/ImageSelector";
 // import RhythmSelector from "components/RhythmSelector";
@@ -97,8 +103,8 @@ import axios from "axios";
 export default {
   name: "PageInstructor",
   components: {
-    // SingleSlider,
-    // DoubleSlider,
+    SingleSlider,
+    DoubleSlider,
     // ButtonsInstructor,
     // ImageSelector,
     // RhythmSelector,
@@ -113,11 +119,14 @@ export default {
       height: 0,
       max_width: 0,
       websocket: null,
-      monitorConfiguration: null,
-      monitorValues: null
+      monitorConfiguration: [],
+      monitorValues: {}
     };
   },
   methods: {
+    debug() {
+      console.log(this.monitorValues)
+    },
     updateInterfaceWithMonitorValues() {
       // update all instructor interface components with the current monitor values
       if (this.monitorValues) {

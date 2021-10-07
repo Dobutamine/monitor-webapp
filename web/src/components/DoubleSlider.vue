@@ -66,9 +66,6 @@
                 ></q-select>
             </q-card>
         </div>
-        <!-- 
-            
-         -->
          <div v-if="enabled" class="row">
              <q-btn class="q-ma-sm col" :color="buttonColorArm" @click="arm" size=sm>
                     {{ buttonTextArm }}
@@ -96,13 +93,13 @@ export default {
         }
     },
     props: {
-        value: {
+        monitorValues: {
             required: true,
-            type: Number
+            type: Object
         },
-        value2: {
+        monitorConfiguration: {
             required: true,
-            type: Number
+            type: Array
         },
         min: {
             required: true,
@@ -120,9 +117,29 @@ export default {
             required: true,
             type: String
         },
-        mon_label: {
+        value_name1: {
             required: true,
-            type: String
+            type: String,
+            default: ""
+        },
+        value_name2: {
+            required: true,
+            type: String,
+            default: ""
+        },
+    },
+    watch: {
+        monitorValues: function (newVal, oldVal)  {
+            // watch if the monitor values are loaded from the server
+            this.currentValue = newVal[this.value_name1]
+            this.currentValue2 = newVal[this.value_name2]
+            this.currentValueText = newVal[this.value_name1]
+            this.currentValueText2 = newVal[this.value_name2]
+            this.targetValue = newVal[this.value_name1]
+            this.targetValue2 = newVal[this.value_name2]
+        },
+        monitorConfiguration: function (newVal, oldVal) {
+            // console.log(newVal)
         }
     },
     data () {
@@ -159,19 +176,7 @@ export default {
     },
     methods: {
         toggleVisibility () {
-            this.visibile = !this.visibile
-            if (this.visibile) {
-                this.labelVisibility = 'CONNECTED'
-                this.buttonColorVisibility = "teal-10"
-            } else {
-                this.labelVisibility = 'DISCONNECTED'
-                this.buttonColorVisibility = "red-10"
-            }
-            let setting = {
-                label: this.mon_label,
-                state: this.visibile
-            }
-            this.$root.$emit('togglevisibility', setting)
+
         },
         toggleEnabled () {
             this.enabled = !this.enabled
@@ -183,97 +188,13 @@ export default {
         },
         changeTargetValue () {
 
-            this.stepSize = 0
-            this.running = false
-            this.buttonStartColor = 'teal-10'
-            this.buttonStartText = 'START'
-
-            this.buttonColorArm = 'blue-10'
-            this.buttonTextArm = 'ARM'
-            this.armed = false
-
-            if (this.targetValue != this.currentValue) {
-                if (this.timeInOption != 'instant') {
-                    this.buttonColorArm = 'red-10'
-                    this.buttonTextArm = 'ARMED'
-                    this.armed = true
-                    this.currentValueText =this.currentValue.toFixed(0)
-                } else {
-                    this.currentValue = this.targetValue
-                    this.buttonColorArm = 'blue-10'
-                    this.buttonTextArm = 'ARM'
-                    this.armed = false
-                    this.currentValueText = this.currentValue.toFixed(0)
-                } 
-            } else {
-                this.buttonColorArm = 'blue-10'
-                this.buttonTextArm = 'ARM'
-                this.armed = false
-                this.currentValueText = this.currentValue.toFixed(0)
-            }
         },
         changeTargetValue2 () {
 
-            this.stepSize2 = 0
-            this.running = false
-            this.buttonStartColor = 'teal-10'
-            this.buttonStartText = 'START'
-
-            this.buttonColorArm = 'blue-10'
-            this.buttonTextArm = 'ARM'
-            this.armed = false
-
-            if (this.targetValue2 != this.currentValue2) {
-                if (this.timeInOption != 'instant') {
-                    this.buttonColorArm = 'red-10'
-                    this.buttonTextArm = 'ARMED'
-                    this.armed = true
-                    this.currentValueText2 = this.currentValue2.toFixed(0)
-                } else {
-                    this.currentValue2 = this.targetValue2
-                    this.buttonColorArm = 'blue-10'
-                    this.buttonTextArm = 'ARM'
-                    this.armed = false
-                    this.currentValueText2 = this.currentValue2.toFixed(0)
-                } 
-            } else {
-                this.buttonColorArm = 'blue-10'
-                this.buttonTextArm = 'ARM'
-                this.armed = false
-                this.currentValueText2 = this.currentValue2.toFixed(0)
-            }
         },
         arm () {
-            this.stepSize = 0
-            this.armed = false
-            this.buttonColorArm = 'blue-10'
-            this.buttonTextArm = 'ARM'
-            this.running = false
-            this.buttonStartColor = 'teal-10'
-            this.buttonStartText = 'START'
-            this.currentValueText = (this.currentValue).toFixed(0)
         },
-        start () {
-            if (!this.running) {
-                this.armed = false
-                this.buttonColorArm = 'blue-10'
-                this.buttonTextArm = 'ARM'
-                this.buttonStartColor = 'red-10'
-                this.buttonStartText = 'RUNNING'
-                this.running = true
-                this.timeIn = this.getTheTimeInTime()
-                this.timeLeft = this.timeIn
-                this.stepSize = (this.targetValue - this.currentValue) / this.timeIn
-                this.stepSize2 = (this.targetValue2 - this.currentValue2) / this.timeIn
-            } else {
-                this.stepSize = 0
-                this.stepSize2 = 0
-                this.running = false
-                this.buttonStartColor = 'teal-10'
-                this.buttonStartText = 'START'
-                this.currentValueText = this.currentValue.toFixed(0)
-                this.currentValueText2 = this.currentValue2.toFixed(0)
-            }        
+        start () {     
         },
         getTheTimeInTime () {
             const foundIndex = this.timeInOptions.indexOf(this.timeInOption)
@@ -282,112 +203,14 @@ export default {
             } else {
                 return 1
             }
-        },
-        setDataFromOutside (data) {
-            switch (this.label) {
-                
-                case "ABP":
-                    this.currentValue = data.abpSyst
-                    this.currentValueText = this.currentValue.toString()
-                    this.targetValue = data.abpSyst
-
-                    this.currentValue2 = data.abpDiast
-                    this.currentValueText2 = this.currentValue2.toString()
-                    this.targetValue2 = data.abpDiast
-                    break
-                case "PAP":
-                    this.currentValue = data.papSyst
-                    this.currentValueText = this.currentValue.toString()
-                    this.targetValue = data.papSyst
-
-                    this.currentValue2 = data.papDiast
-                    this.currentValueText2 = this.currentValue2.toString()
-                    this.targetValue2 = data.papDiast
-                    break
-            }
-        },
-        updateValues () {
-            switch (this.label) {
-                case "ABP":
-                    this.$store.commit('dataPool/abpSyst', this.currentValue)
-                    this.$store.commit('dataPool/abpDiast', this.currentValue2)
-                    break
-                case "PAP":
-                    this.$store.commit('dataPool/papSyst', this.currentValue)
-                    this.$store.commit('dataPool/papDiast', this.currentValue2)
-                    break
-            }
-        },
-        blinker () {
-            this.updateValues()
-            if (this.armed) {
-                this.armedBlinkStatus = !this.armedBlinkStatus
-                if (this.armedBlinkStatus) {
-                    this.buttonColorArm = 'black-10'
-                } else {
-                    this.buttonColorArm = 'red-10'
-                }
-            }
-
-            if (this.running) {
-                this.timeLeft -= 1
-                this.currentValue += this.stepSize
-                this.currentValue2 += this.stepSize2
-
-                if (Math.abs(this.currentValue - this.targetValue) < Math.abs(this.stepSize)) {
-                    this.currentValue = this.targetValue
-                    this.stepSize = 0
-                    this.currentValueText = this.currentValue.toFixed(0)
-                } else {
-                    this.currentValueText = (this.currentValue).toFixed(0)
-                    this.startBlinkStatus = !this.startBlinkStatus
-                }
-
-                if (Math.abs(this.currentValue2 - this.targetValue2) < Math.abs(this.stepSize2)) {
-                    this.currentValue2 = this.targetValue2
-                    this.stepSize2 = 0
-                    this.running = false
-                    this.currentValueText2 = this.currentValue2.toFixed(0)
-                } else {
-                    this.currentValueText2 = (this.currentValue2).toFixed(0)
-                    this.startBlinkStatus = !this.startBlinkStatus
-                }
-
-                if (this.stepSize === 0 && this.stepSize2 === 0) {
-                    this.running = false
-                    this.buttonStartColor = 'teal-10'
-                    this.buttonStartText = 'START'
-
-                } else {
-                    if (this.startBlinkStatus){
-                        this.buttonStartColor = 'black-10'
-                        this.buttonStartText = 'RUNNING (' + this.timeLeft +')'
-                    } else {
-                        this.buttonStartColor = 'red-10'
-                        this.buttonStartText = 'RUNNING (' + this.timeLeft + ')'
-                    }
-                }
-            }
         }
+
     },
     mounted () {
-        this.currentValue = this.value
-        this.currentValue2 = this.value2
-        this.currentValueText = this.currentValue
-        this.targetValue = this.value
-        this.targetValue2 = this.value2
-        this.currentValueText2 = this.currentValue2
-
-        this.$root.$on('instructorupdate', (newdata) => {
-            this.setDataFromOutside(newdata)
-        })
-
-        setInterval(() => {
-            this.blinker()
-        }, 1000);
+  
     },
     beforeDestroy () {
-        this.$root.$off('instructorupdate')
+
     }
 
 }
