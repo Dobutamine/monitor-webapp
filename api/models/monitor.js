@@ -21,9 +21,11 @@ const Monitor = mongoose.model("Monitor", new mongoose.Schema({
     rhythmType: { type: Number, default: 0 },
     rhythmParameter: { type: Number, default: 0 },
     intubated: { type: Boolean, default: false },
-    imageName: { type: String, default: "" },
     compressionsFrequency: { type: String, default: "none" },
     alarmOverride: { type: Boolean, default: false },
+    imageUpdateCounter: { type: Number, default: 0 },
+    imageName: { type: String, default: "" },
+    labUpdateCounter: { type: Number, default: 0 },
     configurationUpdateCounter: { type: Number, default: 0 }
   })
 );
@@ -48,9 +50,11 @@ function validateMonitor(monitor) {
     rhythmType: Joi.number().required(),
     rhythmParameter: Joi.number().required(),
     intubated: Joi.boolean().required(),
-    imageName: Joi.string().required(),
     compressionsFrequency: Joi.string().required(),
     alarmOverride: Joi.boolean().required(),
+    imageName: Joi.string().required(),
+    imageUpdateCounter: Joi.number().required(),
+    labUpdateCounter: Joi.number().required(),
     configurationUpdateCounter: Joi.number().required()
   });
 

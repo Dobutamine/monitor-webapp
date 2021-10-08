@@ -147,13 +147,9 @@ export default {
       buttonTextArm: "ARM",
       buttonStartColor: "teal-10",
       buttonStartText: "START",
-      armed: false,
-      armedBlinkStatus: false,
-      startBlinkStatus: false,
       currentValue: 10,
       currentValueText: "10",
       targetValue: 20,
-      running: false,
       timeIn: 5,
       timeAt: 0,
       timeLeft: 0,
@@ -170,36 +166,7 @@ export default {
         "3 min"
       ],
       timeInOption: "instant",
-      timeAtOptions: [
-        "instant",
-        "5 sec",
-        "10 sec",
-        "15 sec",
-        "20 sec",
-        "30 sec",
-        "1 min",
-        "2 min",
-        "3 min"
-      ],
-      timeAtOption: "instant",
-      timings: [0, 5, 10, 15, 20, 30, 60, 120, 180],
-      configuration: {
-        label: "",
-        order: 0,
-        source1: "empty",
-        source2: "",
-        timeframe: 5,
-        performance: 1,
-        color: "0x000000",
-        zoom: 0.6,
-        grid: false,
-        autoscale: false,
-        minY: -10,
-        maxY: 20,
-        limiterMax: "",
-        limiterMin: "",
-        squeezeFactor: 0
-      }
+      timings: [0, 5, 10, 15, 20, 30, 60, 120, 180]
     };
   },
   methods: {

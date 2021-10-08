@@ -7,15 +7,8 @@
               <q-icon name="laptop_chromebook" />
             </div>
             <div class="col3 text-center">
-              <div v-if="!visible" class="col text-center">
-                  EXPLAIN! patient monitor emulator
-              </div>
-
               <div v-if="visible" class="col text-center">
-                    <q-btn v-if='btnMonitorVisibility'  :class="btnMonitor" @click="gotoMonitor" style="width: 100px" dense size=sm>MONITOR</q-btn>
-                    <q-btn v-if='btnInstructorVisibility'  :class="btnInstructor" @click="gotoInstructor" style="width: 100px" dense size=sm>INSTRUCTOR</q-btn>
-                    <q-btn v-if='btnImagesVisibility'  :class="btnImages" @click="gotoImages" style="width: 100px" dense size=sm>IMAGES</q-btn>
-
+                  EXPLAIN! patient monitor emulator
               </div>
             </div>
             <div class="col text-right text-size-sm">

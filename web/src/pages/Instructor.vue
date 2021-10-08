@@ -81,9 +81,61 @@
       </div>
      </div>
 
+    
+    
     <div class="row justify-center q-ma-es">
-      <q-btn @click="debug">press me</q-btn>
-      <!-- <ButtonsInstructor></ButtonsInstructor> -->
+      <q-card class="bg-dark">
+        <div class="q-gutter-xs">
+          <q-btn
+            class="bg-blue-grey-10"
+            @click="debug"
+            style="height: 60px; width: 120px"
+            >ALARMS ENABLED</q-btn
+          >
+          <q-btn
+            class="bg-blue-grey-10"
+            @click="openMonitorConfiguration"
+            style="height: 60px; width: 120px"
+            >MONITOR CONFIG</q-btn
+          >
+          <q-btn
+            class="bg-blue-grey-10"
+            @click="openImageSelector"
+            style="height: 60px; width: 120px"
+            >SELECT IMAGE</q-btn
+          >
+          <q-btn
+            class="bg-blue-grey-10"
+            @click="openLabSelector"
+            style="height: 60px; width: 120px"
+            >SELECT LAB RESULTS</q-btn
+          >
+          <q-btn
+            class="bg-blue-grey-10"
+            @click="openRhythmSelector"
+            style="height: 60px; width: 120px"
+            >CARDIAC RHYTHM</q-btn
+          >
+          <q-btn
+            :class="chestCompressionsColor"
+            @click="openCompressionsSelector"
+            style="height: 60px; width: 120px"
+            >CHEST COMPRESSIONS</q-btn
+          >
+          <q-btn
+            :class="intubationButtonColor"
+            @click="toggleIntubation"
+            style="height: 60px; width: 120px"
+            >{{ intubationButtonText }}</q-btn
+          >
+          <q-btn
+            class="bg-blue-grey-10"
+            @click="debug"
+            style="height: 60px; width: 120px"
+            >CONNECTED</q-btn
+          >
+        </div>
+      </q-card>
     </div>
   </q-page>
 </template>
@@ -92,11 +144,11 @@
 /* eslint-disable */
 import SingleSlider from "components/SingleSlider";
 import DoubleSlider from "components/DoubleSlider";
-// import ButtonsInstructor from "components/ButtonsInstructor";
-// import ImageSelector from "components/ImageSelector";
-// import RhythmSelector from "components/RhythmSelector";
-// import CompressionsSelector from "components/CompressionsSelector";
-// import LabSelector from "components/LabSelector";
+import monitorConfigurationPopup from "components/monitorConfiguration";
+import ImageSelector from "components/ImageSelector";
+import RhythmSelector from "components/RhythmSelector";
+import CompressionsSelector from "components/CompressionsSelector";
+import LabSelector from "components/LabSelector";
 
 import axios from "axios";
 
@@ -105,11 +157,11 @@ export default {
   components: {
     SingleSlider,
     DoubleSlider,
-    // ButtonsInstructor,
-    // ImageSelector,
-    // RhythmSelector,
-    // CompressionsSelector,
-    // LabSelector
+    monitorConfigurationPopup,
+    ImageSelector,
+    RhythmSelector,
+    CompressionsSelector,
+    LabSelector
   },
   data() {
     return {
@@ -120,12 +172,55 @@ export default {
       max_width: 0,
       websocket: null,
       monitorConfiguration: [],
-      monitorValues: {}
+      monitorValues: {},
+      intubationButtonColor: "bg-blue-grey-10",
+      intubationButtonText: "MECHANICAL VENTILATION",
+      chestCompressionsColor: "bg-blue-grey-10",
+      bluegrey: "bg-blue-grey-10",
+      red: "bg-red-10",
+
     };
   },
   methods: {
-    debug() {
-      console.log(this.monitorValues)
+    openCompressionsSelector() {
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      this.$q.dialog({
+        component: CompressionsSelector,
+        parent: this,
+        imgSize: styleImg
+      });
+    },
+    openRhythmSelector() {
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      this.$q.dialog({
+        component: RhythmSelector,
+        parent: this,
+        imgSize: styleImg
+      });
+    },
+    openLabSelector() {
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${ this.$q.screen.height }px`;
+      this.$q.dialog({
+        component: LabSelector,
+        parent: this,
+        imgSize: styleImg
+      });
+    },
+    openImageSelector() {
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      this.$q.dialog({
+        component: ImageSelector,
+        parent: this,
+        image_no: 2,
+        imgSize: styleImg
+      });
+    },
+    openMonitorConfiguration () {
+      this.$q.dialog({
+        component: monitorConfigurationPopup,
+        parent: this,
+        monitorConfiguration: this.monitorConfiguration
+      });
     },
     updateInterfaceWithMonitorValues() {
       // update all instructor interface components with the current monitor values
@@ -241,57 +336,9 @@ export default {
     // first get the api and websocket api url from the store
     this.apiUrl = this.$store.state.dataPool.apiUrl;
     this.webSocketUrl = this.$store.state.dataPool.apiWebSocketUrl;
-
-    // emit a message that the instructor page is mounted
-    this.$root.$emit("instructor");
-
-    // get the window size
-    this.height = this.$q.screen.height - 50 + "px";
-    this.max_width = this.$q.screen.width;
-
+    
     // set the color scheme
     this.$q.dark.set(true);
-
-    // listen for event 'imageselector' to show the appropriate dialog
-    this.$root.$on("imageselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
-      this.$q.dialog({
-        component: ImageSelector,
-        parent: this,
-        image_no: 2,
-        imgSize: styleImg
-      });
-    });
-
-    // listen for event 'rhythmselector' to show the appropriate dialog
-    this.$root.$on("rhythmselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
-      this.$q.dialog({
-        component: RhythmSelector,
-        parent: this,
-        imgSize: styleImg
-      });
-    });
-
-    // listen for event 'compressionsselector' to show the appropriate dialog
-    this.$root.$on("compressionsselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
-      this.$q.dialog({
-        component: CompressionsSelector,
-        parent: this,
-        imgSize: styleImg
-      });
-    });
-
-    // listen for event 'labselector' to show the appropriate dialog
-    this.$root.$on("labselector", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${ this.$q.screen.height }px`;
-      this.$q.dialog({
-        component: LabSelector,
-        parent: this,
-        imgSize: styleImg
-      });
-    });
 
     // get the current monitor configuration from the api
     this.getMonitorConfigurationFromServer()
@@ -303,11 +350,6 @@ export default {
   beforeDestroy() {
     // close the websocket connection with the api
     this.websocket.close()
-    // remove all event listeners before closing
-    this.$root.$off("imageselector");
-    this.$root.$off("rhythmselector");
-    this.$root.$off("compressionsselector");
-    this.$root.$off("labselector");
   }
 };
 </script>
