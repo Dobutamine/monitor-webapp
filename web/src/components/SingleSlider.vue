@@ -99,7 +99,7 @@ export default {
     },
     monitorConfiguration: {
       required: true,
-      type: Array
+      type: Object
     },
     min: {
       required: true,

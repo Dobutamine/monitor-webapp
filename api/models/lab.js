@@ -7,17 +7,40 @@ const Lab = mongoose.model(
     mes_type: { type: String, default: "mon_lab" },
     id: { type: String, default: "" },
     name: Joi.string().min(3).max(50),
-    bloodgas: {
-      type: String,
-      default:
-        '{"na":140,"k":3.8,"cl":100,"ph":7.4,"po2":100,"pco2":35,"bic":25,"be":-0.5,"glucose":3.5,"lactate":1}',
-    },
+    bloodgas: { type: Object, default: {
+      na: 140,
+      k: 3.8,
+      cl: 100,
+      ph: 7.4,
+      po2: 100,
+      pco2: 35,
+      bic: 25,
+      be: -0.5,
+      glucose: 3.5,
+      lactate: 1
+    }},
     bloodgasAvailable: { type: Boolean, default: false },
-    cbc: { type: String, default: "" },
+    cbc: { type: Object, default: {
+      hb: 10,
+      ht: 0.5,
+      leucocytes: 6.7,
+      trombocytes: 245
+    } },
     cbcAvailable: { type: Boolean, default: false },
-    electrolytes: { type: String, default: "" },
+    electrolytes: { type: Object, default: {
+      na: 140,
+      k: 3.8,
+      cl: 100,
+      ca: 2.0,
+      ph: 1.8,
+      mg: 0.9,
+    } },
     electrolytesAvailable: { type: Boolean, default: false },
-    other: { type: String, default: "" },
+    other: { type: Object, default: {
+      ur: 23,
+      kr: 56,
+      alb: 25
+    } },
     otherAvailable: { type: Boolean, default: false },
   })
 );
@@ -26,13 +49,13 @@ function validateLab(lab) {
   const schema = Joi.object({
     id: Joi.string().min(3).max(255).required(),
     name: Joi.string().min(3).max(50).required(),
-    bloodgas: Joi.string().max(255).required(),
+    bloodgas: Joi.object().required(),
     bloodgasAvailable: Joi.boolean().required(),
-    cbc: Joi.string().max(255).required(),
+    cbc: Joi.object().required(),
     cbcAvailable: Joi.boolean().required(),
-    electrolytes: Joi.string().max(255).required(),
+    electrolytes: Joi.object().required(),
     electrolytesAvailable: Joi.boolean().required(),
-    other: Joi.string().max(255).required(),
+    other: Joi.object().required(),
     otherAvailable: Joi.boolean().required(),
   });
 

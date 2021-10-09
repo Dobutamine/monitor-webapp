@@ -168,7 +168,7 @@ export default {
       height: 0,
       max_width: 0,
       websocket: null,
-      monitorConfiguration: [],
+      monitorConfiguration: {},
       monitorValues: {},
       intubationButtonColor: "bg-blue-grey-10",
       intubationButtonText: "MECHANICAL VENTILATION",
@@ -246,7 +246,7 @@ export default {
       axios.get(url)
         .then(res => {
           console.log('instructor interface got monitor configuration from server')
-          this.monitorConfiguration = JSON.parse(res.data.configuration);
+          this.monitorConfiguration = res.data;
           this.updateInterfaceWithMonitorConfiguration()
         })
         .catch(error => {

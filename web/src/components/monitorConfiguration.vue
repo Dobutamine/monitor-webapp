@@ -157,7 +157,7 @@ export default {
   props: {
     monitorConfiguration: {
       required: true,
-      type: Array
+      type: Object
     },
     monitorValues: {
       required: true,
@@ -251,68 +251,56 @@ export default {
 
     },
     updateMonitorConfigurationInterface () {
-      this.monitorConfiguration.forEach(configuration => {
-        switch (configuration.channelNo) {
-          case 1:
-            // this is curve 0
-            this.parameter_ch0 = configuration.label
-            this.alarmEnabled_ch0 = configuration.alarmEnabled
-            this.color_ch0 = configuration.color
-            this.upperAlarm_ch0 = configuration.upperAlarm
-            this.lowerAlarm_ch0 = configuration.lowerAlarm
-            break;
-          case 2:
-            this.parameter_ch1 = configuration.label
-            this.alarmEnabled_ch1 = configuration.alarmEnabled
-            this.color_ch1 = configuration.color
-            this.upperAlarm_ch1 = configuration.upperAlarm
-            this.lowerAlarm_ch1 = configuration.lowerAlarm
-            break;
-          case 3:
-            this.parameter_ch2 = configuration.label
-            this.alarmEnabled_ch2 = configuration.alarmEnabled
-            this.color_ch2 = configuration.color
-            this.upperAlarm_ch2 = configuration.upperAlarm
-            this.lowerAlarm_ch2 = configuration.lowerAlarm
-            break;
-          case 4:
-            this.parameter_ch3 = configuration.label
-            this.alarmEnabled_ch3 = configuration.alarmEnabled
-            this.color_ch3 = configuration.color
-            this.upperAlarm_ch3 = configuration.upperAlarm
-            this.lowerAlarm_ch3 = configuration.lowerAlarm
-            break;
-          case 5:
-            this.parameter_ch4 = configuration.label
-            this.alarmEnabled_ch4 = configuration.alarmEnabled
-            this.color_ch4 = configuration.color
-            this.upperAlarm_ch4 = configuration.upperAlarm
-            this.lowerAlarm_ch4 = configuration.lowerAlarm
-            break;
-          case 6:
-            this.parameter_ch5 = configuration.label
-            this.alarmEnabled_ch5 = configuration.alarmEnabled
-            this.color_ch5 = configuration.color
-            this.upperAlarm_ch5 = configuration.upperAlarm
-            this.lowerAlarm_ch5 = configuration.lowerAlarm
-            break;
+      console.log(this.monitorConfiguration)
+      // this.monitorConfiguration.forEach(configuration => {
+      //   switch (configuration.channelNo) {
+      //     case 1:
+      //       // this is curve 0
+      //       this.parameter_ch0 = configuration.label
+      //       this.alarmEnabled_ch0 = configuration.alarmEnabled
+      //       this.color_ch0 = configuration.color
+      //       this.upperAlarm_ch0 = configuration.upperAlarm
+      //       this.lowerAlarm_ch0 = configuration.lowerAlarm
+      //       break;
+      //     case 2:
+      //       this.parameter_ch1 = configuration.label
+      //       this.alarmEnabled_ch1 = configuration.alarmEnabled
+      //       this.color_ch1 = configuration.color
+      //       this.upperAlarm_ch1 = configuration.upperAlarm
+      //       this.lowerAlarm_ch1 = configuration.lowerAlarm
+      //       break;
+      //     case 3:
+      //       this.parameter_ch2 = configuration.label
+      //       this.alarmEnabled_ch2 = configuration.alarmEnabled
+      //       this.color_ch2 = configuration.color
+      //       this.upperAlarm_ch2 = configuration.upperAlarm
+      //       this.lowerAlarm_ch2 = configuration.lowerAlarm
+      //       break;
+      //     case 4:
+      //       this.parameter_ch3 = configuration.label
+      //       this.alarmEnabled_ch3 = configuration.alarmEnabled
+      //       this.color_ch3 = configuration.color
+      //       this.upperAlarm_ch3 = configuration.upperAlarm
+      //       this.lowerAlarm_ch3 = configuration.lowerAlarm
+      //       break;
+      //     case 5:
+      //       this.parameter_ch4 = configuration.label
+      //       this.alarmEnabled_ch4 = configuration.alarmEnabled
+      //       this.color_ch4 = configuration.color
+      //       this.upperAlarm_ch4 = configuration.upperAlarm
+      //       this.lowerAlarm_ch4 = configuration.lowerAlarm
+      //       break;
+      //     case 6:
+      //       this.parameter_ch5 = configuration.label
+      //       this.alarmEnabled_ch5 = configuration.alarmEnabled
+      //       this.color_ch5 = configuration.color
+      //       this.upperAlarm_ch5 = configuration.upperAlarm
+      //       this.lowerAlarm_ch5 = configuration.lowerAlarm
+      //       break;
 
-        }
+      //   }
         
-      });
-      // curve 0
-      
-      /*
-      alarmEnabled: (...)
-channelNo: (...)
-color: (...)
-label: (...)
-lowerAlarm: (...)
-source1: (...)
-source2: (...)
-upperAlarm: (...)
-visible: (...)
-      */
+      // });
 
     },
     updateMonitorConfigurationOnServer() {

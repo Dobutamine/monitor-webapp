@@ -845,6 +845,7 @@ export default {
       axios
         .get(url)
         .then(res => {
+          console.log(res.data)
           this.bloodgasAvailable = res.data.bloodgasAvailable;
           if (this.bloodgasAvailable) {
             this.btnAvailableBloodgasColor = "teal-10";
@@ -870,33 +871,33 @@ export default {
             this.btnAvailableOtherText = "NOT AVAILABLE ON MONITOR";
           }
 
-          const parsedBloodgas = JSON.parse(res.data.bloodgas);
-          this.sodium = parsedBloodgas.na;
-          this.potassium = parsedBloodgas.k;
-          this.chloride = parsedBloodgas.cl;
-          this.glucose = parsedBloodgas.glucose;
-          this.lactate = parsedBloodgas.lactate;
-          this.ph = parsedBloodgas.ph;
-          this.pco2 = parsedBloodgas.pco2;
-          this.po2 = parsedBloodgas.po2;
-          this.be = parsedBloodgas.be;
-          this.bic = parsedBloodgas.bic;
+          // const parsedBloodgas = JSON.parse(res.data.bloodgas);
+          // this.sodium = parsedBloodgas.na;
+          // this.potassium = parsedBloodgas.k;
+          // this.chloride = parsedBloodgas.cl;
+          // this.glucose = parsedBloodgas.glucose;
+          // this.lactate = parsedBloodgas.lactate;
+          // this.ph = parsedBloodgas.ph;
+          // this.pco2 = parsedBloodgas.pco2;
+          // this.po2 = parsedBloodgas.po2;
+          // this.be = parsedBloodgas.be;
+          // this.bic = parsedBloodgas.bic;
 
-          const parsedCBC = JSON.parse(res.data.cbc);
-          this.hemoglobin = parsedCBC.hb;
-          this.hematocrit = parsedCBC.ht;
-          this.leucocytes = parsedCBC.leuco;
-          this.trombocytes = parsedCBC.tht;
+          // const parsedCBC = JSON.parse(res.data.cbc);
+          // this.hemoglobin = parsedCBC.hb;
+          // this.hematocrit = parsedCBC.ht;
+          // this.leucocytes = parsedCBC.leuco;
+          // this.trombocytes = parsedCBC.tht;
 
-          const parsedOther = JSON.parse(res.data.other);
-          this.CRP = parsedOther.CRP;
-          this.urea = parsedOther.urea;
-          this.kreatinine = parsedOther.kreatinine;
-          this.albumin = parsedOther.albumin;
-          this.ammonia = parsedOther.ammonia;
-          this.calcium = parsedOther.calcium;
-          this.phosphate = parsedOther.phosphate;
-          this.magnesium = parsedOther.magnesium;
+          // const parsedOther = JSON.parse(res.data.other);
+          // this.CRP = parsedOther.CRP;
+          // this.urea = parsedOther.urea;
+          // this.kreatinine = parsedOther.kreatinine;
+          // this.albumin = parsedOther.albumin;
+          // this.ammonia = parsedOther.ammonia;
+          // this.calcium = parsedOther.calcium;
+          // this.phosphate = parsedOther.phosphate;
+          // this.magnesium = parsedOther.magnesium;
         })
         .catch(error => {
           console.log(error);
