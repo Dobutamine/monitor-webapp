@@ -158,6 +158,10 @@ export default {
     monitorConfiguration: {
       required: true,
       type: Array
+    },
+    monitorValues: {
+      required: true,
+      type: Object
     }
   },
   watch: {
@@ -312,7 +316,21 @@ visible: (...)
 
     },
     updateMonitorConfigurationOnServer() {
-
+      const url = `${this.apiUrl}/api/configs/new`;
+      axios
+        .post(url, {
+          id: this.id,
+        })
+        .then(res => {
+          // store the image name in the monitor values object
+          console.log('monitor configuration updated by instructor')
+          // increase the update counter
+          this.monitorValues.configurationUpdateCounter += 1
+          // signal the instructor component that the monitor values are changed
+          this.$root.$emit('updatemonitorvitals')
+        })
+        .catch(error => {});
+      
     },
     show() {
       this.$refs.dialog.show();

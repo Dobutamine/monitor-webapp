@@ -88,7 +88,6 @@
         <div class="q-gutter-xs">
           <q-btn
             class="bg-blue-grey-10"
-            @click="debug"
             style="height: 60px; width: 120px"
             >ALARMS ENABLED</q-btn
           >
@@ -124,13 +123,11 @@
           >
           <q-btn
             :class="intubationButtonColor"
-            @click="toggleIntubation"
             style="height: 60px; width: 120px"
             >{{ intubationButtonText }}</q-btn
           >
           <q-btn
             class="bg-blue-grey-10"
-            @click="debug"
             style="height: 60px; width: 120px"
             >CONNECTED</q-btn
           >
@@ -178,6 +175,8 @@ export default {
       chestCompressionsColor: "bg-blue-grey-10",
       bluegrey: "bg-blue-grey-10",
       red: "bg-red-10",
+      serverUpdateTimer: null,
+      configUpdateTimer: null,
 
     };
   },
@@ -187,7 +186,8 @@ export default {
       this.$q.dialog({
         component: CompressionsSelector,
         parent: this,
-        imgSize: styleImg
+        imgSize: styleImg,
+        monitorValues: this.monitorValues
       });
     },
     openRhythmSelector() {
@@ -195,7 +195,8 @@ export default {
       this.$q.dialog({
         component: RhythmSelector,
         parent: this,
-        imgSize: styleImg
+        imgSize: styleImg,
+        monitorValues: this.monitorValues
       });
     },
     openLabSelector() {
@@ -203,7 +204,8 @@ export default {
       this.$q.dialog({
         component: LabSelector,
         parent: this,
-        imgSize: styleImg
+        imgSize: styleImg,
+        monitorValues: this.monitorValues
       });
     },
     openImageSelector() {
@@ -212,14 +214,16 @@ export default {
         component: ImageSelector,
         parent: this,
         image_no: 2,
-        imgSize: styleImg
+        imgSize: styleImg,
+        monitorValues: this.monitorValues
       });
     },
     openMonitorConfiguration () {
       this.$q.dialog({
         component: monitorConfigurationPopup,
         parent: this,
-        monitorConfiguration: this.monitorConfiguration
+        monitorConfiguration: this.monitorConfiguration,
+        monitorValues: this.monitorValues
       });
     },
     updateInterfaceWithMonitorValues() {
@@ -257,6 +261,8 @@ export default {
         })
         .then(res => {
           console.log('instructor interface updated the monitor configuration')
+          clearTimeout(this.configUpdateTimer)
+          this.configUpdateTimer = null
         })
         .catch(error => {}
       );
@@ -271,6 +277,8 @@ export default {
         }
         this.websocket.send(JSON.stringify(message));
         console.log('instructor interface updated the monitor values')
+        clearTimeout(this.serverUpdateTimer)
+        this.serverUpdateTimer = null
       }
     },
     getMonitorValuesFromServer() {
@@ -340,6 +348,23 @@ export default {
     // set the color scheme
     this.$q.dark.set(true);
 
+    // define a event handler to update the vitals
+    this.$root.$on("updatemonitorvitals", () => {
+      if (!this.serverUpdateTimer) {
+        this.serverUpdateTimer = setTimeout(() => {
+        this.setMonitorValuesOnServer()
+      }, 1000);
+      }
+    })
+
+    this.$root.$on("updatemonitorconfig", () => {
+      if (!this.configUpdateTimer) {
+        this.configUpdateTimer = setTimeout(() => {
+          this.setMonitorConfigurationOnServer()
+        }, 1000)
+      }
+    })
+
     // get the current monitor configuration from the api
     this.getMonitorConfigurationFromServer()
 
@@ -348,6 +373,10 @@ export default {
 
   },
   beforeDestroy() {
+    // remove event handlers
+    this.$root.$off("updatemonitorvitals")
+    this.$root.$off("updatemonitorconfig")
+
     // close the websocket connection with the api
     this.websocket.close()
   }

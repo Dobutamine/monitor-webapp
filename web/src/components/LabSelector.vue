@@ -577,7 +577,11 @@ export default {
     imgSize: {
       required: true,
       type: String
-    }
+    },
+    monitorValues: {
+      required: true,
+      type: Object
+    },
   },
   data() {
     return {
@@ -827,7 +831,13 @@ export default {
           other: JSON.stringify(otherConfig),
           otherAvailable: this.otherAvailable
         })
-        .then(res => {})
+        .then(res => {
+          console.log('laboratory settings updated by instructor')
+          // increase the update counter
+          this.monitorValues.labUpdateCounter += 1
+          // signal the instructor component that the monitor values are changed
+          this.$root.$emit('updatemonitorvitals')
+        })
         .catch(error => {});
     },
     getLabSettingsFromServer() {

@@ -41,6 +41,10 @@ export default {
     imgSize: {
       required: true,
       type: String
+    },
+    monitorValues: {
+      required: true,
+      type: Object
     }
   },
   data() {

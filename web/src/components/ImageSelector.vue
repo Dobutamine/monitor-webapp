@@ -39,6 +39,10 @@ export default {
     imgSize: {
       required: true,
       type: String
+    },
+    monitorValues: {
+      required: true,
+      type: Object
     }
   },
   data() {
@@ -71,7 +75,14 @@ export default {
       this.$emit("hide");
     },
     onOKClick() {
-      this.$store.commit("dataPool/imageName", this.selectedMediaFile);
+      // store the image name in the monitor values object
+      this.monitorValues.imageName = this.selectedMediaFile
+      console.log('image settings updated by instructor')
+      // increase the update counter
+      this.monitorValues.imageUpdateCounter += 1
+      // signal the instructor component that the monitor values are changed
+      this.$root.$emit('updatemonitorvitals')
+      // close the pop up
       this.hide();
     },
     onCancelClick() {

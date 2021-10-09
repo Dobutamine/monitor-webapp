@@ -190,6 +190,7 @@ export default {
     },
     changeTargetValue() {
       this.monitorValues[this.value_name] = this.targetValue
+      this.$root.$emit('updatemonitorvitals')
     },
     arm() {
 
