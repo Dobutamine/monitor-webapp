@@ -43,11 +43,11 @@
     <div v-if="enabled" class="row">
       <q-btn
         class="q-ma-sm col"
-        :color="buttonColorVisibility"
+        :color="buttonConnectedColor"
         size="sm"
-        @click="toggleVisibility"
+        @click="toggleConnected"
       >
-        {{ labelVisibility }}
+        {{ buttonConnectedText }}
       </q-btn>
     </div>
     <div v-if="enabled" class="row">
@@ -119,6 +119,14 @@ export default {
     monitorValues: function (newVal, oldVal)  {
       // watch if the monitor values are loaded from the server
       this.currentValue = newVal[this.value_name]
+      this.connected = newVal[this.value_name + 'Connected']
+      if (this.connected) {
+        this.buttonConnectedText = "CONNECTED"
+        this.buttonConnectedColor = "teal-10"
+      } else {
+        this.buttonConnectedText = "DISCONNECTED"
+        this.buttonConnectedColor = "red-10"
+      }
       if (this.step < 1) {
         this.currentValueText = newVal[this.value_name].toFixed(1)
         this.targetValue = parseFloat(newVal[this.value_name].toFixed(1))
@@ -146,6 +154,9 @@ export default {
       buttonTextArm: "START",
       buttonStartColor: "teal-10",
       buttonStartText: "START",
+      buttonConnectedText: "CONNECTED",
+      buttonConnectedColor: "teal-10",
+      connected: true,
       currentValue: 10,
       currentValueText: "10",
       targetValue: 20,
@@ -188,6 +199,20 @@ export default {
       } else {
         this.buttonColorEnabled = "red-10";
       }
+    },
+    toggleConnected() {
+      if (this.connected) {
+        this.connected = false
+        this.buttonConnectedText = "DISCONNECTED"
+        this.buttonConnectedColor = "red-10"
+      } else {
+        this.connected = true
+        this.buttonConnectedText = "CONNECTED"
+        this.buttonConnectedColor = "teal-10"
+      }
+      this.monitorValues[this.value_name + 'Connected'] = this.connected
+      this.updateCurrentValueLabel()
+
     },
     startChangingParameter() {
       if (this.updateTimerRunning) {
