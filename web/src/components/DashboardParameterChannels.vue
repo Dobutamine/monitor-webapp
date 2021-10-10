@@ -26,7 +26,15 @@ export default {
     dataPointsPerUpdate: {
       required: true,
       type: Number
-    }
+    },
+    monitorConfiguration: {
+      required:true,
+      type: Object
+    },
+    monitorValues: {
+      required: true,
+      type: Object
+    },
   },
   components: {
     ChannelSettings

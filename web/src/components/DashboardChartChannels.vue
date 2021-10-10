@@ -23,6 +23,14 @@ export default {
       required: true,
       type: Number
     },
+    monitorConfiguration: {
+      required: true,
+      type: Object
+    },
+    monitorValues: {
+      required: true,
+      type: Object
+    },
     configuration: {
       required: true,
       type: Array

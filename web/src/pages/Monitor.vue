@@ -19,6 +19,8 @@
           :configuration="channelConfigurations"
           :dataUpdateInterval="0.025"
           :dataPointsPerUpdate="5"
+          :monitorConfiguration=this.monitorConfiguration
+          :monitorValues=this.monitorValues
         ></DashboardChartChannels>
       </div>
       <div :class="parameterCols">
@@ -26,6 +28,8 @@
           chartId="300"
           :dataUpdateInterval="0.025"
           :dataPointsPerUpdate="5"
+          :monitorConfiguration=this.monitorConfiguration
+          :monitorValues=this.monitorValues
         ></DashboardParameterChannels>
       </div>
     </div>
@@ -50,6 +54,9 @@ import ImageView from "components/ImageView";
 import Timer from "components/Timer";
 import LabView from "components/LabView";
 
+import axios from "axios";
+import { clearInterval } from 'timers';
+
 export default {
   name: "PageIndex",
   components: {
@@ -67,7 +74,17 @@ export default {
   },
   data() {
     return {
-      height: "2024px",
+      apiUrl: "",
+      webSocketUrl: "",
+      id: "",
+      height: 0,
+      max_width: 0,
+      websocket: null,
+      monitorConfiguration: {},
+      monitorValues: {},
+      updateTimer: null,
+
+
       chartCols: "col-9 text-center",
       parameterCols: "col-3 text-center",
       alarmsEnabled: true,
@@ -201,25 +218,129 @@ export default {
           limiterMin: "zero",
           squeezeFactor: 50
         }
-      ]
+      ],
+ 
     };
   },
   methods: {
+    updateInterfaceWithMonitorValues() {
+      // update all instructor interface components with the current monitor values
+      if (this.monitorValues) {
+        // console.log(this.monitorValues)
+      }
+
+    },
+    updateInterfaceWithMonitorConfiguration() {
+      // update all instructor interface components with the current monitor configuration
+      if (this.monitorConfiguration) {
+        console.log(this.monitorConfiguration)
+      }
+    },
+    getMonitorConfigurationFromServer () {
+      // build api url
+      const url = `${this.apiUrl}/api/configs?id=${this.id}`;
+      // get the monitor configuration
+      axios.get(url)
+        .then(res => {
+          console.log('monitor interface got monitor configuration from server')
+          this.monitorConfiguration = res.data;
+          this.updateInterfaceWithMonitorConfiguration()
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    setMonitorConfigurationOnServer () {
+      const url = `${this.apiUrl}/api/configs/new`;
+      axios.post(url, {
+          id: this.id,
+          configuration: JSON.stringify(this.monitorConfiguration)
+        })
+        .then(res => {
+          console.log('monitor interface updated the monitor configuration')
+          clearTimeout(this.configUpdateTimer)
+          this.configUpdateTimer = null
+        })
+        .catch(error => {}
+      );
+    },
+    setMonitorValuesOnServer() {
+      // get the name of the selected image
+      this.selectedImage = this.monitorValues.imageName
+
+      // first check wether the websocket connection is open
+      if (this.websocket.readyState === WebSocket.OPEN) {
+        // now get the monitor values by constructing a message object
+        const message = {
+          "command": "set",
+          "payload": this.monitorValues
+        }
+        this.websocket.send(JSON.stringify(message));
+        console.log('monitor interface updated the monitor values')
+        clearTimeout(this.serverUpdateTimer)
+        this.serverUpdateTimer = null
+      }
+    },
+    getMonitorValuesFromServer() {
+      // first check wether the websocket connection is open
+      if (this.websocket.readyState === WebSocket.OPEN) {
+        // now get the monitor values by constructing a message object
+        const message = {
+          "command": "get",
+          "payload": {
+            "id": this.id
+          }
+        }
+        this.websocket.send(JSON.stringify(message));
+        console.log('monitor interface websocket requested the monitor values.')
+      }
+    },
+
+    connectToWebsocketApi() {
+      // try to establish a websocket connection
+      this.websocket = new WebSocket(this.webSocketUrl);
+
+      // attach a message handler to handle recieved messages
+      this.websocket.onmessage = (message) => {
+        // check whether the received object is a monitor values object
+        let mes = JSON.parse(message.data)
+        if (mes.mes_type === "mon_values") {
+          // update the monitor valeus object
+          this.monitorValues = mes
+          // update the monitor values in the instructor interface
+          this.updateInterfaceWithMonitorValues()
+          console.log('monitor interface received monitor values from api.')
+        }
+      };
+
+      // handle websocket opening
+      this.websocket.onopen = () => {
+        console.log('monitor interface websocket connection with api opened.')
+        // get the current monitor values from the api (websocket) with an interval timer
+        this.updateTimer = setInterval(() => this.getMonitorValuesFromServer(), 1000)
+      }
+
+      // handle websocket closing
+      this.websocket.onclose = () => {
+        console.log('monitor interface websocket connection with api closed.')
+        // remove the update timer
+        this.updateTimer = null
+      }
+
+      // handle websocket errors
+      this.websocket.onerror = (err) => {
+        console.log('monitor interface websocket connection error: ', err)
+        // remove the update timer
+        this.updateTimer = null
+      }
+    },
     onResize() {
       this.$root.$emit("resize", {
         width: this.$q.screen.width,
         height: this.$q.screen.height
       });
     },
-    switchTrends(state) {
-      if (state) {
-        this.chartCols = "col-6 text-center";
-        this.trendCols = "col-3 text-center";
-      } else {
-        this.chartCols = "col-9 text-center";
-        this.trendCols = "col text-center";
-      }
-    },
+  
     blinker() {
       this.blinkerState = !this.blinkerState;
       this.$store.commit("dataPool/blinkerState", this.blinkerState);
@@ -247,16 +368,24 @@ export default {
     }
   },
   mounted() {
-    this.$root.$emit("monitor");
+    // get the user id retrieved during the login process from the store
+    this.id = this.$store.state.dataPool.id;
 
-    // attach an event handler to the model instance
-    this.height = this.$q.screen.height - 50 + "px";
-    this.max_width = this.$q.screen.width;
+    // if the id is empty then return to the login screen
+    if (this.id === '') {
+      this.$router.push("/")
+      return
+    }
+
+    // if the id is not empty then build the instructor page
+    // first get the api and websocket api url from the store
+    this.apiUrl = this.$store.state.dataPool.apiUrl;
+    this.webSocketUrl = this.$store.state.dataPool.apiWebSocketUrl;
+
+    // get the height and the maximal width
     this.$q.dark.set(true);
 
-    this.$root.$on("trends", state => {
-      this.switchTrends(state);
-    });
+    //preload the sounds into the buffer
     this.alarmHi = new Audio("/sounds/alarm_hi.wav");
     this.alarmHi.preload = "auto";
     this.alarmLo = new Audio("/sounds/alarm_lo.wav");
@@ -285,13 +414,29 @@ export default {
         imgSize: styleImg
       });
     });
+
+    // get the current monitor configuration from the api
+    this.getMonitorConfigurationFromServer()
+
+    // connect to the server api websockets
+    this.connectToWebsocketApi()
   },
-  beforeUnmount() {},
   beforeDestroy() {
-    clearInterval(this.blinkerTimer);
-    this.$root.$off("trends");
+    console.log('cleaning up monitor window')
+  
+    // removing the blinker timer
+    this.blinkerTimer = null
+
     this.$root.$off("showimage");
     this.$root.$off("showlabs");
+
+    // remove the update timer
+    this.updateTimer = null
+
+    // close the websocket connection with the api
+    if (this.websocket) {
+      this.websocket.close()
+    }
   }
 };
 </script>

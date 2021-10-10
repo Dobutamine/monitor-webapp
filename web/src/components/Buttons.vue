@@ -254,9 +254,9 @@ export default {
       }
     },
     requestDataFromServer() {
-      if (this.connected) {
-        this.ws.send(JSON.stringify({ command: "get", id: this.id }));
-      }
+      // if (this.connected) {
+      //   this.ws.send(JSON.stringify({ command: "get", id: this.id }));
+      // }
     },
     receiveDataFromServer(data) {
       const processed_data = JSON.parse(data.data);
