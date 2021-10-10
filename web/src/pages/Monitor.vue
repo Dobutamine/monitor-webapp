@@ -34,7 +34,56 @@
       </div>
     </div>
     <div class="row justify-center items-start q-ma-es">
-      <Buttons></Buttons>
+       <div class="q-gutter-xs">
+        <q-btn
+          @click="silenceAlarms"
+          class="bg-warning"
+          style="height: 60px; width: 85px"
+          >silence</q-btn
+        >
+        <q-btn
+          @click="pauseAlarms"
+          class="bg-blue-grey-8"
+          style="height: 60px; width: 85px"
+          >pause alarms</q-btn
+        >
+        <q-btn
+          @click="startNIBD"
+          :class="nibdClass"
+          style="height: 60px; width: 85px"
+          >{{ nibdtext }}</q-btn
+        >
+        <q-btn
+          :class="imageButtonColor"
+          style="height: 60px; width: 85px"
+          @click="showImage"
+          >{{imageButtonText}}</q-btn
+        >
+        <q-btn
+          :class="labButtonColor"
+          @click="showLabs"
+          style="height: 60px; width: 85px"
+          >{{labButtonText}}</q-btn
+        >
+        <q-btn
+          @click="toggleTimer"
+          :class="timerBtnColor"
+          style="height: 60px; width: 85px"
+          >{{ timerBtnText }}</q-btn
+        >
+        <q-btn
+        class="bg-blue-grey-8"
+        style="height: 60px; width: 85px"
+        @click="toggleTopBar"
+        >{{ barText }}</q-btn
+        >
+      <q-btn
+        :class="standbyColor"
+        style="height: 60px; width: 85px"
+        @click="standby"
+        >{{ standbyText}}</q-btn
+      >
+    </div>
     </div>
     <q-resize-observer @resize="onResize" />
   </q-page>
@@ -46,7 +95,6 @@ import Controller from "components/Controller";
 import DashboardChartChannels from "components/DashboardChartChannels";
 import DashboardParameterChannels from "components/DashboardParameterChannels";
 import Vital from "components/Vital";
-import Buttons from "components/Buttons";
 import AlarmBox from "components/AlarmBox";
 import AlarmMessage from "components/AlarmMessage";
 import MessageBox from "components/MessageBox";
@@ -55,7 +103,6 @@ import Timer from "components/Timer";
 import LabView from "components/LabView";
 
 import axios from "axios";
-import { clearInterval } from 'timers';
 
 export default {
   name: "PageIndex",
@@ -67,7 +114,6 @@ export default {
     AlarmBox,
     MessageBox,
     AlarmMessage,
-    Buttons,
     ImageView,
     Timer,
     LabView
@@ -82,7 +128,29 @@ export default {
       websocket: null,
       monitorConfiguration: {},
       monitorValues: {},
+      currentImageUpdateCounter: 0,
+      currentLabUpdateCounter: 0,
+      currentConfigUpdateCounter: 0,
       updateTimer: null,
+      standbyMonitor: true,
+      standbyColor: "bg-red-10",
+      standbyText: "MONITOR STANDBY",
+      nibdtext: "nibd start",
+      nibdClass: "bg-blue-grey-8",
+      nibdCounter: 15,
+      nibdTimer: null,
+      timerState: false,
+      timerBtnText: "SHOW TIMER",
+      timerBtnColor: "bg-blue-grey-8",
+      imageButtonColor: "bg-blue-grey-8",
+      imageButtonText: "NO IMAGE",
+      labButtonColor: "bg-blue-grey-8",
+      labButtonText: "NO LAB",
+      firstReception: true,
+      silenceState: false,
+      silenceDuration: 30,
+      barText: "HIDE TOP",
+      barVisibility: true,
 
 
       chartCols: "col-9 text-center",
@@ -223,17 +291,134 @@ export default {
     };
   },
   methods: {
-    updateInterfaceWithMonitorValues() {
-      // update all instructor interface components with the current monitor values
-      if (this.monitorValues) {
-        // console.log(this.monitorValues)
+    silenceAlarms() {
+      //this.$root.$on('hires_on', () => { this.hires = true })
+      this.silenceState = !this.silenceState;
+      this.silenceDuration = 30;
+      this.$root.$emit("silence", this.silenceState);
+    },
+    pauseAlarms() {
+      this.silenceState = !this.silenceState;
+      this.silenceDuration = 180;
+      this.$root.$emit("pause", this.silenceState);
+    },
+    standby() {
+      if (this.standbyMonitor) {
+        this.standbyMonitor = false
+        // start the modeing engine
+        this.$root.$emit("rt_on");
+        // set the buttons
+        this.standbyColor = "bg-blue-10"
+        this.standbyText = "MONITOR RUNNING"
+        // start the pulling timer
+        this.updateTimer = setInterval(() => this.getMonitorValuesFromServer(), 1000)
+      } else {
+        this.standbyMonitor = true
+         // stop the modeling engine
+         this.$root.$emit("rt_off");
+        // set the buttons
+        this.standbyColor = "bg-red-10"
+        this.standbyText = "MONITOR STANDBY"
+        // stop the pulling timer
+        clearInterval(this.updateTimer)
+        this.updateTimer = null
       }
 
     },
+    showLabs() {
+      this.currentLabUpdateCounter = (this.monitorValues.labUpdateCounter)
+      this.labButtonColor = "bg-blue-grey-10"
+      this.labButtonText = "NO LAB"
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      this.$q.dialog({
+        component: LabView,
+        parent: this,
+        imgName: name,
+        imgSize: styleImg
+      });
+    },
+    toggleTopBar() {
+      this.barVisibility = !this.barVisibility;
+      if (this.barVisibility) {
+        this.barText = "HIDE TOP";
+      } else {
+        this.barText = "SHOW TOP";
+      }
+      this.$root.$emit("barvisible", this.barVisibility);
+    },
+    toggleTimer() {
+      this.timerState = !this.timerState;
+      if (this.timerState) {
+        this.$root.$emit("timeron");
+        this.timerBtnText = "HIDE TIMER";
+        this.timerBtnColor = 'bg-blue-10';
+      } else {
+        this.$root.$emit("timeroff");
+        this.timerBtnText = "SHOW TIMER";
+        this.timerBtnColor = 'bg-blue-grey-8';
+      }
+
+    },
+    showImage() {
+      this.currentImageUpdateCounter = (this.monitorValues.imageUpdateCounter)
+      this.imageButtonColor = "bg-blue-grey-8"
+      this.imageButtonText = "NO IMAGE"
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      this.$q.dialog({
+        component: ImageView,
+        parent: this,
+        imgName: this.monitorValues.imageName,
+        imgSize: styleImg
+      });
+
+    },
+    startNIBD() {
+      this.nibdTimer = setInterval(() => {
+        if (this.nibdCounter <= 0) {
+          this.nibdCounter = 15;
+          this.nibdtext = "nibd start";
+          (this.nibdClass = "bg-blue-grey-8"), clearInterval(this.nibdTimer);
+          this.$root.$emit("shownibd");
+        } else {
+          this.nibdCounter -= 1;
+          (this.nibdClass = "bg-red-10"),
+            (this.nibdtext = "wait -" + this.nibdCounter + "-");
+        }
+      }, 1000);
+    },
+    updateModel() {
+      this.$model.setEmulatorData(this.monitorValues);
+    },
+    updateInterfaceWithMonitorValues() {
+      // update all instructor interface components with the current monitor values
+      if (this.monitorValues) {
+        // check whether lab or image is available
+        if (this.firstReception) {
+          this.currentImageUpdateCounter = (this.monitorValues.imageUpdateCounter)
+          this.currentLabUpdateCounter = (this.monitorValues.labUpdateCounter)
+          this.firstReception = false
+        }
+        if (this.monitorValues.imageUpdateCounter != this.currentImageUpdateCounter){
+          // signal button that an update is available
+          this.imageButtonColor = "bg-red-10"
+          this.imageButtonText = "IMAGE AVAILABLE"
+        }
+        if (this.monitorValues.labUpdateCounter != this.currentLabUpdateCounter){
+          // signal button that an update is available
+          this.labButtonColor = "bg-red-10"
+          this.labButtonText = "LAB AVAILABLE"
+        }
+        this.updateModel()
+      }
+
+    },
+  
     updateInterfaceWithMonitorConfiguration() {
       // update all instructor interface components with the current monitor configuration
       if (this.monitorConfiguration) {
         console.log(this.monitorConfiguration)
+        
+        this.updateModel()
       }
     },
     getMonitorConfigurationFromServer () {
@@ -316,8 +501,8 @@ export default {
       // handle websocket opening
       this.websocket.onopen = () => {
         console.log('monitor interface websocket connection with api opened.')
-        // get the current monitor values from the api (websocket) with an interval timer
-        this.updateTimer = setInterval(() => this.getMonitorValuesFromServer(), 1000)
+        
+
       }
 
       // handle websocket closing
@@ -393,27 +578,8 @@ export default {
 
     this.blinkerTimer = setInterval(this.blinker, 750);
 
-    this.$root.$on("showimage", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
-        .screen.height / 2}px`;
-      this.$q.dialog({
-        component: ImageView,
-        parent: this,
-        imgName: name,
-        imgSize: styleImg
-      });
-    });
 
-    this.$root.$on("showlabs", name => {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
-        .screen.height / 2}px`;
-      this.$q.dialog({
-        component: LabView,
-        parent: this,
-        imgName: name,
-        imgSize: styleImg
-      });
-    });
+
 
     // get the current monitor configuration from the api
     this.getMonitorConfigurationFromServer()
@@ -427,10 +593,9 @@ export default {
     // removing the blinker timer
     this.blinkerTimer = null
 
-    this.$root.$off("showimage");
-    this.$root.$off("showlabs");
 
     // remove the update timer
+    clearInterval(this.updateTimer)
     this.updateTimer = null
 
     // close the websocket connection with the api
