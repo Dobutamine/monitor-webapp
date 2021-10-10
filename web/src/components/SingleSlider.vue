@@ -280,11 +280,11 @@ export default {
 
     },
     timeInChanged () {
-      // if (this.timeInOption === 'instant') {
-      //   this.buttonArmEnabled = false
-      // } else {
-      //   this.buttonArmEnabled = true
-      // }
+      if (this.timeInOption === 'instant') {
+        this.buttonArmEnabled = false
+      } else {
+        this.buttonArmEnabled = true
+      }
     },
     changeTargetValue() {
       if (this.timeInOption === 'instant') {
@@ -312,6 +312,8 @@ export default {
 
   },
   beforeDestroy() {
+    clearInterval(this.updateTimer)
+    this.updateTimer = null
 
   }
 };

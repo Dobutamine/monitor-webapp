@@ -87,9 +87,10 @@
       <q-card class="bg-dark">
         <div class="q-gutter-xs">
           <q-btn
-            class="bg-blue-grey-10"
+            @click="toggleMasterAlarms"
+            :class="alarmButtonColor"
             style="height: 60px; width: 120px"
-            >ALARMS ENABLED</q-btn
+            >{{ alarmButtonText }}</q-btn
           >
           <q-btn
             class="bg-blue-grey-10"
@@ -122,17 +123,19 @@
             >CHEST COMPRESSIONS</q-btn
           >
           <q-btn
-            :class="intubationButtonColor"
+            @click="toggleIntubation"
+            :class="intubatedButtonColor"
             style="height: 60px; width: 120px"
-            >{{ intubationButtonText }}</q-btn
-          >
-          <q-btn
-            class="bg-blue-grey-10"
-            style="height: 60px; width: 120px"
-            >CONNECTED</q-btn
+            >{{ intubatedButtonText }}</q-btn
           >
         </div>
       </q-card>
+    </div>
+    <div class="row justify-center q-ma-md">
+      <q-badge rounded >
+        Active image : {{ selectedImage }}
+      </q-badge>
+    
     </div>
   </q-page>
 </template>
@@ -177,10 +180,40 @@ export default {
       red: "bg-red-10",
       serverUpdateTimer: null,
       configUpdateTimer: null,
+      alarmButtonColor: 'bg-blue-grey-10',
+      alarmButtonText: 'ALARMS ENABLED',
+      intubatedButtonColor: 'bg-blue-grey-10',
+      intubatedButtonText: 'NOT INTUBATED',
+
+      selectedImage: ''
 
     };
   },
   methods: {
+    toggleIntubation() {
+      if (this.monitorValues['intubated']) {
+        this.monitorValues['intubated'] = false
+        this.intubatedButtonColor = 'bg-blue-grey-10'
+        this.intubatedButtonText = 'NOT INTUBATED'
+      } else {
+        this.monitorValues['intubated'] = true
+        this.intubatedButtonColor = 'bg-red-10'
+        this.intubatedButtonText = 'INTUBATED'
+      }
+      this.$root.$emit('updatemonitorvitals')
+    },
+    toggleMasterAlarms() {
+      if (this.monitorValues['alarmOverride']) {
+        this.monitorValues['alarmOverride'] = false
+        this.alarmButtonColor = 'bg-blue-grey-10'
+        this.alarmButtonText = 'ALARMS ENABLED'
+      } else {
+        this.monitorValues['alarmOverride'] = true
+        this.alarmButtonColor = 'bg-red-10'
+        this.alarmButtonText = 'ALARMS DISABLED'
+      }
+      this.$root.$emit('updatemonitorvitals')
+    },
     openCompressionsSelector() {
       const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
       this.$q.dialog({
@@ -268,6 +301,9 @@ export default {
       );
     },
     setMonitorValuesOnServer() {
+      // get the name of the selected image
+      this.selectedImage = this.monitorValues.imageName
+
       // first check wether the websocket connection is open
       if (this.websocket.readyState === WebSocket.OPEN) {
         // now get the monitor values by constructing a message object
@@ -378,7 +414,9 @@ export default {
     this.$root.$off("updatemonitorconfig")
 
     // close the websocket connection with the api
-    this.websocket.close()
+    if (this.websocket) {
+      this.websocket.close()
+    }
   }
 };
 </script>

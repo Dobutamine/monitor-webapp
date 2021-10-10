@@ -15,7 +15,7 @@
         class="q-ml-sm q-mr-sm q-mb-sm q-pa-xs col bg-black text-center text-h5"
         bordered
       >
-        {{ currentValueText }}
+        {{ currentValue1Text }}/{{ currentValue2Text }}
       </q-card>
     </div>
     <div v-if="enabled" class="row">
@@ -26,7 +26,7 @@
     <div v-if="enabled" class="row">
       <q-slider
         class="col q-mb-sm"
-        v-model="targetValue"
+        v-model="targetValue1"
         color="teal-10"
         label-color="red-10"
         :min="min"
@@ -41,7 +41,7 @@
       />
       <q-slider
         class="col q-mb-sm"
-        v-model="targetValue"
+        v-model="targetValue2"
         color="teal-10"
         label-color="red-10"
         :min="min"
@@ -123,18 +123,30 @@ export default {
       required: true,
       type: String
     },
-    value_name: {
+    value_name1: {
+      required: true,
+      type: String,
+      default: ""
+    },
+    value_name2: {
       required: true,
       type: String,
       default: ""
     }
 
+
   },
   watch: {
+    value_name1: function (newVal, oldVal) {
+      this.valueConnectedName = newVal.substring(0,3) + 'Connected'
+    },
     monitorValues: function (newVal, oldVal)  {
       // watch if the monitor values are loaded from the server
-      this.currentValue = newVal[this.value_name]
-      this.connected = newVal[this.value_name + 'Connected']
+      this.currentValue1 = newVal[this.value_name1]
+      this.currentValue2 = newVal[this.value_name2]
+      this.valueConnectedName = this.value_name1.substring(0,3) + 'Connected'
+    
+      this.connected = newVal[this.valueConnectedName]
       if (this.connected) {
         this.buttonConnectedText = "CONNECTED"
         this.buttonConnectedColor = "teal-10"
@@ -143,11 +155,20 @@ export default {
         this.buttonConnectedColor = "red-10"
       }
       if (this.step < 1) {
-        this.currentValueText = newVal[this.value_name].toFixed(1)
-        this.targetValue = parseFloat(newVal[this.value_name].toFixed(1))
+        this.currentValue1Text = newVal[this.value_name1].toFixed(1)
+        this.targetValue1 = parseFloat(newVal[this.value_name1].toFixed(1))
+
+        this.currentValue2Text = newVal[this.value_name2].toFixed(1)
+        this.targetValue2 = parseFloat(newVal[this.value_name2].toFixed(1))
+
       } else {
-        this.currentValueText = newVal[this.value_name].toFixed(0)
-        this.targetValue = parseFloat(newVal[this.value_name].toFixed(0))
+        this.currentValue1Text = newVal[this.value_name1].toFixed(0)
+        this.targetValue1 = parseFloat(newVal[this.value_name1].toFixed(0))
+
+        this.currentValue2Text = newVal[this.value_name2].toFixed(0)
+        this.targetValue2 = parseFloat(newVal[this.value_name2].toFixed(0))
+
+
       }
       
       
@@ -172,13 +193,18 @@ export default {
       buttonConnectedText: "CONNECTED",
       buttonConnectedColor: "teal-10",
       connected: true,
-      currentValue: 10,
-      currentValueText: "10",
-      targetValue: 20,
+      currentValue1: 10,
+      currentValue1Text: "10",
+      targetValue1: 20,
+      currentValue2: 10,
+      currentValue2Text: "10",
+      targetValue2: 20,
+      valueConnectedName: 'abpConnected',
       timeIn: 5,
       timeAt: 0,
       timeLeft: 0,
-      stepSize: 0,
+      stepSize1: 0,
+      stepSize2: 0,
       timeInOptions: [
         "instant",
         "5 sec",
@@ -197,16 +223,6 @@ export default {
     };
   },
   methods: {
-    toggleVisibility () {
-  
-    },
-    showPopUp() {
-      this.$q.dialog({
-        component: ChannelSettings,
-        parent: this,
-        channel: null
-      });
-    },
     toggleEnabled() {
       this.enabled = !this.enabled;
       if (this.enabled) {
@@ -225,7 +241,7 @@ export default {
         this.buttonConnectedText = "CONNECTED"
         this.buttonConnectedColor = "teal-10"
       }
-      this.monitorValues[this.value_name + 'Connected'] = this.connected
+      this.monitorValues[this.valueConnectedName] = this.connected
       this.updateCurrentValueLabel()
 
     },
@@ -239,11 +255,14 @@ export default {
         this.updateTimer = null
         // set the target value to the current value
         if (this.step < 1) {
-          this.targetValue = parseFloat(this.currentValue.toFixed(1))
+          this.targetValue1 = parseFloat(this.currentValue1.toFixed(1))
+          this.targetValue2 = parseFloat(this.currentValue2.toFixed(1))
         } else {
-          this.targetValue = parseInt(this.currentValue.toFixed(0))
+          this.targetValue1 = parseInt(this.currentValue1.toFixed(0))
+          this.targetValue2 = parseInt(this.currentValue2.toFixed(0))
         }
-        this.stepSize = 0
+        this.stepSize1 = 0
+        this.stepSize2 = 0
         this.buttonArmEnabled = false
         this.updateCurrentValueLabel()
 
@@ -251,7 +270,8 @@ export default {
         // get the selected time in interval
         this.timeIn = this.getTheTimeInTime()
         // determine the step size
-        this.stepSize = (this.targetValue - this.currentValue) / this.timeIn
+        this.stepSize1 = (this.targetValue1 - this.currentValue1) / this.timeIn
+        this.stepSize2 = (this.targetValue2 - this.currentValue2) / this.timeIn
         this.timeLeft = this.timeIn - 1
         // change button state
         this.buttonColorArm = "red-10"
@@ -264,21 +284,34 @@ export default {
     },
     updateCurrentValueLabel() {
       if (this.step < 1) {
-        this.currentValueText = this.currentValue.toFixed(1)
+        this.currentValue1Text = this.currentValue1.toFixed(1)
+        this.currentValue2Text = this.currentValue2.toFixed(1)
       } else {
-        this.currentValueText = this.currentValue.toFixed(0)
+        this.currentValue1Text = this.currentValue1.toFixed(0)
+        this.currentValue2Text = this.currentValue2.toFixed(0)
       }
-      this.monitorValues[this.value_name] = this.currentValue
+      this.monitorValues[this.value_name1] = this.currentValue1
+      this.monitorValues[this.value_name2] = this.currentValue2
       this.$root.$emit('updatemonitorvitals')
     },
     updateParameter() {
-      this.currentValue += this.stepSize
+      this.currentValue1 += this.stepSize1
+      this.currentValue2 += this.stepSize2
       this.timeLeft -= 1
-      if (Math.abs(this.targetValue - this.currentValue) < Math.abs(this.stepSize)) {
+
+      if (Math.abs(this.targetValue1 - this.currentValue1) < Math.abs(this.stepSize1)) {
+         this.currentValue1 = this.targetValue1
+         this.stepSize1 = 0
+      }
+
+      if (Math.abs(this.targetValue2 - this.currentValue2) < Math.abs(this.stepSize2)) {
         // ready
-        this.currentValue = this.targetValue
+        this.currentValue2 = this.targetValue2
         // reset the step size
-        this.stepSize = 0
+        this.stepSize2 = 0
+      }
+
+      if (this.stepSize1 === 0 && this.stepSize2 === 0) {
         // clear the interval timer
         clearInterval(this.updateTimer)
         this.updateTimer = null
@@ -305,10 +338,11 @@ export default {
       if (this.timeInOption === 'instant') {
 
         // if in instant mode then update the current value immediately
-        this.currentValue = this.targetValue
+        this.currentValue1 = this.targetValue1
+        this.currentValue2 = this.targetValue2
         this.updateCurrentValueLabel()
       } else {
-        if (this.targetValue !== this.currentValue) {
+        if (this.targetValue1 !== this.currentValue1 || this.targetValue2 !== this.currentValue2) {
           this.buttonArmEnabled = true
         }
       }
@@ -327,6 +361,8 @@ export default {
 
   },
   beforeDestroy() {
+    clearInterval(this.updateTimer)
+    this.updateTimer = null
 
   }
 };
