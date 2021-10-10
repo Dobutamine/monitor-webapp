@@ -60,25 +60,16 @@
           label="in time"
           v-model="timeInOption"
           :options="timeInOptions"
+          @input="timeInChanged"
           dark
           dense
         ></q-select>
       </q-card>
     </div>
 
-    <div v-if="enabled" class="row">
-      <q-btn class="q-ma-sm col" :color="buttonColorArm" @click="arm" size="sm">
+    <div v-if="enabled & buttonArmEnabled" class="row">
+      <q-btn class="q-ma-sm col" :color="buttonColorArm" @click="startChangingParameter" size="sm">
         {{ buttonTextArm }}
-      </q-btn>
-    </div>
-    <div v-if="enabled" class="row">
-      <q-btn
-        class="q-ma-sm col"
-        :color="buttonStartColor"
-        @click="start"
-        size="sm"
-      >
-        {{ buttonStartText }}
       </q-btn>
     </div>
   </q-card>
@@ -128,8 +119,15 @@ export default {
     monitorValues: function (newVal, oldVal)  {
       // watch if the monitor values are loaded from the server
       this.currentValue = newVal[this.value_name]
-      this.currentValueText = newVal[this.value_name]
-      this.targetValue = newVal[this.value_name]
+      if (this.step < 1) {
+        this.currentValueText = newVal[this.value_name].toFixed(1)
+        this.targetValue = parseFloat(newVal[this.value_name].toFixed(1))
+      } else {
+        this.currentValueText = newVal[this.value_name].toFixed(0)
+        this.targetValue = parseFloat(newVal[this.value_name].toFixed(0))
+      }
+      
+      
     },
     monitorConfiguration: function (newVal, oldVal) {
       // console.log(newVal)
@@ -143,8 +141,9 @@ export default {
       labelVisibility: 'CONNECTED',
       buttonColorVisibility: "teal-10",
       buttonColorEnabled: "teal-10",
+      buttonArmEnabled: false,
       buttonColorArm: "blue-10",
-      buttonTextArm: "ARM",
+      buttonTextArm: "START",
       buttonStartColor: "teal-10",
       buttonStartText: "START",
       currentValue: 10,
@@ -166,7 +165,9 @@ export default {
         "3 min"
       ],
       timeInOption: "instant",
-      timings: [0, 5, 10, 15, 20, 30, 60, 120, 180]
+      timings: [0, 5, 10, 15, 20, 30, 60, 120, 180],
+      updateTimer: null,
+      updateTimerRunning: false
     };
   },
   methods: {
@@ -188,15 +189,89 @@ export default {
         this.buttonColorEnabled = "red-10";
       }
     },
-    changeTargetValue() {
-      this.monitorValues[this.value_name] = this.targetValue
+    startChangingParameter() {
+      if (this.updateTimerRunning) {
+        this.updateTimerRunning = false
+        this.buttonColorArm = "blue-10"
+        this.buttonTextArm = "START"
+        // clear the interval timer
+        clearInterval(this.updateTimer)
+        this.updateTimer = null
+        // set the target value to the current value
+        if (this.step < 1) {
+          this.targetValue = parseFloat(this.currentValue.toFixed(1))
+        } else {
+          this.targetValue = parseInt(this.currentValue.toFixed(0))
+        }
+        this.stepSize = 0
+        this.buttonArmEnabled = false
+        this.updateCurrentValueLabel()
+
+      } else {
+        // get the selected time in interval
+        this.timeIn = this.getTheTimeInTime()
+        // determine the step size
+        this.stepSize = (this.targetValue - this.currentValue) / this.timeIn
+        this.timeLeft = this.timeIn - 1
+        // change button state
+        this.buttonColorArm = "red-10"
+        this.buttonTextArm = `RUNNING ${this.timeLeft} SEC.`
+        
+        // start the timer
+        this.updateTimer = setInterval(() => this.updateParameter(), 1000)
+        this.updateTimerRunning = true
+      }
+    },
+    updateCurrentValueLabel() {
+      if (this.step < 1) {
+        this.currentValueText = this.currentValue.toFixed(1)
+      } else {
+        this.currentValueText = this.currentValue.toFixed(0)
+      }
+      this.monitorValues[this.value_name] = this.currentValue
       this.$root.$emit('updatemonitorvitals')
     },
-    arm() {
+    updateParameter() {
+      this.currentValue += this.stepSize
+      this.timeLeft -= 1
+      if (Math.abs(this.targetValue - this.currentValue) < Math.abs(this.stepSize)) {
+        // ready
+        this.currentValue = this.targetValue
+        // reset the step size
+        this.stepSize = 0
+        // clear the interval timer
+        clearInterval(this.updateTimer)
+        this.updateTimer = null
+        // reset the button
+        this.buttonColorArm = "blue-10"
+        this.buttonTextArm = "START"
+        this.buttonArmEnabled = false
+        this.updateTimerRunning = false
+      } else {
+        this.buttonTextArm = `RUNNING ${this.timeLeft} SEC.`
+      }
+      
+      this.updateCurrentValueLabel()
 
     },
-    start() {
+    timeInChanged () {
+      // if (this.timeInOption === 'instant') {
+      //   this.buttonArmEnabled = false
+      // } else {
+      //   this.buttonArmEnabled = true
+      // }
+    },
+    changeTargetValue() {
+      if (this.timeInOption === 'instant') {
 
+        // if in instant mode then update the current value immediately
+        this.currentValue = this.targetValue
+        this.updateCurrentValueLabel()
+      } else {
+        if (this.targetValue !== this.currentValue) {
+          this.buttonArmEnabled = true
+        }
+      }
     },
     getTheTimeInTime() {
       const foundIndex = this.timeInOptions.indexOf(this.timeInOption);

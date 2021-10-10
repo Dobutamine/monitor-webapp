@@ -23,20 +23,14 @@ router.post("/new", async (req, res) => {
     if (error) res.status(400).send(error.details[0].message);
 
     // try to determine if a configuration for this id is found
-    let configuration = await Config.findOne({ id: req.body.id });
+    let configuration = await Config.updateOne({ id: req.body.id }, req.body);
 
     // if not found then there's no configuration for this id
     if (!configuration)
       res.status(400).send("no configuration found for this id");
 
-    // set the new configuration
-    configuration.configuration = req.body.configuration;
+    res.send('OK')
 
-    // sevae it
-    configuration.save();
-
-    // return all users
-    res.send("processed new configuration");
   } catch (error) {}
 });
 

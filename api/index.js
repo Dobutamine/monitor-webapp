@@ -88,7 +88,7 @@ wsServer.on("connection", async (socket) => {
         case "set":
           try {
             // try to find a monitor object with the correct id and update it with the new values
-            let old_monitor = await Monitor.findOneAndUpdate({ id: payload.id }, payload);
+            let old_monitor = await Monitor.updateOne({ id: payload.id }, payload);
           } catch (err) {}
           break;
       }
