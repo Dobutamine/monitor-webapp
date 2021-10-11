@@ -4,18 +4,24 @@ services:
   web:
     build:
       context: ./web
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.dev
     ports:
       - 80:80
+    volumes:
+      - ./web:/web
+    command: ./docker-entrypoint.sh
 
   api:
     build:
       context: ./api
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.dev
     ports:
       - 8080:8080
     environment:
       DB_URL: mongodb://db/monemu
+    volumes:
+      - ./api:/api
+    command: ./docker-entrypoint.sh
 
   db:
     image: mongo:4.0-xenial

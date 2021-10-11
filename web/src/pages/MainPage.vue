@@ -271,6 +271,11 @@ export default {
   },
   mounted() {
     this.$q.dark.set(true);
+    // set the environmental variables containing to correct URLS
+    this.$store.commit("dataPool/apiUrl", process.env.API_URL)
+    this.$store.commit("dataPool/apiWebSocketUrl", process.env.WS_URL)
+
+    // get the apiUrl
     this.apiUrl = this.$store.state.dataPool.apiUrl;
     this.id = "";
     this.$store.commit("dataPool/id", this.id);

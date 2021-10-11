@@ -578,9 +578,6 @@ export default {
 
     this.blinkerTimer = setInterval(this.blinker, 750);
 
-
-
-
     // get the current monitor configuration from the api
     this.getMonitorConfigurationFromServer()
 

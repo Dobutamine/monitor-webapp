@@ -127,3 +127,11 @@ export function blinkerState(state, value) {
 export function configurationUpdateCounter (state, value) {
   state.configurationUpdateCounter = value;
 }
+
+export function apiUrl (state, value) {
+  state.apiUrl = value;
+}
+
+export function apiWebSocketUrl (state, value) {
+  state.apiWebSocketUrl = value;
+}

@@ -1,10 +1,10 @@
 export default function() {
   return {
     id: "",
-    //apiUrl: "http://188.166.92.37:8080",
-    //apiWebSocketUrl: "ws://188.166.92.37:8080/api",
-    apiUrl: "http://178.128.242.55:8080",
-    apiWebSocketUrl: "ws://178.128.242.55:8080/api",
+    apiUrl: "",
+    apiWebSocketUrl: "",
+    // apiUrl: "http://178.128.242.55:8080",
+    // apiWebSocketUrl: "ws://178.128.242.55:8080/api",
     heartrate: 123,
     satPre: 97,
     satPost: 95,

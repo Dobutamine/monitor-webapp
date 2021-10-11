@@ -2,3 +2,5 @@ FROM node:14.16.0-alpine3.13 as build-stage
 RUN apk --no-cache add yarn --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     && yarn global add @quasar/cli
 WORKDIR /web
+ENV API_URL http://127.0.0.1:8080
+ENV WS_URL ws://127.0.0.1:8080/api
