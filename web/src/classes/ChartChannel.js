@@ -40,9 +40,9 @@ class ChartChannel {
 
   constructor (stage, channel_no, configuration, dataUpdateInterval, dataPointsPerUpdate, width) {
     this.stage = stage
-    this.label = configuration.label
+    this.label = configuration.curveLabel
     this.connected = configuration.connected
-    this.source1 = configuration.source1
+    this.source1 = configuration.sourceCurve
     this.timeframe = configuration.timeframe
     this.perfImprover = configuration.performance
     this.channelNo = channel_no

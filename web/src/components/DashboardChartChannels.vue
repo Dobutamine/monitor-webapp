@@ -128,6 +128,8 @@ export default {
           curve,
           {
             label: "ecg",
+            curveLabel: "III",
+            sourceCurve: "ecg_signal",
             connected: true,
             source1: "ecg_signal",
             source2: "",

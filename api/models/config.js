@@ -11,9 +11,11 @@ const Config = mongoose.model(
     name: Joi.string().min(3).max(50).required(),
     curve1: { type: Object, default: { 
       label: "HR",
-      connected: true,
+      curveLabel: "III",
+      sourceCurve: 'ecg_signal',
       source1: "heartrate",
       source2: "",
+      connected: true,
       color: "#5EEA32",
       alarmEnabled: true,
       lowerAlarm: 80,
@@ -31,6 +33,8 @@ const Config = mongoose.model(
     }},
     curve2: { type: Object, default: { 
       label: "SAT(1)",
+      curveLabel: "SAT(1)",
+      sourceCurve: 'abp_signal',
       connected: true,
       source1: "satPre",
       source2: "",
@@ -51,6 +55,8 @@ const Config = mongoose.model(
     }},
     curve3: { type: Object, default: { 
       label: "SAT(2)",
+      curveLabel: "SAT(2)",
+      sourceCurve: 'sat_signal',
       connected: true,
       source1: "satPost",
       source2: "",
@@ -71,6 +77,8 @@ const Config = mongoose.model(
     }},
     curve4: { type: Object, default: { 
       label: "ABP",
+      curveLabel: "ABP",
+      sourceCurve: 'abp_signal',
       connected: true,
       source1: "abpSyst",
       source2: "abpDiast",
@@ -91,6 +99,8 @@ const Config = mongoose.model(
     }},
     curve5: { type: Object, default: { 
       label: "RF",
+      curveLabel: "RF",
+      sourceCurve: 'resp_signal',
       connected: true,
       source1: "respRate",
       source2: "",
@@ -111,6 +121,8 @@ const Config = mongoose.model(
     }},
     curve6: { type: Object, default: { 
       label: "etCO2",
+      curveLabel: "etco2",
+      sourceCurve: 'etco2_signal',
       connected: true,
       source1: "etco2",
       source2: "",
