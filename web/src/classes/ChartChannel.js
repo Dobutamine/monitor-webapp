@@ -108,7 +108,6 @@ class ChartChannel {
     this.stage.addChild(this.richText)
 
   }
-
   drawGrid () {
     if (this.gridEnabled) {
       if (this.grid) {
@@ -140,18 +139,19 @@ class ChartChannel {
     }
 
   }
-
   switchOffChannel () {
     this.channelNo = 0
     this.updateSize(this.width, this.height)
   }
 
   updateConfiguration (configuration) {
-    this.label = configuration.label
-    this.source1 = configuration.source1
+    console.log(configuration)
+    this.label = configuration.curveLabel
+    this.connected = configuration.connected
+    this.source1 = configuration.sourceCurve
     this.timeframe = configuration.timeframe
     this.perfImprover = configuration.performance
-    this.channelNo = configuration.order
+    this.channelNo = configuration.channelNo
     this.color = configuration.color
     this.zoom = configuration.zoom
     this.gridEnabled = configuration.grid
@@ -161,7 +161,6 @@ class ChartChannel {
     this.limiterMax = configuration.limiterMax
     this.limiterMin = configuration.limiterMin
     this.squeezeFactor = configuration.squeezeFactor
-    this.visible = configuration.visible
 
     this.setChannelColor(this.color)
     this.updateSize(this.width, this.height)

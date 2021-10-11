@@ -45,8 +45,8 @@ const Config = mongoose.model(
       timeframe: 5,
       performance: 1,
       zoom: 0.6,
-      grid: false,
-      autoscale: false,
+      grid: true,
+      autoscale: true,
       minY: -10,
       maxY: 10,
       limiterMax: "",
@@ -67,8 +67,8 @@ const Config = mongoose.model(
       timeframe: 5,
       performance: 1,
       zoom: 0.6,
-      grid: false,
-      autoscale: false,
+      grid: true,
+      autoscale: true,
       minY: -10,
       maxY: 10,
       limiterMax: "",
@@ -89,8 +89,8 @@ const Config = mongoose.model(
       timeframe: 5,
       performance: 1,
       zoom: 0.6,
-      grid: false,
-      autoscale: false,
+      grid: true,
+      autoscale: true,
       minY: -10,
       maxY: 10,
       limiterMax: "",
@@ -111,8 +111,8 @@ const Config = mongoose.model(
       timeframe: 20,
       performance: 2,
       zoom: 0.6,
-      grid: false,
-      autoscale: false,
+      grid: true,
+      autoscale: true,
       minY: -10,
       maxY: 10,
       limiterMax: "",
@@ -133,15 +133,15 @@ const Config = mongoose.model(
       timeframe: 20,
       performance: 2,
       zoom: 0.6,
-      grid: false,
-      autoscale: false,
+      grid: true,
+      autoscale: true,
       minY: -10,
       maxY: 10,
       limiterMax: "",
       limiterMin: "",
       squeezeFactor: 0
     }},
-    param1: { type: Object, default: { 
+    param5: { type: Object, default: { 
       label: "NIBD",
       connected: true,
       source1: "abpSyst",
@@ -151,7 +151,7 @@ const Config = mongoose.model(
       lowerAlarm: 35,
       upperAlarm: 75,
     }},
-    param2: { type: Object, default: { 
+    param6: { type: Object, default: { 
       label: "Temp",
       connected: true,
       source1: "temp",
@@ -161,7 +161,7 @@ const Config = mongoose.model(
       lowerAlarm: 36.5,
       upperAlarm: 37.5,
     }},
-    param3: { type: Object, default: { 
+    param2: { type: Object, default: { 
       label: "Pols",
       connected: true,
       source1: "heartrate",
@@ -171,7 +171,7 @@ const Config = mongoose.model(
       lowerAlarm: 80,
       upperAlarm: 180,
     }},
-    param4: { type: Object, default: { 
+    param3: { type: Object, default: { 
       label: "PFI",
       connected: true,
       source1: "pfi",
@@ -181,7 +181,7 @@ const Config = mongoose.model(
       lowerAlarm: 80,
       upperAlarm: 180,
     }},
-    param5: { type: Object, default: { 
+    param1: { type: Object, default: { 
       label: "",
       connected: false,
       source1: "",
@@ -191,7 +191,7 @@ const Config = mongoose.model(
       lowerAlarm: 80,
       upperAlarm: 180,
     }},
-    param6: { type: Object, default: { 
+    param4: { type: Object, default: { 
       label: "",
       connected: false,
       source1: "",

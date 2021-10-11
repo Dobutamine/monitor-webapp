@@ -38,7 +38,7 @@ export default {
   },
   watch: {
     monitorConfiguration: function (newVal, oldVal)  {
-      // this.updateChannelsConfiguration()
+      this.updateChannelsConfiguration()
     }
   },
   data () {
@@ -154,6 +154,37 @@ export default {
       }
 
       this.initialized = true
+    },
+    updateChannelsConfiguration() {
+      // only do this when the initialization has taken place
+      if (this.initialized) {
+        // process the modelConfiguration object
+        // find channel1 in the channels list
+        this.channels.forEach(channel => {
+          if (channel.channelNo <= 6) {
+            // these are curves
+            const id = 'curve' + channel.channelNo
+            const newConfig = {
+              curveLabel: this.monitorConfiguration[id].curveLabel,
+              connected: this.monitorConfiguration[id].connected,
+              sourceCurve: this.monitorConfiguration[id].sourceCurve,
+              timeframe: this.monitorConfiguration[id].timeframe,
+              performance: this.monitorConfiguration[id].performance,
+              channelNo: channel.channelNo,
+              color: this.monitorConfiguration[id].color,
+              zoom: this.monitorConfiguration[id].zoom,
+              grid: this.monitorConfiguration[id].grid,
+              autoscale: this.monitorConfiguration[id].autoscale,
+              minY: this.monitorConfiguration[id].minY,
+              maxY: this.monitorConfiguration[id].maxY,
+              limiterMax: this.monitorConfiguration[id].limiterMax,
+              limiterMin: this.monitorConfiguration[id].limiterMin,
+              squeezeFactor: this.monitorConfiguration[id].squeezeFactor,
+            }
+            channel.updateConfiguration(newConfig)
+          }
+        })
+      }
     },
   },
   mounted () {

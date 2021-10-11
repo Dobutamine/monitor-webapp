@@ -206,8 +206,10 @@ class ParameterChannel {
         this.currentValue = this.meanValue
         this.value.text = data[this.dataPointsPerUpdate - 1][this.source1] + '/' + data[this.dataPointsPerUpdate - 1][this.source2] +  ' (' + this.meanValue + ')'
       } else {
-          this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1]
-          this.value.text = data[this.dataPointsPerUpdate - 1][this.source1]
+          const value = data[this.dataPointsPerUpdate - 1][this.source1]
+          this.currentValue = value
+          this.value.text = value
+          
       }
     } else {
       // now we have to change to state to empty and make sure the alarms are turned off
