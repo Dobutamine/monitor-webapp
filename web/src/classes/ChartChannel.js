@@ -16,6 +16,7 @@ class ChartChannel {
   chartDrawingInterval = 0.02
   chartDrawingCounter = 0
   channelNo = 1
+  connected = true
   color = '0xff0000'
   xOffset = 50
   yOffset = 0
@@ -31,21 +32,20 @@ class ChartChannel {
   autoscale = true
   minY = 0
   maxY = 100
-  order = 1
   maxLimit = 100
   minLimit = 0
   squeeze = 0.75
   visible = true
 
 
-  constructor (stage, configuration, dataUpdateInterval, dataPointsPerUpdate, width) {
+  constructor (stage, channel_no, configuration, dataUpdateInterval, dataPointsPerUpdate, width) {
     this.stage = stage
     this.label = configuration.label
+    this.connected = configuration.connected
     this.source1 = configuration.source1
-    this.order = configuration.order
     this.timeframe = configuration.timeframe
     this.perfImprover = configuration.performance
-    this.channelNo = configuration.order
+    this.channelNo = channel_no
     this.color = configuration.color
     this.zoom = configuration.zoom
     this.gridEnabled = configuration.grid
@@ -149,7 +149,6 @@ class ChartChannel {
   updateConfiguration (configuration) {
     this.label = configuration.label
     this.source1 = configuration.source1
-    this.order = configuration.order
     this.timeframe = configuration.timeframe
     this.perfImprover = configuration.performance
     this.channelNo = configuration.order
@@ -214,7 +213,7 @@ class ChartChannel {
             this.dataCursor = 0
           }
           const yValue = newData[index][this.source1]
-          if (this.visible) {
+          if (this.connected) {
             this.dataY1[this.dataCursor] = yValue
           } else {
             this.dataY1[this.dataCursor] = 0

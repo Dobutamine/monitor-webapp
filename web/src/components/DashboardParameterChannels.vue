@@ -36,6 +36,11 @@ export default {
       type: Object
     },
   },
+  watch: {
+    monitorConfiguration: function (newVal, oldVal)  {
+      this.updateChannelsConfiguration()
+    }
+  },
   components: {
     ChannelSettings
   },
@@ -43,6 +48,7 @@ export default {
     return {
       id: "",
       apiUrl: "",
+      initialized: false,
       settings: false,
       pixiApp: null,
       canvas: null,
@@ -63,176 +69,11 @@ export default {
       parameter: "ECG",
       min: 100,
       showNIBD: false,
-      channels: [],
-      channelConfigurations: [
-        {
-          label: "HR",
-          source1: "heartrate",
-          source2: "",
-          channelNo: 1,
-          color: "#5EEA32",
-          alarmEnabled: true,
-          lowerAlarm: 80,
-          upperAlarm: 180,
-          visible: true
-        },
-        {
-          label: "SAT(1)",
-          source1: "satPre",
-          source2: "",
-          channelNo: 2,
-          color: "#DF32EA",
-          alarmEnabled: true,
-          lowerAlarm: 88,
-          upperAlarm: 100,
-          visible: true
-        },
-        {
-          label: "SAT(2)",
-          source1: "satPost",
-          source2: "",
-          channelNo: 3,
-          color: "#DF32EA",
-          alarmEnabled: true,
-          lowerAlarm: 88,
-          upperAlarm: 100,
-          visible: true
-        },
-        {
-          label: "ABP",
-          source1: "abpSyst",
-          source2: "abpDiast",
-          channelNo: 4,
-          color: "#FB0808",
-          alarmEnabled: true,
-          lowerAlarm: 35,
-          upperAlarm: 75,
-          visible: true
-        },
-        {
-          label: "NIBD",
-          source1: "abpSyst",
-          source2: "abpDiast",
-          channelNo: 11,
-          color: "#FB0808",
-          alarmEnabled: true,
-          lowerAlarm: 35,
-          upperAlarm: 75,
-          visible: true
-        },
-        {
-          label: "Temp",
-          source1: "temp",
-          source2: "",
-          channelNo: 12,
-          color: "#5EEA32",
-          alarmEnabled: false,
-          lowerAlarm: 35,
-          upperAlarm: 75,
-          visible: true
-        },
-        {
-          label: "Pols",
-          source1: "heartrate",
-          source2: "",
-          channelNo: 8,
-          color: "#DF32EA",
-          alarmEnabled: false,
-          lowerAlarm: 35,
-          upperAlarm: 75,
-          visible: true
-        },
-        {
-          label: "PFI",
-          source1: "pfi",
-          source2: "",
-          channelNo: 9,
-          color: "#DF32EA",
-          alarmEnabled: false,
-          lowerAlarm: 35,
-          upperAlarm: 75,
-          visible: true
-        },
-        {
-          label: "RF",
-          channelNo: 5,
-          source1: "respRate",
-          source2: "",
-          color: "#FFFFFF",
-          alarmEnabled: true,
-          lowerAlarm: 20,
-          upperAlarm: 100,
-          visible: true
-        },
-        {
-          label: "etCO2",
-          source1: "etco2",
-          source2: "",
-          channelNo: 6,
-          color: "#FBE908",
-          alarmEnabled: true,
-          lowerAlarm: 30,
-          upperAlarm: 75,
-          visible: true
-        }
-      ],
       updateChannelsCounter: 0,
-      updateChannelsInterval: 0.75
+      updateChannelsInterval: 0.75,
     };
   },
   methods: {
-    changeChannelConfiguration(newconfig, save = true) {
-      this.channels.forEach(channel => {
-        if (channel.channelNo === newconfig.channelNo) {
-          channel.updateConfiguration(newconfig);
-          this.$root.$emit("changechannelchart", newconfig);
-        }
-      });
-      if (save) {
-        this.buildConfigurationObjectFromChannels();
-      }
-    },
-    buildConfigurationObjectFromChannels() {
-      const newConfiguration = [];
-      this.channels.forEach(channel => {
-        const channelObject = {
-          label: channel.caption,
-          source1: channel.source1,
-          source2: channel.source2,
-          channelNo: channel.channelNo,
-          color: channel.color,
-          alarmEnabled: channel.alarmEnabled,
-          lowerAlarm: channel.lowerAlarm,
-          upperAlarm: channel.upperAlarm,
-          visible: channel.visible
-        };
-        newConfiguration.push(channelObject);
-      });
-      this.id = this.$store.state.dataPool.id;
-      const configuration = JSON.stringify(newConfiguration);
-      const url = `${this.apiUrl}/api/configs/new`;
-      axios
-        .post(url, {
-          id: this.id,
-          configuration: configuration
-        })
-        .then(res => {})
-        .catch(error => {});
-    },
-    onResize(newSize) {
-      // get the current width of the canvas
-      this.width = this.canvas.getBoundingClientRect().width;
-      // calculate the new height
-      this.height = (newSize.height / 8) * this.noOfChannels;
-      // resize the pixiApp renderer
-      if (this.pixiApp) {
-        this.pixiApp.renderer.resize(this.width, this.height);
-      }
-      // update the channels
-      this.channels.forEach(channel => {
-        channel.updateSize(this.width, this.height / this.noOfChannels);
-      });
-    },
     updater(message) {
       if (message.data.target === "monitor") {
         if (this.updateChannelsCounter > this.updateChannelsInterval) {
@@ -288,39 +129,6 @@ export default {
         this.$root.$emit("alarmmessageoff");
       }
     },
-    initializeChannels() {
-      while (this.pixiApp.stage.children[0]) {
-        this.pixiApp.stage.removeChild(this.pixiApp.stage.children[0]);
-      }
-      this.channels = [];
-      this.channelConfigurations.forEach(channelConfiguration => {
-        if (channelConfiguration.channelNo < 7) {
-          const channel = new ParameterChannel(
-            this.pixiApp.stage,
-            channelConfiguration,
-            this.dataUpdateInterval,
-            this.dataPointsPerUpdate,
-            this.width
-          );
-          channel.value.interactive = true;
-          channel.value.on("touchstart", e => this.showPopUp(e));
-          channel.value.on("mousedown", e => this.showPopUp(e));
-          this.channels.push(channel);
-        } else {
-          const channel = new ParameterChannelSmall(
-            this.pixiApp.stage,
-            channelConfiguration,
-            this.dataUpdateInterval,
-            this.dataPointsPerUpdate,
-            this.width
-          );
-          channel.value.interactive = true;
-          channel.value.on("touchstart", e => this.showPopUp(e));
-          channel.value.on("mousedown", e => this.showPopUp(e));
-          this.channels.push(channel);
-        }
-      });
-    },
     showPopUp(e) {
       // find the channel properties
       this.channels.forEach(channel => {
@@ -333,25 +141,19 @@ export default {
         }
       });
     },
-    getConfigurationFromServer() {
-      this.id = this.$store.state.dataPool.id;
-      const url = `${this.apiUrl}/api/configs?id=${this.id}`;
-      axios
-        .get(url)
-        .then(res => {
-          this.channelConfigurations = JSON.parse(res.data.configuration);
-          this.processNewConfiguration();
-          console.log('monitor configuration was updated!')
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    processNewConfiguration() {
-      this.channelConfigurations.forEach(configuration => {
-        this.changeChannelConfiguration(configuration, false);
+    onResize(newSize) {
+      // get the current width of the canvas
+      this.width = this.canvas.getBoundingClientRect().width;
+      // calculate the new height
+      this.height = (newSize.height / 8) * this.noOfChannels;
+      // resize the pixiApp renderer
+      if (this.pixiApp) {
+        this.pixiApp.renderer.resize(this.width, this.height);
+      }
+      // update the channels
+      this.channels.forEach(channel => {
+        channel.updateSize(this.width, this.height / this.noOfChannels);
       });
-      this.buildConfigurationObjectFromChannels();
     },
     initialize() {
       // get the reference to the canvas
@@ -376,29 +178,124 @@ export default {
       // add a resize event handler
       this.$root.$on("resize", newSize => this.onResize(newSize));
 
-      this.$root.$on("opensettings", e => (this.settings = true));
+      // add a event listener for the model
+      this.modelEventListener = this.$model.engine.addEventListener("message", this.updater);
+    },
+    updateChannelsConfiguration() {
+      // only do this when the initialization has taken place
+      if (this.initialized) {
+        // process the modelConfiguration object
+        // find channel1 in the channels list
+        this.channels.forEach(channel => {
+          if (channel.channelNo <= 6) {
+            // these are curves
+            const id = 'curve' + channel.channelNo
+            const newConfig = {
+              label: this.monitorConfiguration[id].label,
+              visible: this.monitorConfiguration[id].connected,
+              source1: this.monitorConfiguration[id].source1,
+              source2: this.monitorConfiguration[id].source2,
+              color: this.monitorConfiguration[id].color,
+              alarmEnabled: this.monitorConfiguration[id].alarmEnabled,
+              lowerAlarm: this.monitorConfiguration[id].lowerAlarm,
+              upperAlarm: this.monitorConfiguration[id].upperAlarm,
+            }
+            channel.updateConfiguration(newConfig)
+          }
+          if (channel.channelNo >= 7) {
+            // these are curves
+            const id = 'param' + (parseInt(channel.channelNo) - 6)
+            const newConfig = {
+              label: this.monitorConfiguration[id].label,
+              visible: this.monitorConfiguration[id].connected,
+              source1: this.monitorConfiguration[id].source1,
+              source2: this.monitorConfiguration[id].source2,
+              color: this.monitorConfiguration[id].color,
+              alarmEnabled: this.monitorConfiguration[id].alarmEnabled,
+              lowerAlarm: this.monitorConfiguration[id].lowerAlarm,
+              upperAlarm: this.monitorConfiguration[id].upperAlarm,
+            }
+            channel.updateConfiguration(newConfig)
+          }
+        })
+      }
+    },
+    initializeChannels() {
+      // we have to do a initial initialization but we might not yet have a monitor configuration object
 
-      this.$root.$on("newchannelconfig", e =>
-        this.changeChannelConfiguration(e)
-      );
+      // remove all channels
+      while (this.pixiApp.stage.children[0]) {
+        this.pixiApp.stage.removeChild(this.pixiApp.stage.children[0]);
+      }
 
-      this.$root.$on("shownibd", () => (this.showNIBD = true));
+      // empty the channels array
+      this.channels = [];
 
-      this.modelEventListener = this.$model.engine.addEventListener(
-        "message",
-        this.updater
-      );
-    }
+      // configure channels
+      // channel 1-6 are curve channels
+      for (let curve=1; curve<7; curve++){
+        // define a channel
+        const channel = new ParameterChannel(
+          this.pixiApp.stage,
+          curve,
+          {
+            label: "",
+            connected: false,
+                "source1": "empty",
+                "source2": "",
+                "color": "#000000",
+                "alarmEnabled": false,
+                "lowerAlarm": 80,
+                "upperAlarm": 180
+          },
+          this.dataUpdateInterval,
+          this.dataPointsPerUpdate,
+          this.width
+        )
+        // add channel to array
+        this.channels.push(channel)
+      }
+      // channel 7-12 are parameter channels
+      for (let curve=7; curve<13; curve++){
+        // define a channel
+        const channel = new ParameterChannelSmall(
+          this.pixiApp.stage,
+          curve,
+          {
+            label: "",
+            connected: false,
+                "source1": "empty",
+                "source2": "",
+                "color": "#000000",
+                "alarmEnabled": false,
+                "lowerAlarm": 80,
+                "upperAlarm": 180
+          },
+          this.dataUpdateInterval,
+          this.dataPointsPerUpdate,
+          this.width
+        )
+        // add channel to array
+        this.channels.push(channel)
+      }
+
+      this.initialized = true
+    },
+
   },
   mounted() {
+    // get the api url
     this.apiUrl = this.$store.state.dataPool.apiUrl;
+
+    // get the patient id
+    this.id = this.$store.state.dataPool.id;
+
+    // initialize the screen
     this.initialize();
 
+    // initialize the parameters
     this.initializeChannels();
 
-    this.$root.$on('getconfiguration', () => this.getConfigurationFromServer())
-
-    this.getConfigurationFromServer();
   },
   beforeDestroy() {
     // reset the alarm counters
@@ -406,10 +303,6 @@ export default {
     this.$store.commit("dataPool/ResetRedAlarmCounter");
     // clean up
     this.$root.$off("resize");
-    this.$root.$off("opensettings");
-    this.$root.$off("newchannelconfig");
-    this.$root.$off("getconfiguration");
-    this.$root.$off("shownibd");
     this.$model.engine.removeEventListener("message", this.updater);
     this.modelEventListener = null;
     this.$el.removeChild(this.pixiApp.view);

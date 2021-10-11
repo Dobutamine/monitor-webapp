@@ -32,14 +32,15 @@ class ParameterChannelSmall {
   fontFactorAlarms = 1
   meanValue = 0
 
-  constructor (stage, configuration, dataUpdateInterval, dataPointsPerUpdate, width){
+  constructor (stage, channel_no, configuration, dataUpdateInterval, dataPointsPerUpdate, width){
     this.stage = stage
     this.width = width
     this.dataPointsPerUpdate = dataPointsPerUpdate
-    this.channelNo = configuration.channelNo
+    this.channelNo = channel_no
     this.color = configuration.color
     this.source1 = configuration.source1
     this.source2 = configuration.source2
+    this.visible = configuration.connected
     this.lowerAlarm = configuration.lowerAlarm
     this.upperAlarm = configuration.upperAlarm
     this.alarmEnabled = configuration.alarmEnabled

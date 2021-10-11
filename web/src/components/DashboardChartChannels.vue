@@ -36,6 +36,11 @@ export default {
       type: Array
     }
   },
+  watch: {
+    monitorConfiguration: function (newVal, oldVal)  {
+      // this.updateChannelsConfiguration()
+    }
+  },
   data () {
     return {
       pixiApp: null,
@@ -53,78 +58,6 @@ export default {
     }
   },
   methods: {
-    changeChannelColor(args) {
-      this.channels.forEach(channel => {
-        if (channel.label === args.label) {
-          channel.setChannelColor(args.color)
-        }
-      })
-
-    },
-    changeChannelState(newconfig) {
-      this.channels.forEach(channel => {
-        console.log(channel)
-      })
-    },
-    changeChannelConfig(newconfig) {
-      // process parameter change
-      // convert the newconfig to the newconfig for charts
-      switch (newconfig.source1) {
-        case "empty":
-          newconfig.label = ''
-          newconfig.source1 = 'empty'
-          newconfig.source2 = ''
-          break
-        case 'heartrate':
-          newconfig.label = 'III'
-          newconfig.source1 = 'ecg_signal'
-          newconfig.source2 = ''
-          break
-        case 'satPre':
-          newconfig.label = 'Pleth(1)'
-          newconfig.source1 = 'sat_signal'
-          newconfig.source2 = ''
-          break
-        case 'satPost':
-          newconfig.label = 'Pleth(2)'
-          newconfig.source1 = 'sat_signal'
-          newconfig.source2 = ''
-          break
-        case 'abpSyst':
-          newconfig.label = 'abp'
-          newconfig.source1 = 'abp_signal'
-          newconfig.source2 = ''
-          break
-        case 'respRate':
-          newconfig.label = 'RF'
-          newconfig.source1 = 'resp_signal'
-          newconfig.source2 = ''
-          break
-        case 'etco2':
-          newconfig.label = 'etco2'
-          newconfig.source1 = 'etco2_signal'
-          newconfig.source2 = ''
-          break
-      }
-
-      // find new parameter in current configuration
-      let combinedConfiguration = {}
-      this.channelConfigurations.forEach(channelConfiguration => {
-        if (channelConfiguration.source1 === newconfig.source1) {
-          channelConfiguration.order = newconfig.channelNo
-          channelConfiguration.color = newconfig.color
-          channelConfiguration.visible = newconfig.visible
-          combinedConfiguration = channelConfiguration
-        }
-      })
-
-      // now update the correct channel with the new configuration
-      this.channels.forEach(channel => {
-        if (channel.channelNo === combinedConfiguration.order) {
-          channel.updateConfiguration(combinedConfiguration)
-        }
-      })
-    },
     updater (message) {
       if (message.data.target === 'monitor') {
         this.updateData(message.data.data)
@@ -134,16 +67,6 @@ export default {
       this.channels.forEach(channel => {
         channel.update(data)
       })
-    },
-    initializeChannels () {
-      while(this.pixiApp.stage.children[0]) { 
-        this.pixiApp.stage.removeChild(this.app.children[0]);
-      }
-      this.channels = []
-      this.channelConfigurations.forEach((channelConfiguration) => {
-        const channel = new ChartChannel (this.pixiApp.stage, channelConfiguration, this.dataUpdateInterval, this.dataPointsPerUpdate, this.width)
-        this.channels.push(channel)
-      });
     },
     onResize (newSize) {
       // get the current width of the canvas
@@ -178,45 +101,83 @@ export default {
       this.pixiApp.stage.interactive = false
 
       this.width = this.canvas.getBoundingClientRect().width
-      // initialize all the data channels
-      this.initializeChannels()
-    }
-  },
-  beforeMount () {
+
+      // add a resize event handler
+      this.$root.$on("resize", newSize => this.onResize(newSize));
+
+      // add a event listener for the model
+      this.modelEventListener = this.$model.engine.addEventListener("message", this.updater);
+    },
+    initializeChannels() {
+      // we have to do a initial initialization but we might not yet have a monitor configuration object
+
+      // remove all channels
+      while (this.pixiApp.stage.children[0]) {
+        this.pixiApp.stage.removeChild(this.pixiApp.stage.children[0]);
+      }
+
+      // empty the channels array
+      this.channels = [];
+
+      // configure channels
+      // channel 1-6 are curve channels
+      for (let curve=1; curve<7; curve++){
+        // define a channel
+        const channel = new ChartChannel(
+          this.pixiApp.stage,
+          curve,
+          {
+            label: "ecg",
+            connected: true,
+            source1: "ecg_signal",
+            source2: "",
+            timeframe: 5,
+            performance: 1,
+            color: "0x5EEA32",
+            zoom: 0.6,
+            grid: false,
+            autoscale: false,
+            minY: -10,
+            maxY: 10,
+            limiterMax: "",
+            limiterMin: "",
+            squeezeFactor: 0
+          },
+          this.dataUpdateInterval,
+          this.dataPointsPerUpdate,
+          this.width
+        )
+        // add channel to array
+        this.channels.push(channel)
+      }
+
+      this.initialized = true
+    },
   },
   mounted () {
-    this.channelConfigurations = this.configuration
+// get the api url
+    this.apiUrl = this.$store.state.dataPool.apiUrl;
 
-    // initialize the pixi app
-    this.initialize()
+    // get the patient id
+    this.id = this.$store.state.dataPool.id;
 
-    // add a resize event handler
-    this.$root.$on('resize', (newSize) => this.onResize(newSize))
+    // initialize the screen
+    this.initialize();
 
-    this.$root.$on('newlayout', (layout) => {
-      this.channelConfigurations = layout
-      this.initialize()
-    })
+    // initialize the parameters
+    this.initializeChannels();
 
-    this.$root.$on('changechannelchart', (newconfig) => this.changeChannelConfig(newconfig))
-
-    this.$root.$on('switchchannel', (newconfig) => this.changeChannelState(newconfig))
-
-    // add a data update event handler
-    this.modelEventListener = this.$model.engine.addEventListener('message', this.updater)
   },
   beforeDestroy () {
+
     // clean up
-    this.$root.$off('resize')
-    this.$root.$off('newlayout')
-    this.$root.$off('changechannelchart')
-    this.$root.$off('switchchannel')
-    this.$model.engine.removeEventListener('message', this.updater)
-    this.modelEventListener = null
-    this.$el.removeChild(this.pixiApp.view)
-    this.channels = []
-    this.pixiApp.destroy()
-    this.pixiApp = null
+    this.$root.$off("resize");
+    this.$model.engine.removeEventListener("message", this.updater);
+    this.modelEventListener = null;
+    this.$el.removeChild(this.pixiApp.view);
+    this.channels = [];
+    this.pixiApp.destroy();
+    this.pixiApp = null;
   }
 }
 </script>
