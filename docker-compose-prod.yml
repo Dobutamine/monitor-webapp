@@ -6,14 +6,10 @@ services:
       context: ./web
       dockerfile: Dockerfile.prod
     environment:
-      # Set to the port that your webapp listens on
-      VIRTUAL_PORT:80
-      # Can be comma-separated list
-      VIRTUAL_HOST:monitoremulator.com
-      # The domain for the cert, can also be comma-separated
-      LETSENCRYPT_HOST:monitoremulator.com
-      # Your email for the cert
-      LETSENCRYPT_EMAIL=tajantonius@gmail.com
+    VIRTUAL_PORT:80
+    VIRTUAL_HOST:monitoremulator.com
+    LETSENCRYPT_HOST:monitoremulator.com
+    LETSENCRYPT_EMAIL=tajantonius@gmail.com
 
   api:
     build:
@@ -21,15 +17,10 @@ services:
       dockerfile: Dockerfile.prod
     environment:
       DB_URL: mongodb://db/monemu
-      # Set to the port that your webapp listens on
       VIRTUAL_PORT:8080
-      # Can be comma-separated list
       VIRTUAL_HOST:monitoremulator.com
-      # The domain for the cert, can also be comma-separated
       LETSENCRYPT_HOST:monitoremulator.com
-      # Your email for the cert
       LETSENCRYPT_EMAIL:tajantonius@gmail.com
-
   db:
     image: mongo:4.0-xenial
     volumes:
