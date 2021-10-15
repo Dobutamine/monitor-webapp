@@ -2,8 +2,8 @@ FROM node:14.16.0-alpine3.13 as build-stage
 RUN apk --no-cache add yarn --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     && yarn global add @quasar/cli
 WORKDIR /web
-ENV API_URL https://178.128.242.55:8080
-ENV WS_URL wss://178.128.242.55:8080/api
+ENV API_URL https://monitoremulator.com:8080
+ENV WS_URL wss://monitoremulator.com:8080/api
 COPY package*.json ./
 RUN yarn
 COPY . .
