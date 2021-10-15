@@ -6,10 +6,10 @@ services:
       context: ./web
       dockerfile: Dockerfile.prod
     environment:
-    VIRTUAL_PORT:80
-    VIRTUAL_HOST:monitoremulator.com
-    LETSENCRYPT_HOST:monitoremulator.com
-    LETSENCRYPT_EMAIL=tajantonius@gmail.com
+      VIRTUAL_PORT: 80
+      VIRTUAL_HOST: monitoremulator.com
+      LETSENCRYPT_HOST: monitoremulator.com
+      LETSENCRYPT_EMAIL: tajantonius@gmail.com
 
   api:
     build:
@@ -17,10 +17,10 @@ services:
       dockerfile: Dockerfile.prod
     environment:
       DB_URL: mongodb://db/monemu
-      VIRTUAL_PORT:8080
-      VIRTUAL_HOST:monitoremulator.com
-      LETSENCRYPT_HOST:monitoremulator.com
-      LETSENCRYPT_EMAIL:tajantonius@gmail.com
+      VIRTUAL_PORT: 8080
+      VIRTUAL_HOST: monitoremulator.com
+      LETSENCRYPT_HOST: monitoremulator.com
+      LETSENCRYPT_EMAIL: tajantonius@gmail.com
   db:
     image: mongo:4.0-xenial
     volumes:
