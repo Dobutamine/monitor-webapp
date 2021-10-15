@@ -205,6 +205,7 @@ export default {
       }
     },
     registerNewUser() {
+      console.log(this.apiUrl)
       const url = `${this.apiUrl}/api/users`;
       axios
         .post(url, {
@@ -230,6 +231,7 @@ export default {
         });
     },
     getUserId() {
+      console.log(this.apiUrl)
       const url = `${this.apiUrl}/api/auth`;
         axios
         .post(url, {
