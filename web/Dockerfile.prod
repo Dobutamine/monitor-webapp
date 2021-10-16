@@ -2,8 +2,8 @@ FROM node:14.16.0-alpine3.13 as build-stage
 RUN apk --no-cache add yarn --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     && yarn global add @quasar/cli
 WORKDIR /web
-ENV API_URL https://monitoremulator.com:8080
-ENV WS_URL wss://monitoremulator.com:8080/api
+ENV API_URL https://api.monitoremulator.com:8080
+ENV WS_URL wss://api.monitoremulator.com:8080/api
 COPY package*.json ./
 RUN yarn
 COPY . .
@@ -14,5 +14,5 @@ RUN quasar build
 FROM nginx:stable-alpine as production-stage
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build-stage /web/dist/spa /usr/share/nginx/html
-EXPOSE 8080
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
