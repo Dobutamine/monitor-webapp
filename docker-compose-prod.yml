@@ -19,8 +19,6 @@ services:
       DB_URL: mongodb://db/monemu
       VIRTUAL_PORT: 8080
       VIRTUAL_HOST: api.monitoremulator.com
-      LETSENCRYPT_HOST: monitoremulator.com
-      LETSENCRYPT_EMAIL: tajantonius@gmail.com
       
   db:
     image: mongo:4.0-xenial
