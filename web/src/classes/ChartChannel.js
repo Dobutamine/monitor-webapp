@@ -145,7 +145,6 @@ class ChartChannel {
   }
 
   updateConfiguration (configuration) {
-    console.log(configuration)
     this.label = configuration.curveLabel
     this.connected = configuration.connected
     this.source1 = configuration.sourceCurve

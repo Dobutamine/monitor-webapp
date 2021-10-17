@@ -80,14 +80,12 @@ class MonitorEmulator {
 
   toggleMechanicalVentilator(state) {
     if (state) {
-      console.log("intubation started");
       this._model.components["OUT_NCA"].is_enabled = false;
       this._model.components["YPIECE_NCA"].is_enabled = true;
       this._model.components["YPIECE_NCA"].no_flow = false;
       this._model.components["Breathing"].spont_breathing_enabled = false;
       this._model.components["Ventilator"].is_enabled = true;
     } else {
-      console.log("intubation ended");
       this._model.components["OUT_NCA"].is_enabled = true;
       this._model.components["YPIECE_NCA"].is_enabled = false;
       this._model.components["YPIECE_NCA"].no_flow = true;
@@ -97,8 +95,8 @@ class MonitorEmulator {
   }
 
   changeHeartRhythm(type, parameter) {
-    console.log("changed to rhythm type : ", type);
-    console.log("rhythm parameter: ", parameter);
+    // console.log("changed to rhythm type : ", type);
+    // console.log("rhythm parameter: ", parameter);
     this._model.components.ECG.rhythm_type = type;
     this._model.components.ECG.rhythm_parameter = parameter;
   }

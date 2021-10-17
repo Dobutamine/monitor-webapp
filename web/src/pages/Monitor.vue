@@ -408,6 +408,11 @@ export default {
           this.labButtonColor = "bg-red-10"
           this.labButtonText = "LAB AVAILABLE"
         }
+        if (this.monitorValues.configurationUpdateCounter != this.currentConfigUpdateCounter){
+          // signal button that an update is available
+          this.currentConfigUpdateCounter = this.monitorValues.configurationUpdateCounter
+          this.getMonitorConfigurationFromServer()
+        }
         this.updateModel()
       }
 
@@ -416,7 +421,6 @@ export default {
     updateInterfaceWithMonitorConfiguration() {
       // update all instructor interface components with the current monitor configuration
       if (this.monitorConfiguration) {
-        console.log(this.monitorConfiguration)
         
         this.updateModel()
       }
@@ -427,7 +431,7 @@ export default {
       // get the monitor configuration
       axios.get(url)
         .then(res => {
-          console.log('monitor interface got monitor configuration from server')
+          // console.log('monitor interface got monitor configuration from server')
           this.monitorConfiguration = res.data;
           this.updateInterfaceWithMonitorConfiguration()
         })
@@ -442,7 +446,7 @@ export default {
           configuration: JSON.stringify(this.monitorConfiguration)
         })
         .then(res => {
-          console.log('monitor interface updated the monitor configuration')
+          // console.log('monitor interface updated the monitor configuration')
           clearTimeout(this.configUpdateTimer)
           this.configUpdateTimer = null
         })
@@ -461,7 +465,7 @@ export default {
           "payload": this.monitorValues
         }
         this.websocket.send(JSON.stringify(message));
-        console.log('monitor interface updated the monitor values')
+        // console.log('monitor interface updated the monitor values')
         clearTimeout(this.serverUpdateTimer)
         this.serverUpdateTimer = null
       }
@@ -477,7 +481,7 @@ export default {
           }
         }
         this.websocket.send(JSON.stringify(message));
-        console.log('monitor interface websocket requested the monitor values.')
+        // console.log('monitor interface websocket requested the monitor values.')
       }
     },
 
@@ -494,27 +498,27 @@ export default {
           this.monitorValues = mes
           // update the monitor values in the instructor interface
           this.updateInterfaceWithMonitorValues()
-          console.log('monitor interface received monitor values from api.')
+          // console.log('monitor interface received monitor values from api.')
         }
       };
 
       // handle websocket opening
       this.websocket.onopen = () => {
-        console.log('monitor interface websocket connection with api opened.')
+        // console.log('monitor interface websocket connection with api opened.')
         
 
       }
 
       // handle websocket closing
       this.websocket.onclose = () => {
-        console.log('monitor interface websocket connection with api closed.')
+        // console.log('monitor interface websocket connection with api closed.')
         // remove the update timer
         this.updateTimer = null
       }
 
       // handle websocket errors
       this.websocket.onerror = (err) => {
-        console.log('monitor interface websocket connection error: ', err)
+        // console.log('monitor interface websocket connection error: ', err)
         // remove the update timer
         this.updateTimer = null
       }
@@ -585,7 +589,7 @@ export default {
     this.connectToWebsocketApi()
   },
   beforeDestroy() {
-    console.log('cleaning up monitor window')
+    // console.log('cleaning up monitor window')
   
     // removing the blinker timer
     this.blinkerTimer = null

@@ -204,11 +204,21 @@ class ParameterChannel {
         this.currentValue2 = data[this.dataPointsPerUpdate - 1][this.source2]
         this.meanValue = parseInt((2 * this.currentValue2 + this.currentValue) / 3)
         this.currentValue = this.meanValue
-        this.value.text = data[this.dataPointsPerUpdate - 1][this.source1] + '/' + data[this.dataPointsPerUpdate - 1][this.source2] +  ' (' + this.meanValue + ')'
+        if (isNaN(this.currentValue)) {
+            this.value.text = '-'
+        } else {
+            this.value.text = data[this.dataPointsPerUpdate - 1][this.source1] + '/' + data[this.dataPointsPerUpdate - 1][this.source2] +  ' (' + this.meanValue + ')'
+        }
+               
       } else {
           const value = data[this.dataPointsPerUpdate - 1][this.source1]
           this.currentValue = value
-          this.value.text = value
+          if (isNaN(value)) {
+            this.value.text = '-'
+          } else {
+            this.value.text = value
+          }
+          
           
       }
     } else {

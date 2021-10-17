@@ -123,6 +123,12 @@
             >CHEST COMPRESSIONS</q-btn
           >
           <q-btn
+            :class="chestCompressionsColor"
+            @click="openCompressionsSelector"
+            style="height: 60px; width: 120px"
+            >SHOCK</q-btn
+          >
+          <q-btn
             @click="toggleIntubation"
             :class="intubatedButtonColor"
             style="height: 60px; width: 120px"
@@ -290,7 +296,19 @@ export default {
       const url = `${this.apiUrl}/api/configs/new`;
       axios.post(url, {
           id: this.id,
-          configuration: JSON.stringify(this.monitorConfiguration)
+          name: this.monitorConfiguration.name,
+          curve1: this.monitorConfiguration.curve1,
+          curve2: this.monitorConfiguration.curve2,
+          curve3: this.monitorConfiguration.curve3,
+          curve4: this.monitorConfiguration.curve4,
+          curve5: this.monitorConfiguration.curve5,
+          curve6: this.monitorConfiguration.curve6,
+          param1: this.monitorConfiguration.param1,
+          param2: this.monitorConfiguration.param2,
+          param3: this.monitorConfiguration.param3,
+          param4: this.monitorConfiguration.param4,
+          param5: this.monitorConfiguration.param5,
+          param6: this.monitorConfiguration.param6,
         })
         .then(res => {
           console.log('instructor interface updated the monitor configuration')
@@ -394,11 +412,12 @@ export default {
     })
 
     this.$root.$on("updatemonitorconfig", () => {
-      if (!this.configUpdateTimer) {
-        this.configUpdateTimer = setTimeout(() => {
-          this.setMonitorConfigurationOnServer()
-        }, 1000)
-      }
+      this.setMonitorConfigurationOnServer()
+      // if (!this.configUpdateTimer) {
+      //   this.configUpdateTimer = setTimeout(() => {
+      //     this.setMonitorConfigurationOnServer()
+      //   }, 1000)
+      // }
     })
 
     // get the current monitor configuration from the api
