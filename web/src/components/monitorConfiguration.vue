@@ -216,36 +216,60 @@ export default {
   },
   methods: {
     parameterChange_ch6 () {
+      if (this.parameter_ch6 === 'EMPTY') {
+        this.color_ch6 = "#000000"
+        this.alarmEnabled_ch6 = false
+      }
 
     },
     colorChanged_ch6 () {
 
     },
     parameterChange_ch1 () {
+      if (this.parameter_ch1 === 'EMPTY') {
+        this.color_ch1 = "#000000"
+        this.alarmEnabled_ch1 = false
+      }
 
     },
     colorChanged_ch1 () {
 
     },
     parameterChange_ch2 () {
+      if (this.parameter_ch2 === 'EMPTY') {
+        this.color_ch2 = "#000000"
+        this.alarmEnabled_ch2 = false
+      }
 
     },
     colorChanged_ch2 () {
 
     },
     parameterChange_ch3 () {
+      if (this.parameter_ch3 === 'EMPTY') {
+        this.color_ch3 = "#000000"
+        this.alarmEnabled_ch3 = false
+      }
 
     },
     colorChanged_ch3 () {
 
     },
     parameterChange_ch4 () {
+      if (this.parameter_ch4 === 'EMPTY') {
+        this.color_ch4 = "#000000"
+        this.alarmEnabled_ch4 = false
+      }
 
     },
     colorChanged_ch4 () {
 
     },
     parameterChange_ch5 () {
+      if (this.parameter_ch5 === 'EMPTY') {
+        this.color_ch5 = "#000000"
+        this.alarmEnabled_ch5 = false
+      }
 
     },
     colorChanged_ch5 () {
@@ -253,6 +277,7 @@ export default {
     },
     acceptNewConfiguration () {
       let config1 = this.setConfigurationFromCurveLabel(this.parameter_ch1)
+
       this.monitorConfiguration.curve1.label = config1.label
       this.monitorConfiguration.curve1.curveLabel = config1.curveLabel
       this.monitorConfiguration.curve1.source1 = config1.source1
@@ -275,7 +300,7 @@ export default {
       let config2 = this.setConfigurationFromCurveLabel(this.parameter_ch2)
       this.monitorConfiguration.curve2.label = config2.label
       this.monitorConfiguration.curve2.curveLabel = config2.curveLabel
-      this.monitorConfiguration.curve2.source2 = config2.source2
+      this.monitorConfiguration.curve2.source1 = config2.source1
       this.monitorConfiguration.curve2.source2 = config2.source2
       this.monitorConfiguration.curve2.sourceCurve = config2.sourceCurve
       this.monitorConfiguration.curve2.color = this.color_ch2
@@ -294,7 +319,7 @@ export default {
       let config3 = this.setConfigurationFromCurveLabel(this.parameter_ch3)
       this.monitorConfiguration.curve3.label = config3.label
       this.monitorConfiguration.curve3.curveLabel = config3.curveLabel
-      this.monitorConfiguration.curve3.source3 = config3.source3
+      this.monitorConfiguration.curve3.source1 = config3.source1
       this.monitorConfiguration.curve3.source2 = config3.source2
       this.monitorConfiguration.curve3.sourceCurve = config3.sourceCurve
       this.monitorConfiguration.curve3.color = this.color_ch3
@@ -313,7 +338,7 @@ export default {
       let config4 = this.setConfigurationFromCurveLabel(this.parameter_ch4)
       this.monitorConfiguration.curve4.label = config4.label
       this.monitorConfiguration.curve4.curveLabel = config4.curveLabel
-      this.monitorConfiguration.curve4.source4 = config4.source4
+      this.monitorConfiguration.curve4.source1 = config4.source1
       this.monitorConfiguration.curve4.source2 = config4.source2
       this.monitorConfiguration.curve4.sourceCurve = config4.sourceCurve
       this.monitorConfiguration.curve4.color = this.color_ch4
@@ -333,7 +358,7 @@ export default {
       let config5 = this.setConfigurationFromCurveLabel(this.parameter_ch5)
       this.monitorConfiguration.curve5.label = config5.label
       this.monitorConfiguration.curve5.curveLabel = config5.curveLabel
-      this.monitorConfiguration.curve5.source5 = config5.source5
+      this.monitorConfiguration.curve5.source1 = config5.source1
       this.monitorConfiguration.curve5.source2 = config5.source2
       this.monitorConfiguration.curve5.sourceCurve = config5.sourceCurve
       this.monitorConfiguration.curve5.color = this.color_ch5
@@ -353,7 +378,7 @@ export default {
       let config6 = this.setConfigurationFromCurveLabel(this.parameter_ch6)
       this.monitorConfiguration.curve6.label = config6.label
       this.monitorConfiguration.curve6.curveLabel = config6.curveLabel
-      this.monitorConfiguration.curve6.source6 = config6.source6
+      this.monitorConfiguration.curve6.source1 = config6.source1
       this.monitorConfiguration.curve6.source2 = config6.source2
       this.monitorConfiguration.curve6.sourceCurve = config6.sourceCurve
       this.monitorConfiguration.curve6.color = this.color_ch6
@@ -485,7 +510,7 @@ export default {
           break;
         case "ETCO2":
           configObject.label = 'etCO2'
-          configObject.curveLabel = 'ectp2'
+          configObject.curveLabel = 'etco2'
           configObject.source1 = 'etco2'
           configObject.source2 = ''
           configObject.sourceCurve = 'etco2_signal'
