@@ -388,7 +388,7 @@ export default {
         timeframe: 5
       }
       switch (curveLabel) {
-        case "empty":
+        case "EMPTY":
           configObject.label = ''
           configObject.curveLabel = ''
           configObject.source1 = 'empty'
