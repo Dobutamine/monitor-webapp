@@ -20,7 +20,9 @@ router.post("/new", async (req, res) => {
     // validate the request
     const { error } = validate(req.body);
 
-    if (error) res.status(400).send(error.details[0].message);
+    if (error) { 
+      res.status(400).send(error.details[0].message)
+    }
 
     // try to determine if a configuration for this id is found
     let lab = await Lab.updateOne({ id: req.body.id }, req.body);

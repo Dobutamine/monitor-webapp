@@ -27,19 +27,15 @@ const Lab = mongoose.model(
       trombocytes: 245
     } },
     cbcAvailable: { type: Boolean, default: false },
-    electrolytes: { type: Object, default: {
-      na: 140,
-      k: 3.8,
-      cl: 100,
-      ca: 2.0,
-      ph: 1.8,
-      mg: 0.9,
-    } },
-    electrolytesAvailable: { type: Boolean, default: false },
     other: { type: Object, default: {
-      ur: 23,
-      kr: 56,
-      alb: 25
+      CRP: 2,
+      urea: 5,
+      kreatinine: 40,
+      albumin: 35,
+      ammonia: 20,
+      calcium: 2.02,
+      phosphate: 1.8,
+      magnesium: 1.0,
     } },
     otherAvailable: { type: Boolean, default: false },
   })
@@ -53,8 +49,6 @@ function validateLab(lab) {
     bloodgasAvailable: Joi.boolean().required(),
     cbc: Joi.object().required(),
     cbcAvailable: Joi.boolean().required(),
-    electrolytes: Joi.object().required(),
-    electrolytesAvailable: Joi.boolean().required(),
     other: Joi.object().required(),
     otherAvailable: Joi.boolean().required(),
   });

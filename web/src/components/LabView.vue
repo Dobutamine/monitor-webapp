@@ -362,11 +362,11 @@ export default {
       axios
         .get(url)
         .then(res => {
-          console.log(res.data);
           this.bloodgasAvailable = res.data.bloodgasAvailable;
           this.cbcAvailable = res.data.cbcAvailable;
           this.otherAvailable = res.data.otherAvailable;
-          const parsedBloodgas = JSON.parse(res.data.bloodgas);
+
+          const parsedBloodgas = res.data.bloodgas
           this.sodium = parsedBloodgas.na;
           this.potassium = parsedBloodgas.k;
           this.chloride = parsedBloodgas.cl;
@@ -378,13 +378,13 @@ export default {
           this.be = parsedBloodgas.be;
           this.bic = parsedBloodgas.bic;
 
-          const parsedCBC = JSON.parse(res.data.cbc);
+          const parsedCBC = res.data.cbc
           this.hemoglobin = parsedCBC.hb;
           this.hematocrit = parsedCBC.ht;
           this.leucocytes = parsedCBC.leuco;
           this.trombocytes = parsedCBC.tht;
 
-          const parsedOther = JSON.parse(res.data.other);
+          const parsedOther = res.data.other
           this.CRP = parsedOther.CRP;
           this.urea = parsedOther.urea;
           this.kreatinine = parsedOther.kreatinine;

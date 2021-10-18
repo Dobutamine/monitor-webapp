@@ -242,44 +242,44 @@ export default {
         this.buttonConnectedColor = "teal-10"
       }
       // find the channel in monitorConfiguration object which has the value_name 
-      if (this.monitorConfiguration.curve1.source1 === this.value_name) {
+      if (this.monitorConfiguration.curve1.source1 === this.value_name1) {
         this.monitorConfiguration.curve1.connected = this.connected
       }
-      if (this.monitorConfiguration.curve2.source1 === this.value_name) {
+      if (this.monitorConfiguration.curve2.source1 === this.value_name1) {
         this.monitorConfiguration.curve2.connected = this.connected
       }
-      if (this.monitorConfiguration.curve2.source1 === this.value_name) {
+      if (this.monitorConfiguration.curve2.source1 === this.value_name1) {
         this.monitorConfiguration.curve2.connected = this.connected
       }
-      if (this.monitorConfiguration.curve3.source1 === this.value_name) {
+      if (this.monitorConfiguration.curve3.source1 === this.value_name1) {
         this.monitorConfiguration.curve3.connected = this.connected
       }
-      if (this.monitorConfiguration.curve4.source1 === this.value_name) {
+      if (this.monitorConfiguration.curve4.source1 === this.value_name1) {
         this.monitorConfiguration.curve4.connected = this.connected
       }
-      if (this.monitorConfiguration.curve5.source1 === this.value_name) {
+      if (this.monitorConfiguration.curve5.source1 === this.value_name1) {
         this.monitorConfiguration.curve5.connected = this.connected
       }
-      if (this.monitorConfiguration.curve6.source1 === this.value_name) {
+      if (this.monitorConfiguration.curve6.source1 === this.value_name1) {
         this.monitorConfiguration.curve6.connected = this.connected
       }
 
-      if (this.monitorConfiguration.param1.source1 === this.value_name) {
+      if (this.monitorConfiguration.param1.source1 === this.value_name1) {
         this.monitorConfiguration.param1.connected = this.connected
       }
-      if (this.monitorConfiguration.param2.source1 === this.value_name) {
+      if (this.monitorConfiguration.param2.source1 === this.value_name1) {
         this.monitorConfiguration.param2.connected = this.connected
       }
-      if (this.monitorConfiguration.param3.source1 === this.value_name) {
+      if (this.monitorConfiguration.param3.source1 === this.value_name1) {
         this.monitorConfiguration.param3.connected = this.connected
       }
-      if (this.monitorConfiguration.param4.source1 === this.value_name) {
+      if (this.monitorConfiguration.param4.source1 === this.value_name1) {
         this.monitorConfiguration.param4.connected = this.connected
       }
-      if (this.monitorConfiguration.param5.source1 === this.value_name) {
+      if (this.monitorConfiguration.param5.source1 === this.value_name1) {
         this.monitorConfiguration.param5.connected = this.connected
       }
-      if (this.monitorConfiguration.param6.source1 === this.value_name) {
+      if (this.monitorConfiguration.param6.source1 === this.value_name1) {
         this.monitorConfiguration.param6.connected = this.connected
       }
 

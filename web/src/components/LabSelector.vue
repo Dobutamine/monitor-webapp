@@ -327,7 +327,7 @@
                   v-model="leucocytes"
                   :min="1"
                   :max="40"
-                  :step="1"
+                  :step="0.1"
                 ></q-slider>
               </div>
             </div>
@@ -385,7 +385,7 @@
               <div class="col q-ml-sm">
                 <q-slider
                   v-model="CRP"
-                  :value="crp"
+                  :value="CRP"
                   :min="0"
                   :max="150"
                   :step="1"
@@ -454,7 +454,7 @@
                   v-model="calcium"
                   :min="0.5"
                   :max="5"
-                  :step="0.1"
+                  :step="0.01"
                 ></q-slider>
               </div>
             </div>
@@ -498,7 +498,7 @@
                   v-model="phosphate"
                   :min="0.5"
                   :max="5"
-                  :step="0.1"
+                  :step="0.01"
                 ></q-slider>
               </div>
             </div>
@@ -586,6 +586,7 @@ export default {
   data() {
     return {
       id: "",
+      name:"",
       apiUrl: "",
       url: "",
       stepSmall: 0.01,
@@ -601,6 +602,18 @@ export default {
       btnAvailableBloodgasText: "NOT AVAILABLE ON MONITOR",
       bloodgasEnabled: true,
       bloodgasColor: "blue-grey-8",
+      bloodgas: {
+        ph: 7.4,
+        po2: 100,
+        pco2: 35,
+        bic: 25,
+        be: -0.5,
+        na: 140,
+        k: 3.8,
+        cl: 100,
+        glucose: 3.5,
+        lactate: 1.0
+      },
       red: "red-10",
       green: "teal-10",
       bloodgasVisible: true,
@@ -790,45 +803,41 @@ export default {
       }
     },
     saveLabs() {
-      const newConfig = {
-        na: this.sodium,
-        k: this.potassium,
-        cl: this.chloride,
-        ph: this.ph,
-        po2: this.po2,
-        pco2: this.pco2,
-        bic: this.bic,
-        be: this.be,
-        glucose: this.glucose,
-        lactate: this.lactate
-      };
-      const cbcConfig = {
-        hb: this.hemoglobin,
-        ht: this.hematocrit,
-        leuco: this.leucocytes,
-        tht: this.trombocytes
-      };
-      const otherConfig = {
-        CRP: this.CRP,
-        urea: this.urea,
-        kreatinine: this.kreatinine,
-        albumin: this.albumin,
-        ammonia: this.ammonia,
-        calcium: this.calcium,
-        phosphate: this.phosphate,
-        magnesium: this.magnesium
-      };
       const url = `${this.apiUrl}/api/labs/new`;
       axios
-        .post(url, {
+        .post(url, { 
           id: this.id,
-          bloodgas: JSON.stringify(newConfig),
+          name: this.name,
+          bloodgas: {
+            na: this.sodium,
+            k: this.potassium,
+            cl: this.chloride,
+            ph: this.ph,
+            po2: this.po2,
+            pco2: this.pco2,
+            bic: this.bic,
+            be: this.be,
+            glucose: this.glucose,
+            lactate: this.lactate
+          },
           bloodgasAvailable: this.bloodgasAvailable,
-          cbc: JSON.stringify(cbcConfig),
+          cbc: {
+            hb: this.hemoglobin,
+            ht: this.hematocrit,
+            leucocytes: this.leucocytes,
+            trombocytes: this.trombocytes
+          }, 
           cbcAvailable: this.cbcAvailable,
-          electrolytes: "empty",
-          electrolytesAvailable: this.electrolytesAvailable,
-          other: JSON.stringify(otherConfig),
+          other: {
+            CRP: this.CRP,
+            urea: this.urea,
+            kreatinine: this.kreatinine,
+            albumin: this.albumin,
+            ammonia: this.ammonia,
+            calcium: this.calcium,
+            phosphate: this.phosphate,
+            magnesium: this.magnesium,
+          },
           otherAvailable: this.otherAvailable
         })
         .then(res => {
@@ -841,11 +850,13 @@ export default {
         .catch(error => {});
     },
     getLabSettingsFromServer() {
+      
       const url = `${this.apiUrl}/api/labs?id=${this.id}`;
       axios
         .get(url)
         .then(res => {
           console.log(res.data)
+          this.name = res.data.name
           this.bloodgasAvailable = res.data.bloodgasAvailable;
           if (this.bloodgasAvailable) {
             this.btnAvailableBloodgasColor = "teal-10";
@@ -854,6 +865,18 @@ export default {
             this.btnAvailableBloodgasColor = "red-10";
             this.btnAvailableBloodgasText = "NOT AVAILABLE ON MONITOR";
           }
+          this.ph = res.data.bloodgas.ph
+          this.po2 = res.data.bloodgas.po2
+          this.pco2pco2 = res.data.bloodgas.pco2
+          this.bic = res.data.bloodgas.bic
+          this.be = res.data.bloodgas.be
+          this.sodium = res.data.bloodgas.na
+          this.potassium = res.data.bloodgas.k
+          this.chloride = res.data.bloodgas.cl
+          this.glucose = res.data.bloodgas.glucose
+          this.lactate = res.data.bloodgas.lactate
+
+
           this.cbcAvailable = res.data.cbcAvailable;
           if (this.cbcAvailable) {
             this.btnAvailableCBCColor = "teal-10";
@@ -862,6 +885,12 @@ export default {
             this.btnAvailableCBCColor = "red-10";
             this.btnAvailableCBCText = "NOT AVAILABLE ON MONITOR";
           }
+
+          this.hemoglobin = res.data.cbc.hb
+          this.hematocrit = res.data.cbc.ht
+          this.leucocytes = res.data.cbc.leucocytes
+          this.trombocytes = res.data.cbc.trombocytes
+
           this.otherAvailable = res.data.otherAvailable;
           if (this.otherAvailable) {
             this.btnAvailableOtherColor = "teal-10";
@@ -871,33 +900,14 @@ export default {
             this.btnAvailableOtherText = "NOT AVAILABLE ON MONITOR";
           }
 
-          // const parsedBloodgas = JSON.parse(res.data.bloodgas);
-          // this.sodium = parsedBloodgas.na;
-          // this.potassium = parsedBloodgas.k;
-          // this.chloride = parsedBloodgas.cl;
-          // this.glucose = parsedBloodgas.glucose;
-          // this.lactate = parsedBloodgas.lactate;
-          // this.ph = parsedBloodgas.ph;
-          // this.pco2 = parsedBloodgas.pco2;
-          // this.po2 = parsedBloodgas.po2;
-          // this.be = parsedBloodgas.be;
-          // this.bic = parsedBloodgas.bic;
-
-          // const parsedCBC = JSON.parse(res.data.cbc);
-          // this.hemoglobin = parsedCBC.hb;
-          // this.hematocrit = parsedCBC.ht;
-          // this.leucocytes = parsedCBC.leuco;
-          // this.trombocytes = parsedCBC.tht;
-
-          // const parsedOther = JSON.parse(res.data.other);
-          // this.CRP = parsedOther.CRP;
-          // this.urea = parsedOther.urea;
-          // this.kreatinine = parsedOther.kreatinine;
-          // this.albumin = parsedOther.albumin;
-          // this.ammonia = parsedOther.ammonia;
-          // this.calcium = parsedOther.calcium;
-          // this.phosphate = parsedOther.phosphate;
-          // this.magnesium = parsedOther.magnesium;
+          this.CRP = res.data.other.CRP
+          this.urea = res.data.other.urea
+          this.kreatinine = res.data.other.kreatinine
+          this.albumin = res.data.other.albumin
+          this.ammonia = res.data.other.ammonia
+          this.calcium = res.data.other.calcium
+          this.phosphate = res.data.other.phosphate
+          this.magnesium = res.data.other.magnesium
         })
         .catch(error => {
           console.log(error);

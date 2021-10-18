@@ -140,7 +140,6 @@ export default {
     monitorConfiguration: function (newVal, oldVal) {
       // update the connected label
       this.connectedLabel = this.value_name + "Connected"
-      console.log(this.connectedLabel)
     }
 
   },

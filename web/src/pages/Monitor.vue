@@ -143,9 +143,9 @@ export default {
       timerBtnText: "SHOW TIMER",
       timerBtnColor: "bg-blue-grey-8",
       imageButtonColor: "bg-blue-grey-8",
-      imageButtonText: "NO IMAGE",
+      imageButtonText: "IMAGING",
       labButtonColor: "bg-blue-grey-8",
-      labButtonText: "NO LAB",
+      labButtonText: "LAB",
       firstReception: true,
       silenceState: false,
       silenceDuration: 30,
@@ -328,8 +328,8 @@ export default {
     },
     showLabs() {
       this.currentLabUpdateCounter = (this.monitorValues.labUpdateCounter)
-      this.labButtonColor = "bg-blue-grey-10"
-      this.labButtonText = "NO LAB"
+      this.labButtonColor = "bg-blue-grey-8"
+      this.labButtonText = "LAB"
       const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
       this.$q.dialog({
         component: LabView,
@@ -363,7 +363,7 @@ export default {
     showImage() {
       this.currentImageUpdateCounter = (this.monitorValues.imageUpdateCounter)
       this.imageButtonColor = "bg-blue-grey-8"
-      this.imageButtonText = "NO IMAGE"
+      this.imageButtonText = "IMAGING"
       const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
       this.$q.dialog({
         component: ImageView,
@@ -402,12 +402,10 @@ export default {
         if (this.monitorValues.imageUpdateCounter != this.currentImageUpdateCounter){
           // signal button that an update is available
           this.imageButtonColor = "bg-red-10"
-          this.imageButtonText = "IMAGE AVAILABLE"
         }
         if (this.monitorValues.labUpdateCounter != this.currentLabUpdateCounter){
           // signal button that an update is available
           this.labButtonColor = "bg-red-10"
-          this.labButtonText = "LAB AVAILABLE"
         }
         if (this.monitorValues.configurationUpdateCounter != this.currentConfigUpdateCounter){
           // signal button that an update is available
