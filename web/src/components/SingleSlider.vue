@@ -198,6 +198,7 @@ export default {
         this.buttonColorEnabled = "teal-10";
       } else {
         this.buttonColorEnabled = "red-10";
+ 
       }
     },
     toggleConnected() {

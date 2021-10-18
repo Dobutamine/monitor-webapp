@@ -141,25 +141,15 @@ const Config = mongoose.model(
       limiterMin: "",
       squeezeFactor: 0
     }},
-    param5: { type: Object, default: { 
-      label: "NIBD",
+    param1: { type: Object, default: { 
+      label: "",
       connected: true,
-      source1: "abpSyst",
-      source2: "abpDiast",
-      color: "#FB0808",
-      alarmEnabled: true,
-      lowerAlarm: 35,
-      upperAlarm: 75,
-    }},
-    param6: { type: Object, default: { 
-      label: "Temp",
-      connected: true,
-      source1: "temp",
+      source1: "empty",
       source2: "",
-      color: "#5EEA32",
-      alarmEnabled: true,
-      lowerAlarm: 36.5,
-      upperAlarm: 37.5,
+      color: "#000000",
+      alarmEnabled: false,
+      lowerAlarm: 80,
+      upperAlarm: 180,
     }},
     param2: { type: Object, default: { 
       label: "Pols",
@@ -181,27 +171,36 @@ const Config = mongoose.model(
       lowerAlarm: 80,
       upperAlarm: 180,
     }},
-    param1: { type: Object, default: { 
-      label: "",
-      connected: false,
-      source1: "",
-      source2: "",
-      color: "#000000",
-      alarmEnabled: false,
-      lowerAlarm: 80,
-      upperAlarm: 180,
-    }},
     param4: { type: Object, default: { 
       label: "",
-      connected: false,
-      source1: "",
+      connected: true,
+      source1: "empty",
       source2: "",
       color: "#000000",
       alarmEnabled: false,
       lowerAlarm: 80,
       upperAlarm: 180,
     }},
-
+    param5: { type: Object, default: { 
+      label: "NIBD",
+      connected: true,
+      source1: "abpSyst",
+      source2: "abpDiast",
+      color: "#FB0808",
+      alarmEnabled: true,
+      lowerAlarm: 35,
+      upperAlarm: 75,
+    }},
+    param6: { type: Object, default: { 
+      label: "Temp",
+      connected: true,
+      source1: "temp",
+      source2: "",
+      color: "#5EEA32",
+      alarmEnabled: true,
+      lowerAlarm: 36.5,
+      upperAlarm: 37.5,
+    }}
   })
 );
 

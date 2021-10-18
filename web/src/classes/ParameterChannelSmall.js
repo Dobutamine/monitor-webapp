@@ -147,7 +147,7 @@ class ParameterChannelSmall {
     this.label.x = this.width / 2
     this.label.y = this.yOffset - this.height / 1.5
     this.value.y = this.yOffset - this.height / 1.75
-    this.value.x = 15 + this.width / 2
+    this.value.x = 25 + this.width / 2
 
     this.alarmUpper.x = this.width / 2
     this.alarmLower.x = this.width / 2
@@ -199,8 +199,7 @@ class ParameterChannelSmall {
       this.currentValue = '-'
       this.value.text = '-'
       return
-  }
-
+    }
     if (this.source1 != 'empty') {
       if (this.source2 != '') {
         this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1]
@@ -223,7 +222,7 @@ class ParameterChannelSmall {
       }
     } else {
       // now we have to change to state to empty and make sure the alarms are turned off
-      this.value.text ='1000'
+      this.value.text =''
       this.alarmUpper.text = ''
       this.alarmLower.text = ''
       this.label.text = ''
@@ -232,6 +231,7 @@ class ParameterChannelSmall {
 
     if (!this.alarmEnabled) {
       this.styleAlarm.fill = '#000000'
+      // console.log(this.source1)
     }
 
   }

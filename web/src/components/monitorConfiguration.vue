@@ -634,7 +634,7 @@ export default {
     updateMonitorConfigurationOnServer() {
       this.$root.$emit('updatemonitorconfig')
       // increase the update counter
-      this.monitorValues.configurationUpdateCounter += 4
+      this.monitorValues.configurationUpdateCounter += 1
       // signal the instructor component that the monitor values are changed
       this.$root.$emit('updatemonitorvitals')    
     },

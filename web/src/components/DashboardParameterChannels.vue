@@ -74,6 +74,7 @@ export default {
     };
   },
   methods: {
+    
     updater(message) {
       if (message.data.target === "monitor") {
         if (this.updateChannelsCounter > this.updateChannelsInterval) {
@@ -246,7 +247,8 @@ export default {
                 "color": "#000000",
                 "alarmEnabled": false,
                 "lowerAlarm": 80,
-                "upperAlarm": 180
+                "upperAlarm": 180,
+                "visible": true
           },
           this.dataUpdateInterval,
           this.dataPointsPerUpdate,
@@ -269,7 +271,8 @@ export default {
                 "color": "#000000",
                 "alarmEnabled": false,
                 "lowerAlarm": 80,
-                "upperAlarm": 180
+                "upperAlarm": 180,
+                "visible": true,
           },
           this.dataUpdateInterval,
           this.dataPointsPerUpdate,
@@ -296,8 +299,13 @@ export default {
     // initialize the parameters
     this.initializeChannels();
 
+    // setup an event handler for showing the NIBD
+    this.$root.$on('shownibd', () => { this.showNIBD = true })
+
   },
   beforeDestroy() {
+    // remove event handlers
+    this.$root.$off('shownibd')
     // reset the alarm counters
     this.$store.commit("dataPool/ResetAlarmCounter");
     this.$store.commit("dataPool/ResetRedAlarmCounter");
