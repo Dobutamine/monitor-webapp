@@ -151,6 +151,7 @@ export default {
       silenceDuration: 30,
       barText: "HIDE TOP",
       barVisibility: true,
+      prevOverrideState: false,
 
 
       chartCols: "col-9 text-center",
@@ -413,6 +414,15 @@ export default {
           this.currentConfigUpdateCounter = this.monitorValues.configurationUpdateCounter
           this.getMonitorConfigurationFromServer()
         }
+        // check whether the alarm override is changed?
+        if (this.monitorValues.alarmOverride != this.prevOverrideState) {
+          // override has changed
+          this.silenceState = this.monitorValues.alarmOverride
+          this.silenceDuration = 180
+          this.$root.$emit("pause", this.silenceState);
+        }
+        this.prevOverrideState = this.monitorValues.alarmOverride
+
         this.updateModel()
       }
 
