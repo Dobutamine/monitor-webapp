@@ -275,7 +275,6 @@ export default {
     updateInterfaceWithMonitorConfiguration() {
       // update all instructor interface components with the current monitor configuration
       if (this.monitorConfiguration) {
-
       }
     },
     getMonitorConfigurationFromServer () {

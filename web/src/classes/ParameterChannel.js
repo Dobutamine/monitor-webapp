@@ -114,7 +114,6 @@ class ParameterChannel {
 
   }
   updateConfiguration (newconfig) {
-
     this.upperAlarm = newconfig.upperAlarm
     this.lowerAlarm = newconfig.lowerAlarm
     this.alarmEnabled = newconfig.alarmEnabled

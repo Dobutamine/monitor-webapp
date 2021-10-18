@@ -138,7 +138,9 @@ export default {
       
     },
     monitorConfiguration: function (newVal, oldVal) {
-      // console.log(newVal)
+      // update the connected label
+      this.connectedLabel = this.value_name + "Connected"
+      console.log(this.connectedLabel)
     }
 
   },
@@ -156,6 +158,7 @@ export default {
       buttonStartText: "START",
       buttonConnectedText: "CONNECTED",
       buttonConnectedColor: "teal-10",
+      connectedLabel: '',
       connected: true,
       currentValue: 10,
       currentValueText: "10",
@@ -211,10 +214,58 @@ export default {
         this.buttonConnectedText = "CONNECTED"
         this.buttonConnectedColor = "teal-10"
       }
+      // find the channel in monitorConfiguration object which has the value_name 
+      if (this.monitorConfiguration.curve1.source1 === this.value_name) {
+        this.monitorConfiguration.curve1.connected = this.connected
+      }
+      if (this.monitorConfiguration.curve2.source1 === this.value_name) {
+        this.monitorConfiguration.curve2.connected = this.connected
+      }
+      if (this.monitorConfiguration.curve2.source1 === this.value_name) {
+        this.monitorConfiguration.curve2.connected = this.connected
+      }
+      if (this.monitorConfiguration.curve3.source1 === this.value_name) {
+        this.monitorConfiguration.curve3.connected = this.connected
+      }
+      if (this.monitorConfiguration.curve4.source1 === this.value_name) {
+        this.monitorConfiguration.curve4.connected = this.connected
+      }
+      if (this.monitorConfiguration.curve5.source1 === this.value_name) {
+        this.monitorConfiguration.curve5.connected = this.connected
+      }
+      if (this.monitorConfiguration.curve6.source1 === this.value_name) {
+        this.monitorConfiguration.curve6.connected = this.connected
+      }
+
+      if (this.monitorConfiguration.param1.source1 === this.value_name) {
+        this.monitorConfiguration.param1.connected = this.connected
+      }
+      if (this.monitorConfiguration.param2.source1 === this.value_name) {
+        this.monitorConfiguration.param2.connected = this.connected
+      }
+      if (this.monitorConfiguration.param3.source1 === this.value_name) {
+        this.monitorConfiguration.param3.connected = this.connected
+      }
+      if (this.monitorConfiguration.param4.source1 === this.value_name) {
+        this.monitorConfiguration.param4.connected = this.connected
+      }
+      if (this.monitorConfiguration.param5.source1 === this.value_name) {
+        this.monitorConfiguration.param5.connected = this.connected
+      }
+      if (this.monitorConfiguration.param6.source1 === this.value_name) {
+        this.monitorConfiguration.param6.connected = this.connected
+      }
+
+      this.$root.$emit('updatemonitorconfig')
+      // set the monitorvalues connected => not functional for now
       this.monitorValues[this.value_name + 'Connected'] = this.connected
-      this.updateCurrentValueLabel()
+      // increase the update counter
+      this.monitorValues.configurationUpdateCounter += 1
+      // signal the instructor component that the monitor values are changed
+      this.$root.$emit('updatemonitorvitals')    
 
     },
+
     startChangingParameter() {
       if (this.updateTimerRunning) {
         this.updateTimerRunning = false
