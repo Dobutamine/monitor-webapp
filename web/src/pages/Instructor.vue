@@ -375,6 +375,8 @@ export default {
       // handle websocket closing
       this.websocket.onclose = () => {
         console.log('instructor interface websocket connection with api closed.')
+        // clean up
+        this.$router.push("/")
       }
 
       // handle websocket errors
@@ -412,11 +414,6 @@ export default {
 
     this.$root.$on("updatemonitorconfig", () => {
       this.setMonitorConfigurationOnServer()
-      // if (!this.configUpdateTimer) {
-      //   this.configUpdateTimer = setTimeout(() => {
-      //     this.setMonitorConfigurationOnServer()
-      //   }, 1000)
-      // }
     })
 
     // get the current monitor configuration from the api

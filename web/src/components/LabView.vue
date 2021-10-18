@@ -2,19 +2,17 @@
   <q-dialog v-model="confirm" ref="dialog" persistent buttons>
     <q-card class="q-ma-sm" style="width: 450px">
       <q-card-section>
-        <div>
-          <q-select
-            v-model="selectedLabTest"
-            :options="labTestList"
-            @input="selectionChanged"
-            stack-label
-            label="select laboratory test"
-          />
+        <div v-if="bloodgasAvailable || cbcAvailable || otherAvailable">
+          AVAILABLE LABORATORY RESULTS
         </div>
+        <div v-if="!bloodgasAvailable && !cbcAvailable && !otherAvailable">
+          NO AVAILABLE LABORATORY TESTS
+        </div>
+
       </q-card-section>
 
       <q-card-section
-        v-if="bloodgasVisible && bloodgasAvailable"
+        v-if="bloodgasAvailable"
         class="text-grey-6"
       >
         <div class="row">
@@ -123,7 +121,7 @@
         </div>
       </q-card-section>
 
-      <q-card-section v-if="cbcVisible && cbcAvailable" class="text-grey-6">
+      <q-card-section v-if="cbcAvailable" class="text-grey-6">
         <div class="row">
           <div class="col text-left">
             hemoglobin
@@ -173,7 +171,7 @@
         </div>
       </q-card-section>
 
-      <q-card-section v-if="otherVisible && otherAvailable" class="text-grey-6">
+      <q-card-section v-if="otherAvailable" class="text-grey-6">
         <div class="row">
           <div class="col text-left">
             CRP
@@ -381,8 +379,8 @@ export default {
           const parsedCBC = res.data.cbc
           this.hemoglobin = parsedCBC.hb;
           this.hematocrit = parsedCBC.ht;
-          this.leucocytes = parsedCBC.leuco;
-          this.trombocytes = parsedCBC.tht;
+          this.leucocytes = parsedCBC.leucocytes;
+          this.trombocytes = parsedCBC.trombocytes;
 
           const parsedOther = res.data.other
           this.CRP = parsedOther.CRP;

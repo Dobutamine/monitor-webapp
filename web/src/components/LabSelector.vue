@@ -855,7 +855,6 @@ export default {
       axios
         .get(url)
         .then(res => {
-          console.log(res.data)
           this.name = res.data.name
           this.bloodgasAvailable = res.data.bloodgasAvailable;
           if (this.bloodgasAvailable) {
