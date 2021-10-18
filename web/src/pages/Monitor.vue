@@ -305,6 +305,8 @@ export default {
     },
     standby() {
       if (this.standbyMonitor) {
+        this.alarmLo.play();
+        this.alarmHi.play();
         this.standbyMonitor = false
         // start the modeing engine
         this.$root.$emit("rt_on");
