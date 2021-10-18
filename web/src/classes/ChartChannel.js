@@ -161,6 +161,16 @@ class ChartChannel {
     this.limiterMin = configuration.limiterMin
     this.squeezeFactor = configuration.squeezeFactor
 
+    this.dataArrayLength = parseInt((this.timeframe / this.dataInterval))
+    this.dataY1 = [this.dataArrayLength].fill(0)
+    this.dataY2 = [this.dataArrayLength].fill(0)
+    this.dataX = []
+    let stepsizeX = (this.width - this.xOffset) / this.dataArrayLength
+    for (let x = this.xOffset; x < this.width; x = x + stepsizeX) {
+      this.dataX.push(x)
+    }
+
+
     this.setChannelColor(this.color)
     this.updateSize(this.width, this.height)
 

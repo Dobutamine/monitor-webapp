@@ -383,6 +383,9 @@ export default {
           break
       }
     },
+    checkSAT1(channel) {
+
+    },
     parameterChange_ch1 () {
       if (this.parameter_ch1 === 'EMPTY') {
         this.color_ch1 = "#000000"
@@ -562,6 +565,29 @@ export default {
       this.monitorConfiguration.curve6.zoom = config6.zoom
       this.monitorConfiguration.curve6.timeframe = config6.timeframe
 
+      // check whether SAT(1) is chosen somewhere, if so put the Pols on channel 8
+      if (this.parameter_ch1 === 'SAT(1)' || this.parameter_ch2 === 'SAT(1)' || this.parameter_ch3 === 'SAT(1)' || this.parameter_ch4 === 'SAT(1)') {
+        this.monitorConfiguration.param2.alarmEnabled = false
+        this.monitorConfiguration.param2.color = "#DF32EA"
+        this.monitorConfiguration.param2.connected = true
+        this.monitorConfiguration.param2.label = "Pulse"
+        this.monitorConfiguration.param2.lowerAlarm = 80
+        this.monitorConfiguration.param2.upperAlarm = 180
+        this.monitorConfiguration.param2.source1 = "heartrate"
+        this.monitorConfiguration.param2.source2 = ""
+      } else {
+        this.monitorConfiguration.param2.alarmEnabled = false
+        this.monitorConfiguration.param2.color = "#000000"
+        this.monitorConfiguration.param2.connected = true
+        this.monitorConfiguration.param2.label = ""
+        this.monitorConfiguration.param2.lowerAlarm = 80
+        this.monitorConfiguration.param2.upperAlarm = 180
+        this.monitorConfiguration.param2.source1 = "empty"
+        this.monitorConfiguration.param2.source2 = ""
+      }
+      
+
+
       this.updateMonitorConfigurationOnServer()
 
     },
@@ -671,7 +697,7 @@ export default {
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
-          configObject.performance = 2
+          configObject.performance = 1
           configObject.zoom = 0.6
           configObject.timeframe = 20
 
@@ -687,7 +713,7 @@ export default {
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
-          configObject.performance = 2
+          configObject.performance = 1
           configObject.zoom = 0.6
           configObject.timeframe = 20
 
