@@ -122,6 +122,12 @@ class MonitorEmulator {
     }
   }
 
+  updateHeartPerformance () {
+    let delta = (this.abpSyst - this.abpDiast)
+    this._model.components['LV'].el_max = 486 + (delta * 100)
+    this._model.components['RV'].el_max = 550 + (delta * 100)
+  }
+
   setNewData(data) {
     this.setHeartrate = data.heartrate;
     this.setSatPre = data.satPre;
@@ -160,10 +166,12 @@ class MonitorEmulator {
 
     if (this.setAbpSyst != this.prevAbpSyst) {
       this.abpSyst = this.setAbpSyst;
+      this.updateHeartPerformance()
     }
 
     if (this.setAbpDiast != this.prevAbpDiast) {
       this.abpDiast = this.setAbpDiast;
+      this.updateHeartPerformance()
     }
 
     if (this.setRespRate != this.prevRespRate) {

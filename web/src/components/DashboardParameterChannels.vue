@@ -200,6 +200,7 @@ export default {
               alarmEnabled: this.monitorConfiguration[id].alarmEnabled,
               lowerAlarm: this.monitorConfiguration[id].lowerAlarm,
               upperAlarm: this.monitorConfiguration[id].upperAlarm,
+              timeframe: this.monitorConfiguration[id].timeframe
             }
             channel.updateConfiguration(newConfig)
           }
