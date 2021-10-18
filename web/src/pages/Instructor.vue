@@ -122,12 +122,12 @@
             style="height: 60px; width: 120px"
             >CHEST COMPRESSIONS</q-btn
           >
-          <q-btn
+          <!-- <q-btn
             :class="chestCompressionsColor"
             @click="openCompressionsSelector"
             style="height: 60px; width: 120px"
             >SHOCK</q-btn
-          >
+          > -->
           <q-btn
             @click="toggleIntubation"
             :class="intubatedButtonColor"
