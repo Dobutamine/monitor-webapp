@@ -336,6 +336,8 @@ export default {
       if (this.parameter_ch6 === 'EMPTY') {
         this.color_ch6 = "#000000"
         this.alarmEnabled_ch6 = false
+      } else {
+        this.color_ch6 = this.defaultColor(this.parameter_ch6)
       }
 
     },

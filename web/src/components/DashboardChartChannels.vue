@@ -202,7 +202,6 @@ export default {
 
   },
   beforeDestroy () {
-
     // clean up
     this.$root.$off("resize");
     this.$model.engine.removeEventListener("message", this.updater);
