@@ -456,7 +456,7 @@ export default {
       this.monitorConfiguration.curve1.source2 = config1.source2
       this.monitorConfiguration.curve1.sourceCurve = config1.sourceCurve
       this.monitorConfiguration.curve1.color = this.color_ch1
-      this.monitorConfiguration.curve1.colorEnabled = this.color_ch1_enabled
+      this.monitorConfiguration.curve1.alarmEnabled = this.alarmEnabled_ch1
       this.monitorConfiguration.curve1.upperAlarm = this.upperAlarm_ch1
       this.monitorConfiguration.curve1.lowerAlarm = this.lowerAlarm_ch1
 
@@ -477,7 +477,7 @@ export default {
       this.monitorConfiguration.curve2.source2 = config2.source2
       this.monitorConfiguration.curve2.sourceCurve = config2.sourceCurve
       this.monitorConfiguration.curve2.color = this.color_ch2
-      this.monitorConfiguration.curve2.colorEnabled = this.color_ch2_enabled
+      this.monitorConfiguration.curve2.alarmEnabled = this.alarmEnabled_ch2
       this.monitorConfiguration.curve2.upperAlarm = this.upperAlarm_ch2
       this.monitorConfiguration.curve2.lowerAlarm = this.lowerAlarm_ch2
 
@@ -496,7 +496,7 @@ export default {
       this.monitorConfiguration.curve3.source2 = config3.source2
       this.monitorConfiguration.curve3.sourceCurve = config3.sourceCurve
       this.monitorConfiguration.curve3.color = this.color_ch3
-      this.monitorConfiguration.curve3.colorEnabled = this.color_ch3_enabled
+      this.monitorConfiguration.curve3.alarmEnabled = this.alarmEnabled_ch3
       this.monitorConfiguration.curve3.upperAlarm = this.upperAlarm_ch3
       this.monitorConfiguration.curve3.lowerAlarm = this.lowerAlarm_ch3
 
@@ -515,7 +515,7 @@ export default {
       this.monitorConfiguration.curve4.source2 = config4.source2
       this.monitorConfiguration.curve4.sourceCurve = config4.sourceCurve
       this.monitorConfiguration.curve4.color = this.color_ch4
-      this.monitorConfiguration.curve4.colorEnabled = this.color_ch4_enabled
+      this.monitorConfiguration.curve4.alarmEnabled = this.alarmEnabled_ch4
       this.monitorConfiguration.curve4.upperAlarm = this.upperAlarm_ch4
       this.monitorConfiguration.curve4.lowerAlarm = this.lowerAlarm_ch4
 
@@ -535,7 +535,7 @@ export default {
       this.monitorConfiguration.curve5.source2 = config5.source2
       this.monitorConfiguration.curve5.sourceCurve = config5.sourceCurve
       this.monitorConfiguration.curve5.color = this.color_ch5
-      this.monitorConfiguration.curve5.colorEnabled = this.color_ch5_enabled
+      this.monitorConfiguration.curve5.alarmEnabled = this.alarmEnabled_ch5
       this.monitorConfiguration.curve5.upperAlarm = this.upperAlarm_ch5
       this.monitorConfiguration.curve5.lowerAlarm = this.lowerAlarm_ch5
 
@@ -555,7 +555,7 @@ export default {
       this.monitorConfiguration.curve6.source2 = config6.source2
       this.monitorConfiguration.curve6.sourceCurve = config6.sourceCurve
       this.monitorConfiguration.curve6.color = this.color_ch6
-      this.monitorConfiguration.curve6.colorEnabled = this.color_ch6_enabled
+      this.monitorConfiguration.curve6.alarmEnabled = this.alarmEnabled_ch6
       this.monitorConfiguration.curve6.upperAlarm = this.upperAlarm_ch6
       this.monitorConfiguration.curve6.lowerAlarm = this.lowerAlarm_ch6
 
