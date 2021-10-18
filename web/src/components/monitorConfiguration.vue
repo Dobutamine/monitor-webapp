@@ -27,10 +27,6 @@
             <q-color v-model="color_ch1" default-view="palette" @change="colorChanged_ch1" no-footer dark/>
           </div>
 
-          <div  class="q-ma-sm row">
-            <q-input class="row" label="timeframe" type="number" v-model="timeframe_ch1" dense autofocus />
-          </div>
-
           <div class="q-ma-sm row">
             <q-toggle class="row" left-label label="autoscale" v-model="autoscale_ch1" value="autoscale_ch1" dense autofocus />
           </div>
@@ -68,9 +64,6 @@
             <q-color v-model="color_ch2" default-view="palette" @change="colorChanged_ch2" no-footer dark/>
           </div>
 
-          <div  class="q-ma-sm row">
-            <q-input class="row" label="timeframe" type="number" v-model="timeframe_ch2" dense autofocus />
-          </div>
 
           <div class="q-ma-sm row">
             <q-toggle class="row" left-label label="autoscale" v-model="autoscale_ch2" value="autoscale_ch2" dense autofocus />
@@ -106,10 +99,6 @@
           
           <div v-if="color_ch3_enabled" class="q-ma-sm row">
             <q-color v-model="color_ch3" default-view="palette" @change="colorChanged_ch3" no-footer dark/>
-          </div>
-
-          <div  class="q-ma-sm row">
-            <q-input class="row" label="timeframe" type="number" v-model="timeframe_ch3" dense autofocus />
           </div>
 
           <div class="q-ma-sm row">
@@ -148,9 +137,6 @@
             <q-color v-model="color_ch4" default-view="palette" @change="colorChanged_ch4" no-footer dark/>
           </div>
 
-          <div  class="q-ma-sm row">
-            <q-input class="row" label="timeframe" type="number" v-model="timeframe_ch4" dense autofocus />
-          </div>
 
           <div class="q-ma-sm row">
             <q-toggle class="row" left-label label="autoscale" v-model="autoscale_ch4" value="autoscale_ch4" dense autofocus />
@@ -187,10 +173,6 @@
             <q-color v-model="color_ch5" default-view="palette" @change="colorChanged_ch5" no-footer dark/>
           </div>
 
-          <div  class="q-ma-sm row">
-            <q-input class="row" label="timeframe" type="number" v-model="timeframe_ch5" dense autofocus />
-          </div>
-
           <div class="q-ma-sm row">
             <q-toggle class="row" left-label label="autoscale" v-model="autoscale_ch5" value="autoscale_ch5" dense autofocus />
           </div>
@@ -225,9 +207,6 @@
             <q-color v-model="color_ch6" default-view="palette" @change="colorChanged_ch6" no-footer dark/>
           </div>
 
-          <div  class="q-ma-sm row">
-            <q-input class="row" label="timeframe" type="number" v-model="timeframe_ch6" dense autofocus />
-          </div>
 
           <div class="q-ma-sm row">
             <q-toggle class="row" left-label label="autoscale" v-model="autoscale_ch6" value="autoscale_ch6" dense autofocus />
@@ -252,7 +231,7 @@
         
       </q-card-actions> -->
 
-      <q-card-actions align="right">
+      <q-card-actions align="center">
         <q-btn color="secondary" label="Accept" @click="onOKClick" />
         <q-btn color="secondary" label="Cancel" @click="onCancelClick" />
       </q-card-actions>
@@ -263,6 +242,7 @@
 </template>
 
 <script>
+import { config } from 'process'
 export default {
   props: {
     monitorConfiguration: {
@@ -293,7 +273,6 @@ export default {
       autoscale_ch1: true,
       minY_ch1: 0,
       maxY_ch1: 100,
-      timeframe_ch1: 5,
 
       parameter_ch2: '',
       alarmEnabled_ch2: true,
@@ -304,7 +283,7 @@ export default {
       autoscale_ch2: true,
       minY_ch2: 0,
       maxY_ch2: 100,
-      timeframe_ch2: 5,
+
 
       parameter_ch3: '',
       alarmEnabled_ch3: true,
@@ -315,7 +294,7 @@ export default {
       autoscale_ch3: true,
       minY_ch3: 0,
       maxY_ch3: 100,
-      timeframe_ch3: 5,
+
 
       parameter_ch4: '',
       alarmEnabled_ch4: true,
@@ -326,7 +305,7 @@ export default {
       autoscale_ch4: true,
       minY_ch4: 0,
       maxY_ch4: 100,
-      timeframe_ch4: 5,
+
 
       parameter_ch5: '',
       alarmEnabled_ch5: true,
@@ -337,7 +316,7 @@ export default {
       autoscale_ch5: true,
       minY_ch5: 0,
       maxY_ch5: 100,
-      timeframe_ch5: 20,
+
 
       parameter_ch6: '',
       alarmEnabled_ch6: true,
@@ -348,7 +327,7 @@ export default {
       autoscale_ch6: true,
       minY_ch6: 0,
       maxY_ch6: 100,
-      timeframe_ch6: 20,
+
       
     }
   },
@@ -483,7 +462,7 @@ export default {
       this.monitorConfiguration.curve1.grid = config1.grid
       this.monitorConfiguration.curve1.performance = config1.performance
       this.monitorConfiguration.curve1.zoom = config1.zoom
-      this.monitorConfiguration.curve1.timeframe = this.timeframe_ch1
+      this.monitorConfiguration.curve1.timeframe = config1.timeframe
 
 
       let config2 = this.setConfigurationFromCurveLabel(this.parameter_ch2)
@@ -503,7 +482,7 @@ export default {
       this.monitorConfiguration.curve2.grid = config2.grid
       this.monitorConfiguration.curve2.performance = config2.performance
       this.monitorConfiguration.curve2.zoom = config2.zoom
-      this.monitorConfiguration.curve2.timeframe = this.timeframe_ch2
+      this.monitorConfiguration.curve2.timeframe = config2.timeframe
 
       let config3 = this.setConfigurationFromCurveLabel(this.parameter_ch3)
       this.monitorConfiguration.curve3.label = config3.label
@@ -522,7 +501,7 @@ export default {
       this.monitorConfiguration.curve3.grid = config3.grid
       this.monitorConfiguration.curve3.performance = config3.performance
       this.monitorConfiguration.curve3.zoom = config3.zoom
-      this.monitorConfiguration.curve3.timeframe = this.timeframe_ch3
+      this.monitorConfiguration.curve3.timeframe = config3.timeframe
 
       let config4 = this.setConfigurationFromCurveLabel(this.parameter_ch4)
       this.monitorConfiguration.curve4.label = config4.label
@@ -541,7 +520,7 @@ export default {
       this.monitorConfiguration.curve4.grid = config4.grid
       this.monitorConfiguration.curve4.performance = config4.performance
       this.monitorConfiguration.curve4.zoom = config4.zoom
-      this.monitorConfiguration.curve4.timeframe = this.timeframe_ch4
+      this.monitorConfiguration.curve4.timeframe = config4.timeframe
 
 
       let config5 = this.setConfigurationFromCurveLabel(this.parameter_ch5)
@@ -561,7 +540,7 @@ export default {
       this.monitorConfiguration.curve5.grid = config5.grid
       this.monitorConfiguration.curve5.performance = config5.performance
       this.monitorConfiguration.curve5.zoom = config5.zoom
-      this.monitorConfiguration.curve5.timeframe = this.timeframe_ch5
+      this.monitorConfiguration.curve5.timeframe = config5.timeframe
 
 
       let config6 = this.setConfigurationFromCurveLabel(this.parameter_ch6)
@@ -581,7 +560,7 @@ export default {
       this.monitorConfiguration.curve6.grid = config6.grid
       this.monitorConfiguration.curve6.performance = config6.performance
       this.monitorConfiguration.curve6.zoom = config6.zoom
-      this.monitorConfiguration.curve6.timeframe = this.timeframe_ch6
+      this.monitorConfiguration.curve6.timeframe = config6.timeframe
 
       this.updateMonitorConfigurationOnServer()
 
@@ -791,7 +770,6 @@ export default {
       this.minY_ch1 = this.monitorConfiguration.curve1.minY
       this.maxY_ch1 = this.monitorConfiguration.curve1.maxY
       this.color_ch1 = this.monitorConfiguration.curve1.color
-      this.timeframe_ch1 = this.monitorConfiguration.curve1.timeframe
       
       this.parameter_ch2 = this.getCurveLabelFromConfiguration(this.monitorConfiguration.curve2.label)
       this.alarmEnabled_ch2 = this.monitorConfiguration.curve2.alarmEnabled
@@ -801,7 +779,6 @@ export default {
       this.autoscale_ch2 = this.monitorConfiguration.curve2.autoscale
       this.minY_ch2 = this.monitorConfiguration.curve2.minY
       this.maxY_ch2 = this.monitorConfiguration.curve2.maxY
-      this.timeframe_ch2 = this.monitorConfiguration.curve2.timeframe
 
       this.parameter_ch3 = this.getCurveLabelFromConfiguration(this.monitorConfiguration.curve3.label)
       this.alarmEnabled_ch3 = this.monitorConfiguration.curve3.alarmEnabled
@@ -811,7 +788,6 @@ export default {
       this.autoscale_ch3 = this.monitorConfiguration.curve3.autoscale
       this.minY_ch3 = this.monitorConfiguration.curve3.minY
       this.maxY_ch3 = this.monitorConfiguration.curve3.maxY
-      this.timeframe_ch3 = this.monitorConfiguration.curve3.timeframe
 
       this.parameter_ch4 = this.getCurveLabelFromConfiguration(this.monitorConfiguration.curve4.label)
       this.alarmEnabled_ch4 = this.monitorConfiguration.curve4.alarmEnabled
@@ -821,7 +797,6 @@ export default {
       this.autoscale_ch4 = this.monitorConfiguration.curve4.autoscale
       this.minY_ch4 = this.monitorConfiguration.curve4.minY
       this.maxY_ch4 = this.monitorConfiguration.curve4.maxY
-      this.timeframe_ch4 = this.monitorConfiguration.curve4.timeframe
 
       this.parameter_ch5 = this.getCurveLabelFromConfiguration(this.monitorConfiguration.curve5.label)
       this.alarmEnabled_ch5 = this.monitorConfiguration.curve5.alarmEnabled
@@ -831,7 +806,6 @@ export default {
       this.autoscale_ch5 = this.monitorConfiguration.curve5.autoscale
       this.minY_ch5 = this.monitorConfiguration.curve5.minY
       this.maxY_ch5 = this.monitorConfiguration.curve5.maxY
-      this.timeframe_ch5 = this.monitorConfiguration.curve5.timeframe
 
       this.parameter_ch6 = this.getCurveLabelFromConfiguration(this.monitorConfiguration.curve6.label)
       this.alarmEnabled_ch6 = this.monitorConfiguration.curve6.alarmEnabled
@@ -841,7 +815,6 @@ export default {
       this.autoscale_ch6 = this.monitorConfiguration.curve6.autoscale
       this.minY_ch6 = this.monitorConfiguration.curve6.minY
       this.maxY_ch6 = this.monitorConfiguration.curve6.maxY
-      this.timeframe_ch6 = this.monitorConfiguration.curve6.timeframe
 
     },
     updateMonitorConfigurationOnServer() {
