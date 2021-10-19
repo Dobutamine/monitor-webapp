@@ -111,7 +111,7 @@
             >SELECT LAB RESULTS</q-btn
           >
           <q-btn
-            class="bg-blue-grey-10"
+            :class="rhythmButtonColor"
             @click="openRhythmSelector"
             style="height: 60px; width: 120px"
             >CARDIAC RHYTHM</q-btn
@@ -182,6 +182,8 @@ export default {
       intubationButtonColor: "bg-blue-grey-10",
       intubationButtonText: "MECHANICAL VENTILATION",
       chestCompressionsColor: "bg-blue-grey-10",
+      compressionButtonColor: "bg-blue-grey-10",
+      rhythmButtonColor: "bg-blue-grey-10",
       bluegrey: "bg-blue-grey-10",
       red: "bg-red-10",
       serverUpdateTimer: null,
@@ -318,6 +320,21 @@ export default {
       );
     },
     setMonitorValuesOnServer() {
+      // get whether compressions are going
+      if (this.monitorValues.compressionsFrequency != 'none') {
+        this.chestCompressionsColor = this.red
+      } else {
+        this.chestCompressionsColor = this.bluegrey
+      }
+      if (this.monitorValues.rhythmType != 0) {
+        this.rhythmButtonColor = this.red
+      } else {
+        this.rhythmButtonColor = this.bluegrey
+      }
+
+
+      // get whether rhythm is different
+
       // get the name of the selected image
       this.selectedImage = this.monitorValues.imageName
 

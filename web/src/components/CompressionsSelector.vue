@@ -27,11 +27,17 @@ export default {
     imgSize: {
       required: true,
       type: String
+    },
+    monitorValues: {
+      required: true,
+      type: Object
     }
   },
+
   data() {
     return {
       url: "",
+      buttonColor: 'secondary',
       confirm: false,
       selectedRhythm: "no compressions",
       rhythmList: ["none", "continuous", "3:1", "15:2", "30:2"]
@@ -39,11 +45,10 @@ export default {
   },
   methods: {
     selectionChanged(e) {
-      this.$store.commit("dataPool/compressionsFrequency", e);
       if (e === "none") {
-        this.$root.$emit("compressionsdisabled");
+        this.buttonColor='secondary'
       } else {
-        this.$root.$emit("compressionsenabled");
+        this.buttonColor='danger'
       }
     },
     show() {
@@ -54,6 +59,8 @@ export default {
     },
     onDialogHide() {},
     onOKClick() {
+      this.monitorValues.compressionsFrequency = this.selectedRhythm
+      this.$root.$emit('updatemonitorvitals')
       this.hide();
     },
     onCancelClick() {
@@ -61,7 +68,7 @@ export default {
     }
   },
   mounted() {
-    this.selectedRhythm = this.$store.state.dataPool.compressionsFrequency;
+    this.selectedRhythm = this.monitorValues.compressionsFrequency;
   },
   beforeDestroy() {}
 };

@@ -12,11 +12,11 @@
           label="select cardiac rhythm"
         />
         <q-input
-          v-model="parameter"
+          v-model="rhythmParameter"
           style="max-width: 300px"
           type="number"
           stack-label
-          :label="parameterText"
+          :label="rhythmParameterText"
         />
       </q-card-section>
 
@@ -53,8 +53,8 @@ export default {
       confirm: false,
       selectedRhythm: "sinus",
       rhythmType: 0,
-      parameter: 125,
-      parameterText: "rate /min",
+      rhythmParameter: 125,
+      rhythmParameterText: "rate /min",
       rhythmList: [
         "sinus",
         "supraventricular tachycardia",
@@ -67,18 +67,18 @@ export default {
       switch (e) {
         case "sinus":
           this.rhythmType = 0;
-          this.parameter = 125;
-          this.parameterText = "rate (/min)";
+          this.rhythmParameter = 125;
+          this.rhythmParameterText = "rate (/min)";
           break;
         case "supraventricular tachycardia":
           this.rhythmType = 8;
-          this.parameter = 260;
-          this.parameterText = "rate (/min)";
+          this.rhythmParameter = 260;
+          this.rhythmParameterText = "rate (/min)";
           break;
         case "complete heart block":
           this.rhythmType = 4;
-          this.parameter = 60;
-          this.parameterText = "ventricular rate (/min)";
+          this.rhythmParameter = 60;
+          this.rhythmParameterText = "ventricular rate (/min)";
       }
     },
     show() {
@@ -89,16 +89,18 @@ export default {
     },
     onDialogHide() {},
     onOKClick() {
+      this.monitorValues.rhythmType = this.rhythmType
+      this.monitorValues.rhythmParameter = this.rhythmParameter
       switch (this.rhythmType) {
         case 0:
-          this.$root.$emit("newheartrate", this.parameter);
+          this.monitorValues.heartrate = this.rhythmParameter
           break;
         case 8:
-          this.$root.$emit("newheartrate", this.parameter);
+           this.monitorValues.heartrate = this.rhythmParameter
           break;
       }
-      this.$store.commit("dataPool/rhythmParameter", this.parameter);
-      this.$store.commit("dataPool/rhythmType", this.rhythmType);
+      this.$root.$emit('updatemonitorvitals')
+
 
       this.hide();
     },
@@ -107,18 +109,21 @@ export default {
     }
   },
   mounted() {
-    this.rhythmType = this.$store.state.dataPool.rhythmType;
-    this.parameter = this.$store.state.dataPool.rhythmParameter;
+    this.rhythmType = this.monitorValues.rhythmType
+    this.rhythmParameter = this.monitorValues.rhythmParameter;
 
     switch (this.rhythmType) {
       case 0:
         this.selectedRhythm = "sinus";
+        this.rhythmParameterText = "rate (/min)";
         break;
       case 4:
         this.selectedRhythm = "complete heart block";
+        this.rhythmParameterText = "ventricular rate (/min)";
         break;
       case 8:
         this.selectedRhythm = "supraventricular tachycardia";
+        this.rhythmParameterText = "rate (/min)";
         break;
     }
   },
