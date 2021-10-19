@@ -128,6 +128,12 @@
             style="height: 60px; width: 120px"
             >{{ intubatedButtonText }}</q-btn
           >
+          <q-btn
+          :class="sessionColor"
+          style="height: 60px; width: 85px"
+          @click="logout"
+          >{{ sessionText}}</q-btn
+          >
         </div>
       </q-card>
     </div>
@@ -175,6 +181,8 @@ export default {
       websocket: null,
       monitorConfiguration: {},
       monitorValues: {},
+      sessionColor: "bg-blue-10",
+      sessionText: "EXIT",
       shockColor: "bg-blue-grey-10",
       intubationButtonColor: "bg-blue-grey-10",
       intubationButtonText: "MECHANICAL VENTILATION",
@@ -198,6 +206,9 @@ export default {
     };
   },
   methods: {
+    logout () {
+      this.$router.push("/")
+    },
     administerShock(post) {
       // set rhythm to sinus and the heartrate to 0
       this.monitorValues.rhythmType = 0
@@ -462,6 +473,8 @@ export default {
     }
   },
   mounted() {
+    this.$root.$emit("barvisible", false);
+
     // get the user id retrieved during the login process from the store
     this.id = this.$store.state.dataPool.id;
 

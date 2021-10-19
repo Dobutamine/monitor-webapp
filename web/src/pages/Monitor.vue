@@ -83,6 +83,13 @@
         @click="standby"
         >{{ standbyText}}</q-btn
       >
+      <q-btn
+        :class="sessionColor"
+        style="height: 60px; width: 85px"
+        @click="logout"
+        >{{ sessionText}}</q-btn
+      >
+
     </div>
     </div>
     <q-resize-observer @resize="onResize" />
@@ -134,7 +141,9 @@ export default {
       updateTimer: null,
       standbyMonitor: true,
       standbyColor: "bg-red-10",
-      standbyText: "MONITOR STANDBY",
+      standbyText: "START MONITOR",
+      sessionColor: "bg-blue-10",
+      sessionText: "EXIT",
       nibdtext: "nibd start",
       nibdClass: "bg-blue-grey-8",
       nibdCounter: 15,
@@ -150,7 +159,7 @@ export default {
       silenceState: false,
       silenceDuration: 30,
       barText: "HIDE TOP",
-      barVisibility: true,
+      barVisibility: false,
       prevOverrideState: false,
 
 
@@ -292,6 +301,9 @@ export default {
     };
   },
   methods: {
+    logout () {
+      this.$router.push("/")
+    },
     silenceAlarms() {
       //this.$root.$on('hires_on', () => { this.hires = true })
       this.silenceState = !this.silenceState;
@@ -311,8 +323,8 @@ export default {
         // start the modeing engine
         this.$root.$emit("rt_on");
         // set the buttons
-        this.standbyColor = "bg-blue-10"
-        this.standbyText = "MONITOR RUNNING"
+        this.standbyColor = "bg-teal-10"
+        this.standbyText = "STOP MONITOR"
         // start the pulling timer
         this.updateTimer = setInterval(() => this.getMonitorValuesFromServer(), 1000)
       } else {
@@ -321,7 +333,7 @@ export default {
          this.$root.$emit("rt_off");
         // set the buttons
         this.standbyColor = "bg-red-10"
-        this.standbyText = "MONITOR STANDBY"
+        this.standbyText = "START MONITOR"
         // stop the pulling timer
         clearInterval(this.updateTimer)
         this.updateTimer = null
@@ -568,6 +580,9 @@ export default {
     }
   },
   mounted() {
+    // hide top bar
+    this.$root.$emit("barvisible", this.barVisibility);
+
     // get the user id retrieved during the login process from the store
     this.id = this.$store.state.dataPool.id;
 
@@ -600,7 +615,7 @@ export default {
     this.connectToWebsocketApi()
   },
   beforeDestroy() {
-    // console.log('cleaning up monitor window')
+    console.log('cleaning up monitor window')
   
     // removing the blinker timer
     this.blinkerTimer = null

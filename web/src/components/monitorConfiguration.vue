@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="confirm" ref="dialog" full-width persistent buttons>
+  <q-dialog v-model="confirm" ref="dialog" maximized persistent buttons>
     <q-card class="q-ma-sm">
       <div class="q-ma-md row">
         MONITOR CURVES CONFIGURATION
@@ -15,11 +15,11 @@
             <q-toggle class="row" left-label label="alarms enabled" v-model="alarmEnabled_ch1" value="alarmEnabled_ch1" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch1" class="q-ma-sm row">
+          <div class="q-ma-sm row">
             <q-input class="row" label="alarm upper limit" type="number" v-model="upperAlarm_ch1" value="upperAlarm_ch1" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch1"  class="q-ma-sm row">
+          <div  class="q-ma-sm row">
             <q-input class="row" label="alarm lower limit" type="number" v-model="lowerAlarm_ch1" dense autofocus />
           </div>
           
@@ -51,11 +51,11 @@
             <q-toggle class="row" left-label label="alarms enabled" v-model="alarmEnabled_ch2" value="alarmEnabled_ch2" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch2" class="q-ma-sm row">
+          <div  class="q-ma-sm row">
             <q-input class="row" label="alarm upper limit" type="number" v-model="upperAlarm_ch2" value="upperAlarm_ch2" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch2"  class="q-ma-sm row">
+          <div   class="q-ma-sm row">
             <q-input class="row" label="alarm lower limit" type="number" v-model="lowerAlarm_ch2" dense autofocus />
           </div>
         
@@ -88,11 +88,11 @@
             <q-toggle class="row" left-label label="alarms enabled" v-model="alarmEnabled_ch3" value="alarmEnabled_ch3" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch3" class="q-ma-sm row">
+          <div  class="q-ma-sm row">
             <q-input class="row" label="alarm upper limit" type="number" v-model="upperAlarm_ch3" value="upperAlarm_ch3" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch3"  class="q-ma-sm row">
+          <div   class="q-ma-sm row">
             <q-input class="row" label="alarm lower limit" type="number" v-model="lowerAlarm_ch3" dense autofocus />
           </div>
           
@@ -124,11 +124,11 @@
             <q-toggle class="row" left-label label="alarms enabled" v-model="alarmEnabled_ch4" value="alarmEnabled_ch4" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch4" class="q-ma-sm row">
+          <div class="q-ma-sm row">
             <q-input class="row" label="alarm upper limit" type="number" v-model="upperAlarm_ch4" value="upperAlarm_ch4" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch4"  class="q-ma-sm row">
+          <div class="q-ma-sm row">
             <q-input class="row" label="alarm lower limit" type="number" v-model="lowerAlarm_ch4" dense autofocus />
           </div>
           
@@ -161,11 +161,11 @@
             <q-toggle class="row" left-label label="alarms enabled" v-model="alarmEnabled_ch5" value="alarmEnabled_ch5" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch5" class="q-ma-sm row">
+          <div class="q-ma-sm row">
             <q-input class="row" label="alarm upper limit" type="number" v-model="upperAlarm_ch5" value="upperAlarm_ch5" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch5"  class="q-ma-sm row">
+          <div class="q-ma-sm row">
             <q-input class="row" label="alarm lower limit" type="number" v-model="lowerAlarm_ch5" dense autofocus />
           </div>
           
@@ -195,11 +195,11 @@
             <q-toggle class="row" left-label label="alarms enabled" v-model="alarmEnabled_ch6" value="alarmEnabled_ch6" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch6" class="q-ma-sm row">
+          <div  class="q-ma-sm row">
             <q-input class="row" label="alarm upper limit" type="number" v-model="upperAlarm_ch6" value="upperAlarm_ch0" dense autofocus />
           </div>
           
-          <div v-if="alarmEnabled_ch6"  class="q-ma-sm row">
+          <div   class="q-ma-sm row">
             <q-input class="row" label="alarm lower limit" type="number" v-model="lowerAlarm_ch6" dense autofocus />
           </div>
           

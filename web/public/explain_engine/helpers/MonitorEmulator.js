@@ -97,7 +97,6 @@ class MonitorEmulator {
   changeHeartRhythm(type, parameter) {
     // console.log("changed to rhythm type : ", type);
     // console.log("rhythm parameter: ", parameter);
-    console.log(type, parameter)
     this._model.components.ECG.rhythm_type = type;
     this._model.components.ECG.rhythm_parameter = parameter;
   }
