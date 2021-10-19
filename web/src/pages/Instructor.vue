@@ -192,7 +192,8 @@ export default {
 
       selectedImage: '',
       destroy: false,
-      no_reconnects: 0
+      no_reconnects: 0,
+      reconnecting: false
 
     };
   },
@@ -421,8 +422,13 @@ export default {
       this.websocket.onopen = () => {
         console.log('instructor interface websocket connection with api opened.')
         // get the current monitor values from the api (websocket)
-        this.getMonitorValuesFromServer()
-
+        if (this.reconnecting) {
+          this.setMonitorValuesOnServer()
+          this.reconnecting = false
+        } else {
+          this.getMonitorValuesFromServer()
+        }
+        
         this.no_reconnects = 0
       }
 
@@ -440,6 +446,7 @@ export default {
             this.$router.push("/")
           } else {
             console.log('instructor interface trying to reconnect a websocket connection with api.')
+            this.reconnecting = true
             this.connectToWebsocketApi()
             this.no_reconnects += 1
           }
