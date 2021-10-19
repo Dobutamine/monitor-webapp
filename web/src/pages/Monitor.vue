@@ -463,23 +463,24 @@ export default {
         .catch(error => {}
       );
     },
-    setMonitorValuesOnServer() {
-      // get the name of the selected image
-      this.selectedImage = this.monitorValues.imageName
+    // setMonitorValuesOnServer() {
+    //   console.log('monitor set the values')
+    //   // get the name of the selected image
+    //   this.selectedImage = this.monitorValues.imageName
 
-      // first check wether the websocket connection is open
-      if (this.websocket.readyState === WebSocket.OPEN) {
-        // now get the monitor values by constructing a message object
-        const message = {
-          "command": "set",
-          "payload": this.monitorValues
-        }
-        this.websocket.send(JSON.stringify(message));
-        // console.log('monitor interface updated the monitor values')
-        clearTimeout(this.serverUpdateTimer)
-        this.serverUpdateTimer = null
-      }
-    },
+    //   // first check wether the websocket connection is open
+    //   if (this.websocket.readyState === WebSocket.OPEN) {
+    //     // now get the monitor values by constructing a message object
+    //     const message = {
+    //       "command": "set",
+    //       "payload": this.monitorValues
+    //     }
+    //     this.websocket.send(JSON.stringify(message));
+    //     // console.log('monitor interface updated the monitor values')
+    //     clearTimeout(this.serverUpdateTimer)
+    //     this.serverUpdateTimer = null
+    //   }
+    // },
     getMonitorValuesFromServer() {
       // first check wether the websocket connection is open
       if (this.websocket.readyState === WebSocket.OPEN) {

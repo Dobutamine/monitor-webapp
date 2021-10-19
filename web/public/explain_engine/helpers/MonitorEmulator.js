@@ -125,8 +125,8 @@ class MonitorEmulator {
 
   updateHeartPerformance () {
     let delta = (this.abpSyst - this.abpDiast)
-    this._model.components['LV'].el_max = 486 + (delta * 100)
-    this._model.components['RV'].el_max = 550 + (delta * 100)
+    this._model.components['LV'].el_max = 300 + (delta * 100)
+    this._model.components['RV'].el_max = 300 + (delta * 100)
   }
 
   setNewData(data) {
@@ -216,8 +216,13 @@ class MonitorEmulator {
   modelCycle() {
     this.time += this.update_frequency2;
 
+    let reported_heartrate = parseInt(this.heartrate)
+    if (this.rhythmType === 4 || this.rhythmType === 6 || this.rhythmType === 7) {
+      reported_heartrate = this.rhythmParameter
+    }
     this.data.push({
       time: this.time,
+      reported_heartrate: parseInt(reported_heartrate),
       heartrate: parseInt(this.heartrate),
       satPre: parseInt(this.satPre),
       satPost: parseInt(this.satPost),

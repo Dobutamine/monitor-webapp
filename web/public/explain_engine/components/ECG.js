@@ -72,6 +72,7 @@ class ECG {
     this.driftCounter = 0;
 
     this.rhythm_parameter = 0;
+    this.fib_counter = 0
   }
 
   qtc() {
@@ -150,6 +151,7 @@ class ECG {
           this.qt_addition = 0;
           this.svt_multiplier = 1;
           this.venticular_escape_rate = 0;
+          this.block_after_beats = parseInt(this.rhythm_parameter);
         }
         break;
       case 4: // complete heartblock
@@ -167,7 +169,7 @@ class ECG {
         this.qt_addition = 0;
         this.svt_multiplier = 1;
         this.venticular_escape_rate = 0;
-        this.qt_time = parseFloat(this.rhythm_parameter);
+        this.qt_multiplier = parseFloat(this.rhythm_parameter);
         this.qt_addition = this.qt_multiplier * this.qt_time;
         break;
       case 6: // vt
@@ -181,6 +183,14 @@ class ECG {
         this.qrs_vent_escape_time = 60.0 / parseFloat(this.venticular_escape_rate + 5)
         break;
       case 7: // vf
+      this.heart_rate = 0
+        this.block_qrs = false;
+        this.pq_addition = 0;
+        this.block_counter = 0;
+        this.qt_addition = 0;
+        this.svt_multiplier = 1;
+        this.venticular_escape_rate = 0;
+        this.qrs_vent_escape_time = 60.0 / parseFloat(this.venticular_escape_rate + 5)
         break;
       case 8: // svt
         this.block_counter = 0;
@@ -207,135 +217,148 @@ class ECG {
       this.cqt_time = this.qtcCustom(180) - 0.1 
     }
 
-    // calculate the sa_node_time in seconds depending on the heartrate
-    if (this.heart_rate > 0) {
-      this._sa_node_period = 60 / this.heart_rate;
-    } else {
-      this._sa_node_period = 6000000000;
-    }
+    if (this.rhythm_type != 7) {
 
-    if (this.venticular_escape_rate > 0) {
-      this._vent_escape_period = 60 / this.venticular_escape_rate;
-    } else {
-      this._vent_escape_period = 6000000000;
-    }
-
-    // has the sa node period elapsed
-    if (this._sa_node_counter > this._sa_node_period) {
-      this._sa_node_counter = 0;
-      this._pq_running = true;
-      this.ncc_atrial = 0;
-    }
-
-    // has the ventricular escape period elapsed
-    if (this._vent_escape_counter > this._vent_escape_period) {
-      this._vent_escape_counter = 0;
-      if (this._ventricle_is_refractory === false) {
-        this.q_interval_vent = this.qrs_vent_escape_time * 0.6;
-        this.r_interval_vent = this.qrs_vent_escape_time * 0.4;
-        this.s_interval_vent = this.qrs_vent_escape_time // * 0.43333;
-        this._qrs_vent_escape_running = true;
-        this.ncc_ventricular = 0;
-        this._measured_heartrate_qrs_counter += 1;
+      // calculate the sa_node_time in seconds depending on the heartrate
+      if (this.heart_rate > 0) {
+        this._sa_node_period = 60 / this.heart_rate;
+      } else {
+        this._sa_node_period = 6000000000;
       }
-    }
 
-    // has the pq time elapsed?
-    if (this._pq_time_counter > this.pq_time + this.pq_addition) {
-      this._pq_time_counter = 0;
-      this._pq_running = false;
-      if (
-        this._ventricle_is_refractory === false &&
-        this._qrs_vent_escape_running === false &&
-        this.block_qrs === false
-      ) {
-        this.q_interval = this.qrs_time / 3;
-        this.r_interval = this.qrs_time / 3;
-        this.s_interval = this.qrs_time / 3;
-        this._qrs_running = true;
-        this.ncc_ventricular = 0;
-        this._measured_heartrate_qrs_counter += 1;
-        // reset the ventricular escape counter
+      if (this.venticular_escape_rate > 0) {
+        this._vent_escape_period = 60 / this.venticular_escape_rate;
+      } else {
+        this._vent_escape_period = 6000000000;
+      }
+
+      // has the sa node period elapsed
+      if (this._sa_node_counter > this._sa_node_period) {
+        this._sa_node_counter = 0;
+        this._pq_running = true;
+        this.ncc_atrial = 0;
+      }
+
+      // has the ventricular escape period elapsed
+      if (this._vent_escape_counter > this._vent_escape_period) {
         this._vent_escape_counter = 0;
-        this.block_counter += 1;
+        if (this._ventricle_is_refractory === false) {
+          this.q_interval_vent = this.qrs_vent_escape_time * 0.6;
+          this.r_interval_vent = this.qrs_vent_escape_time * 0.4;
+          this.s_interval_vent = this.qrs_vent_escape_time // * 0.43333;
+          this._qrs_vent_escape_running = true;
+          this.ncc_ventricular = 0;
+          this._measured_heartrate_qrs_counter += 1;
+        }
       }
-      if (this.block_qrs === true) {
-        this.block_qrs = false;
+
+      // has the pq time elapsed?
+      if (this._pq_time_counter > this.pq_time + this.pq_addition) {
+        this._pq_time_counter = 0;
+        this._pq_running = false;
+        if (
+          this._ventricle_is_refractory === false &&
+          this._qrs_vent_escape_running === false &&
+          this.block_qrs === false
+        ) {
+          this.q_interval = this.qrs_time / 3;
+          this.r_interval = this.qrs_time / 3;
+          this.s_interval = this.qrs_time / 3;
+          this._qrs_running = true;
+          this.ncc_ventricular = 0;
+          this._measured_heartrate_qrs_counter += 1;
+          // reset the ventricular escape counter
+          this._vent_escape_counter = 0;
+          this.block_counter += 1;
+        }
+        if (this.block_qrs === true) {
+          this.block_qrs = false;
+        }
       }
-    }
 
-    if (this._measured_heartrate_qrs_counter > 5) {
-      this.measured_heartrate =
-        60 /
-        (this._measured_heartrate_time_counter /
-          this._measured_heartrate_qrs_counter);
-      this._measured_heartrate_qrs_counter = 0;
-      this._measured_heartrate_time_counter = 0;
-    }
+      if (this._measured_heartrate_qrs_counter > 5) {
+        this.measured_heartrate =
+          60 /
+          (this._measured_heartrate_time_counter /
+            this._measured_heartrate_qrs_counter);
+        this._measured_heartrate_qrs_counter = 0;
+        this._measured_heartrate_time_counter = 0;
+      }
 
-    // has the qrs time elapsed?
-    if (this._qrs_time_counter > this.qrs_time) {
-      this._qrs_time_counter = 0;
-      this.ecg_signal = 0;
-      this._qrs_running = false;
-      this._qt_running = true;
-      this._ventricle_is_refractory = true;
-    }
-
-    // has the ventricular qrs time elapsed
-    if (this._qrs_vent_escape_time_counter > this.qrs_vent_escape_time) {
-      this._qrs_vent_escape_time_counter = 0;
-      this._qrs_vent_escape_running = false;
-      // start the qt time
-      this._qt_running = true;
-      // set the ventricle refractory
-      this._ventricle_is_refractory = true;
-      if (this.rhythm_type === 6) {
+      // has the qrs time elapsed?
+      if (this._qrs_time_counter > this.qrs_time) {
         this._qrs_time_counter = 0;
         this.ecg_signal = 0;
         this._qrs_running = false;
+        this._qt_running = true;
+        this._ventricle_is_refractory = true;
+      }
+
+      // has the ventricular qrs time elapsed
+      if (this._qrs_vent_escape_time_counter > this.qrs_vent_escape_time) {
+        this._qrs_vent_escape_time_counter = 0;
+        this._qrs_vent_escape_running = false;
+        // start the qt time
+        this._qt_running = true;
+        // set the ventricle refractory
+        this._ventricle_is_refractory = true;
+        if (this.rhythm_type === 6) {
+          this._qrs_time_counter = 0;
+          this.ecg_signal = 0;
+          this._qrs_running = false;
+          this._qt_running = false;
+          this._ventricle_is_refractory = false;
+        }
+      }
+
+      // has the qt time elapsed?
+      if (this._qt_time_counter > this.cqt_time) {
+        this._qt_time_counter = 0;
         this._qt_running = false;
         this._ventricle_is_refractory = false;
       }
+
+      // increase the counters
+      this._measured_heartrate_time_counter += model_interval;
+      this._vent_escape_counter += model_interval;
+
+      this._sa_node_counter += model_interval;
+      // only increase the timers when running
+      if (this._pq_running) {
+        this._pq_time_counter += model_interval;
+        this.buildDynamicPWave();
+      }
+      if (this._qrs_running) {
+        this._qrs_time_counter += model_interval;
+        this.buidlDynamicQRSWave();
+      }
+      if (this._qrs_vent_escape_running) {
+        this._qrs_vent_escape_time_counter += model_interval;
+        this.buidlDynamicQRSWaveVentricular();
+      }
+      if (this._qt_running) {
+        this._qt_time_counter += model_interval;
+        this.buildDynamicTWave();
+      }
+
+      if (
+        this._pq_running === false &&
+        this._qrs_running === false &&
+        this._qt_running === false &&
+        this._qrs_vent_escape_running === false
+      ) {
+        this.ecg_signal = 0;
+      }
+    } else {
+      this.ecg_signal = Math.random() * Math.sin(this.fib_counter) * 10
+      this.fib_counter += 0.1
+      if (this.fib_counter > 2 * Math.PI) {
+        this.fib_counter = 0
+      }
     }
 
-    // has the qt time elapsed?
-    if (this._qt_time_counter > this.cqt_time) {
-      this._qt_time_counter = 0;
-      this._qt_running = false;
-      this._ventricle_is_refractory = false;
-    }
-
-    // increase the counters
-    this._measured_heartrate_time_counter += model_interval;
-    this._vent_escape_counter += model_interval;
-
-    this._sa_node_counter += model_interval;
-    // only increase the timers when running
-    if (this._pq_running) {
-      this._pq_time_counter += model_interval;
-      this.buildDynamicPWave();
-    }
-    if (this._qrs_running) {
-      this._qrs_time_counter += model_interval;
-      this.buidlDynamicQRSWave();
-    }
-    if (this._qrs_vent_escape_running) {
-      this._qrs_vent_escape_time_counter += model_interval;
-      this.buidlDynamicQRSWaveVentricular();
-    }
-    if (this._qt_running) {
-      this._qt_time_counter += model_interval;
-      this.buildDynamicTWave();
-    }
-
-    if (
-      this._pq_running === false &&
-      this._qrs_running === false &&
-      this._qt_running === false &&
-      this._qrs_vent_escape_running === false
-    ) {
-      this.ecg_signal = 0;
+    if (this.rhythm_type === 10) {
+      this.ecg_signal = 0
     }
 
     this._model.components.ECG["ecg_signal"] = this.ecg_signal;

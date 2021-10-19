@@ -133,7 +133,7 @@ export default {
             connected: true,
             source1: "ecg_signal",
             source2: "",
-            timeframe: 5,
+            timeframe: 6,
             performance: 1,
             color: "0x5EEA32",
             zoom: 0.6,

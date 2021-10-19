@@ -122,12 +122,6 @@
             style="height: 60px; width: 120px"
             >CHEST COMPRESSIONS</q-btn
           >
-          <!-- <q-btn
-            :class="chestCompressionsColor"
-            @click="openCompressionsSelector"
-            style="height: 60px; width: 120px"
-            >SHOCK</q-btn
-          > -->
           <q-btn
             @click="toggleIntubation"
             :class="intubatedButtonColor"
@@ -157,6 +151,8 @@ import CompressionsSelector from "components/CompressionsSelector";
 import LabSelector from "components/LabSelector";
 
 import axios from "axios";
+import { setTimeout } from 'timers';
+import { parse } from 'querystring';
 
 export default {
   name: "PageInstructor",
@@ -179,6 +175,7 @@ export default {
       websocket: null,
       monitorConfiguration: {},
       monitorValues: {},
+      shockColor: "bg-blue-grey-10",
       intubationButtonColor: "bg-blue-grey-10",
       intubationButtonText: "MECHANICAL VENTILATION",
       chestCompressionsColor: "bg-blue-grey-10",
@@ -198,6 +195,42 @@ export default {
     };
   },
   methods: {
+    administerShock(post) {
+      // set rhythm to sinus and the heartrate to 0
+      this.monitorValues.rhythmType = 0
+      this.monitorValues.heartrate = 0
+      
+      // update the monitor values
+      this.setMonitorValuesOnServer()
+      console.log(post.post_rhythm, post.post_parameter)
+      this.shockColor = this.red
+      let tim = setTimeout(() => {
+        this.monitorValues.rhythmType = post.post_rhythm
+        this.monitorValues.rhythmParameter = parseFloat(post.post_parameter)
+        switch (post.post_rhythm) {
+          case 0: //sinus
+            this.monitorValues.heartrate = parseFloat(post.post_parameter)
+            break
+          case 1: //av i
+            this.monitorValues.heartrate = parseFloat(post.post_parameter)
+            break
+          case 2: //av iia
+            this.monitorValues.heartrate = parseFloat(post.post_parameter)
+            break
+          case 3: //av iib
+            this.monitorValues.heartrate = parseFloat(post.post_parameter)
+            break
+          case 5: //sinus
+            this.monitorValues.heartrate = parseFloat(post.post_parameter)
+            break
+          case 8: //sinus
+            this.monitorValues.heartrate = parseFloat(post.post_parameter)
+            break
+        }
+        this.setMonitorValuesOnServer()
+        this.shockColor = this.bluegrey
+      }, 3000)
+    },
     toggleIntubation() {
       if (this.monitorValues['intubated']) {
         this.monitorValues['intubated'] = false
@@ -433,6 +466,10 @@ export default {
       this.setMonitorConfigurationOnServer()
     })
 
+    this.$root.$on("shock", (post) => {
+      this.administerShock(post)
+    })
+
     // get the current monitor configuration from the api
     this.getMonitorConfigurationFromServer()
 
@@ -444,6 +481,7 @@ export default {
     // remove event handlers
     this.$root.$off("updatemonitorvitals")
     this.$root.$off("updatemonitorconfig")
+    this.$root.$off("shock")
 
     // close the websocket connection with the api
     if (this.websocket) {

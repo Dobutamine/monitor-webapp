@@ -210,7 +210,12 @@ class ParameterChannel {
         }
                
       } else {
-          const value = data[this.dataPointsPerUpdate - 1][this.source1]
+          let value = data[this.dataPointsPerUpdate - 1][this.source1]
+          if (this.source1 === 'heartrate') {
+            if (value != data[this.dataPointsPerUpdate - 1]['reported_heartrate']) {
+              value = data[this.dataPointsPerUpdate - 1]['reported_heartrate']
+            }
+          }
           this.currentValue = value
           if (isNaN(value)) {
             this.value.text = '-'
