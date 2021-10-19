@@ -19,6 +19,9 @@
       </q-card>
     </div>
     <div v-if="enabled" class="row">
+      <!-- <div class="q-mb-sm col text-center" style="font-size: 10px">
+        <q-btn size="xs" :class="linkButtonColor" @click="linkValues">link</q-btn>
+      </div> -->
       <div class="q-mb-sm col text-center" style="font-size: 10px">
         target value
       </div>
@@ -192,6 +195,8 @@ export default {
       buttonStartText: "START",
       buttonConnectedText: "CONNECTED",
       buttonConnectedColor: "teal-10",
+      linkButtonColor: 'bg-teal-10',
+      linkStatus: true,
       connected: true,
       currentValue1: 10,
       currentValue1Text: "10",
@@ -219,10 +224,21 @@ export default {
       timeInOption: "instant",
       timings: [0, 5, 10, 15, 20, 30, 60, 120, 180],
       updateTimer: null,
-      updateTimerRunning: false
+      updateTimerRunning: false,
+      prevTargetValue1: 0,
+      prevTargetValue2: 0,
     };
   },
   methods: {
+    linkValues() {
+      if (this.linkStatus) {
+        this.linkStatus = false
+        this.linkButtonColor="bg-red-10"
+      } else {
+        this.linkStatus = true
+        this.linkButtonColor="bg-teal-10"
+      }
+    },
     toggleEnabled() {
       this.enabled = !this.enabled;
       if (this.enabled) {
@@ -381,7 +397,7 @@ export default {
       //   this.buttonArmEnabled = true
       // }
     },
-    changeTargetValue() {
+    changeTargetValue(e) {
       if (this.timeInOption === 'instant') {
 
         // if in instant mode then update the current value immediately

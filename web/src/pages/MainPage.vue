@@ -14,6 +14,7 @@
       </div>
       <div class="col text-center"></div>
     </div>
+  
     <div v-if="newUserEntry" class="row justify-center items-start q-ma-lg">
       <div class="col text-center"></div>
       <div class="col text-center">
@@ -45,6 +46,7 @@
       </div>
       <div class="col text-center"></div>
     </div>
+    
     <div v-if="login" class="row justify-center items-start q-ma-lg">
       <div class="col text-center"></div>
       <div class="col2 text-center">
@@ -73,6 +75,19 @@
         >
       </div>
       <div class="col text-center"></div>
+      
+    </div>
+    <div v-if="login" class="row justify-center items-start q-ma-lg">
+      <div class="col text-center"></div>
+      <div class="col text-center"> <br>
+      <p>This Explain monitor emulator is a free webapplication developed by Tim Antonius and part of the Explain modeling project. </p>
+      <p><a href="https://neonatalmodeling.com">Explanatory models in neonatology</a></p>
+      
+      <br>
+        <p>You will need a fairly modern device to run the emulator smoothly. </p>
+      <a href = "mailto: tajantonius@gmail.com">Report comments or bugs here!</a>
+      </div>
+      <div class="col text-center"></div>
     </div>
     <div class="row justify-center items-start q-ma-lg">
       <div class="col text-center"></div>
@@ -85,9 +100,6 @@
     </div>
     <div class="row justify-center items-start q-ma-lg">
       <div class="col text-center"></div>
-      <div v-if="showChoices" class="col text-center">
-        SELECT YOUR APPLICATION
-      </div>
       <div class="col text-center"></div>
     </div>
     <div class="row justify-center items-start q-ma-lg">
@@ -98,7 +110,7 @@
           class="q-pl-lg q-pr-lg bg-blue-10"
           @click="monitor"
           style="width: 150px"
-          size="sm"
+          size="md"
           >MONITOR</q-btn
         >
       </div>
@@ -112,7 +124,7 @@
           class="q-pl-lg q-pr-lg bg-blue-10"
           @click="instructor"
           style="width: 150px"
-          size="sm"
+          size="md"
           >INSTRUCTOR</q-btn
         >
       </div>
@@ -126,7 +138,7 @@
           class="q-pl-lg q-pr-lg bg-blue-10"
           @click="media"
           style="width: 150px"
-          size="sm"
+          size="md"
           >IMAGES</q-btn
         >
       </div>
@@ -140,7 +152,7 @@
           class="q-pl-lg q-pr-lg bg-red-10"
           @click="logout"
           style="width: 150px"
-          size="sm"
+          size="md"
           >LOG OUT</q-btn
         >
       </div>
@@ -289,4 +301,25 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+a:link {
+  color: grey;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:visited {
+  color: grey;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover {
+  color: red;
+  background-color: transparent;
+  text-decoration: underline;
+}
+a:active {
+  color: yellow;
+  background-color: transparent;
+  text-decoration: underline;
+}
+</style>

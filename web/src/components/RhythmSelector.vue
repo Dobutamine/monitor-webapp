@@ -57,6 +57,7 @@ export default {
       rhythmParameterText: "rate /min",
       rhythmList: [
         "sinus",
+        "ventricular tachycardia",
         "supraventricular tachycardia",
         "complete heart block"
       ]
@@ -69,6 +70,11 @@ export default {
           this.rhythmType = 0;
           this.rhythmParameter = 125;
           this.rhythmParameterText = "rate (/min)";
+          break;
+        case "ventricular tachycardia":
+          this.rhythmType = 6;
+          this.rhythmParameter = 160;
+          this.rhythmParameterText = "ventricular rate (/min)";
           break;
         case "supraventricular tachycardia":
           this.rhythmType = 8;
@@ -92,13 +98,16 @@ export default {
       this.monitorValues.rhythmType = this.rhythmType
       this.monitorValues.rhythmParameter = this.rhythmParameter
       switch (this.rhythmType) {
-        case 0:
+        case 0: //sinus
           this.monitorValues.heartrate = this.rhythmParameter
-          break;
-        case 8:
-           this.monitorValues.heartrate = this.rhythmParameter
-          break;
+          break
+        case 4: //sinus
+          break
+        case 8: //sinus
+          this.monitorValues.heartrate = this.rhythmParameter
+          break
       }
+
       this.$root.$emit('updatemonitorvitals')
 
 
@@ -119,6 +128,10 @@ export default {
         break;
       case 4:
         this.selectedRhythm = "complete heart block";
+        this.rhythmParameterText = "ventricular rate (/min)";
+        break;
+      case 6:
+        this.selectedRhythm = "ventricular tachycardia";
         this.rhythmParameterText = "ventricular rate (/min)";
         break;
       case 8:

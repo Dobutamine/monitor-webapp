@@ -97,6 +97,7 @@ class MonitorEmulator {
   changeHeartRhythm(type, parameter) {
     // console.log("changed to rhythm type : ", type);
     // console.log("rhythm parameter: ", parameter);
+    console.log(type, parameter)
     this._model.components.ECG.rhythm_type = type;
     this._model.components.ECG.rhythm_parameter = parameter;
   }
@@ -214,6 +215,7 @@ class MonitorEmulator {
 
   modelCycle() {
     this.time += this.update_frequency2;
+
     this.data.push({
       time: this.time,
       heartrate: parseInt(this.heartrate),

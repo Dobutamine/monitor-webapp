@@ -7,8 +7,8 @@
               <q-icon name="laptop_chromebook" />
             </div>
             <div class="col3 text-center">
-              <div v-if="visible" class="col text-center">
-                  EXPLAIN! patient monitor emulator
+              <div  class="col text-center">
+                  EXPLAIN! patient monitor emulator beta release 0.1
               </div>
             </div>
             <div class="col text-right text-size-sm">

@@ -43,21 +43,21 @@ class ECG {
     this.s_interval_counter = 0;
 
     // shape the ventricular qrs
-    this.qrs_vent_escape_time = 0.35;
+    this.qrs_vent_escape_time = 0.33;
     this._qrs_vent_escape_time_counter = 0;
     this._qrs_vent_escape_running = false;
 
-    this.amp_q_vent = 0;
-    this.width_q_vent = 10.0;
-    this.skew_q_vent = 1;
+    this.amp_q_vent = 15;
+    this.width_q_vent = 6.0;
+    this.skew_q_vent = 2.3;
 
-    this.amp_r_vent = 10;
-    this.width_r_vent = 15.0;
-    this.skew_r_vent = 1.1;
+    this.amp_r_vent = -10;
+    this.width_r_vent = 6.0;
+    this.skew_r_vent = 2.3;
 
-    this.amp_s_vent = -3.5;
-    this.width_s_vent = 10;
-    this.skew_s_vent = 5;
+    this.amp_s_vent = -10;
+    this.width_s_vent = 6.0;
+    this.skew_s_vent = 2.3;
 
     //
     this.block_qrs = false;
@@ -78,6 +78,16 @@ class ECG {
     if (this.heart_rate > 0) {
       return (
         (this.qt_time + this.qt_addition) * Math.sqrt(60.0 / this.heart_rate)
+      );
+    } else {
+      return (this.qt_time + this.qt_addition) * Math.sqrt(60.0 / 10.0);
+    }
+  }
+
+  qtcCustom(rate) {
+    if (rate > 0) {
+      return (
+        (this.qt_time + this.qt_addition) * Math.sqrt(60.0 / rate)
       );
     } else {
       return (this.qt_time + this.qt_addition) * Math.sqrt(60.0 / 10.0);
@@ -161,6 +171,14 @@ class ECG {
         this.qt_addition = this.qt_multiplier * this.qt_time;
         break;
       case 6: // vt
+        this.heart_rate = 0
+        this.block_qrs = false;
+        this.pq_addition = 0;
+        this.block_counter = 0;
+        this.qt_addition = 0;
+        this.svt_multiplier = 1;
+        this.venticular_escape_rate = parseInt(this.rhythm_parameter);
+        this.qrs_vent_escape_time = 60.0 / parseFloat(this.venticular_escape_rate + 5)
         break;
       case 7: // vf
         break;
@@ -184,6 +202,10 @@ class ECG {
 
     // calculate the corrected qt time
     this.cqt_time = this.qtc() - this.qrs_time;
+
+    if (this.rhythm_type === 6) {
+      this.cqt_time = this.qtcCustom(180) - 0.1 
+    }
 
     // calculate the sa_node_time in seconds depending on the heartrate
     if (this.heart_rate > 0) {
@@ -209,9 +231,9 @@ class ECG {
     if (this._vent_escape_counter > this._vent_escape_period) {
       this._vent_escape_counter = 0;
       if (this._ventricle_is_refractory === false) {
-        this.q_interval_vent = this.qrs_vent_escape_time * 0;
-        this.r_interval_vent = this.qrs_vent_escape_time * 0.56667;
-        this.s_interval_vent = this.qrs_vent_escape_time * 0.43333;
+        this.q_interval_vent = this.qrs_vent_escape_time * 0.6;
+        this.r_interval_vent = this.qrs_vent_escape_time * 0.4;
+        this.s_interval_vent = this.qrs_vent_escape_time // * 0.43333;
         this._qrs_vent_escape_running = true;
         this.ncc_ventricular = 0;
         this._measured_heartrate_qrs_counter += 1;
@@ -268,6 +290,13 @@ class ECG {
       this._qt_running = true;
       // set the ventricle refractory
       this._ventricle_is_refractory = true;
+      if (this.rhythm_type === 6) {
+        this._qrs_time_counter = 0;
+        this.ecg_signal = 0;
+        this._qrs_running = false;
+        this._qt_running = false;
+        this._ventricle_is_refractory = false;
+      }
     }
 
     // has the qt time elapsed?
@@ -367,27 +396,27 @@ class ECG {
         );
     }
 
-    // do the s wave
-    if (
-      this._qrs_vent_escape_time_counter >
-        this.q_interval_vent + this.r_interval_vent &&
-      this._qrs_vent_escape_time_counter <
-        this.q_interval_vent + this.r_interval_vent + this.s_interval_vent
-    ) {
-      new_qrs_signal =
-        this.amp_s_vent *
-        Math.exp(
-          -this.width_s_vent *
-            (Math.pow(
-              this._qrs_vent_escape_time_counter -
-                this.q_interval_vent -
-                this.r_interval_vent -
-                this.s_interval_vent / this.skew_s_vent,
-              2
-            ) /
-              Math.pow(this.s_interval_vent, 2))
-        );
-    }
+    // // do the s wave
+    // if (
+    //   this._qrs_vent_escape_time_counter >
+    //     this.q_interval_vent + this.r_interval_vent &&
+    //   this._qrs_vent_escape_time_counter <
+    //     this.q_interval_vent + this.r_interval_vent + this.s_interval_vent
+    // ) {
+    //   new_qrs_signal =
+    //     this.amp_s_vent *
+    //     Math.exp(
+    //       -this.width_s_vent *
+    //         (Math.pow(
+    //           this._qrs_vent_escape_time_counter -
+    //             this.q_interval_vent -
+    //             this.r_interval_vent -
+    //             this.s_interval_vent / this.skew_s_vent,
+    //           2
+    //         ) /
+    //           Math.pow(this.s_interval_vent, 2))
+    //     );
+    // }
 
     let delta_qrs = new_qrs_signal - this._prev_qrs_signal;
     this.ecg_signal += delta_qrs;
