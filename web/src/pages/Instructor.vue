@@ -190,7 +190,9 @@ export default {
       intubatedButtonColor: 'bg-blue-grey-10',
       intubatedButtonText: 'NOT INTUBATED',
 
-      selectedImage: ''
+      selectedImage: '',
+      destroy: false,
+      no_reconnects: 0
 
     };
   },
@@ -420,13 +422,30 @@ export default {
         console.log('instructor interface websocket connection with api opened.')
         // get the current monitor values from the api (websocket)
         this.getMonitorValuesFromServer()
+
+        this.no_reconnects = 0
       }
 
       // handle websocket closing
       this.websocket.onclose = () => {
         console.log('instructor interface websocket connection with api closed.')
         // clean up
-        this.$router.push("/")
+        if (this.destroy) {
+           this.$router.push("/")
+        } else {
+          console.log('reconnecting')
+          if (this.no_reconnects > 5) {
+            this.destroy = true
+            console.log('instructor interface lost websocket connection with api.')
+            this.$router.push("/")
+          } else {
+            console.log('instructor interface trying to reconnect a websocket connection with api.')
+            this.connectToWebsocketApi()
+            this.no_reconnects += 1
+          }
+          
+        }
+       
       }
 
       // handle websocket errors
@@ -476,8 +495,11 @@ export default {
     // connect to the server api websockets
     this.connectToWebsocketApi()
 
+    this.destroy = false
+
   },
   beforeDestroy() {
+    this.destroy = true
     // remove event handlers
     this.$root.$off("updatemonitorvitals")
     this.$root.$off("updatemonitorconfig")
