@@ -200,7 +200,8 @@ export default {
               alarmEnabled: this.monitorConfiguration[id].alarmEnabled,
               lowerAlarm: this.monitorConfiguration[id].lowerAlarm,
               upperAlarm: this.monitorConfiguration[id].upperAlarm,
-              timeframe: this.monitorConfiguration[id].timeframe
+              timeframe: this.monitorConfiguration[id].timeframe,
+              mmhg: this.monitorConfiguration[id].mmhg
             }
             channel.updateConfiguration(newConfig)
           }
@@ -216,6 +217,7 @@ export default {
               alarmEnabled: this.monitorConfiguration[id].alarmEnabled,
               lowerAlarm: this.monitorConfiguration[id].lowerAlarm,
               upperAlarm: this.monitorConfiguration[id].upperAlarm,
+              mmhg: this.monitorConfiguration[id].mmhg
             }
             channel.updateConfiguration(newConfig)
           }

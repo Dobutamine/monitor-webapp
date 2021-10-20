@@ -10,6 +10,9 @@ class ParameterChannel {
   caption = ''
   lowerAlarm = 0
   upperAlarm = 100
+  mmhg = true
+  factor = 1
+  decimals = 0
   visible = true
   alarmEnabled = false
   alarmState = false
@@ -122,6 +125,16 @@ class ParameterChannel {
     this.source2 = newconfig.source2
     this.caption = newconfig.label
     this.visible = newconfig.visible
+    this.mmhg = newconfig.mmhg
+    if (this.mmhg) {
+      this.factor = 1
+      this.decimals = 0
+    } else {
+      this.factor = 0.1333
+      this.decimals = 1
+    }
+    console.log(this.factor)
+
     this.label.text = this.caption
     this.styleLabel.fill = this.color
 
@@ -199,18 +212,17 @@ class ParameterChannel {
 
     if (this.source1 != 'empty') {
       if (this.source2 != '') {
-        this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1]
-        this.currentValue2 = data[this.dataPointsPerUpdate - 1][this.source2]
+        this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1] * this.factor
+        this.currentValue2 = data[this.dataPointsPerUpdate - 1][this.source2] * this.factor
         this.meanValue = parseInt((2 * this.currentValue2 + this.currentValue) / 3)
-        this.currentValue = this.meanValue
         if (isNaN(this.currentValue)) {
             this.value.text = '-'
         } else {
-            this.value.text = data[this.dataPointsPerUpdate - 1][this.source1] + '/' + data[this.dataPointsPerUpdate - 1][this.source2] +  ' (' + this.meanValue + ')'
+            this.value.text = this.currentValue.toFixed(this.decimals) + '/' + this.currentValue2.toFixed(this.decimals) +  ' (' + this.meanValue.toFixed(this.decimals) + ')'
         }
                
       } else {
-          let value = data[this.dataPointsPerUpdate - 1][this.source1]
+          let value = data[this.dataPointsPerUpdate - 1][this.source1] * this.factor
           if (this.source1 === 'heartrate') {
             if (value != data[this.dataPointsPerUpdate - 1]['reported_heartrate']) {
               value = data[this.dataPointsPerUpdate - 1]['reported_heartrate']
@@ -220,7 +232,7 @@ class ParameterChannel {
           if (isNaN(value)) {
             this.value.text = '-'
           } else {
-            this.value.text = value
+            this.value.text = value.toFixed(this.decimals)
           }
           
           

@@ -10,6 +10,9 @@ class ParameterChannelSmall {
   caption = ''
   lowerAlarm = 0
   upperAlarm = 100
+  mmhg = true
+  factor = 1
+  decimals = 0
   alarmEnabled = false
   alarmState = false
   redAlarmState = false
@@ -125,7 +128,15 @@ class ParameterChannelSmall {
     this.label.text = this.caption
     this.visible = newconfig.visible
     this.styleLabel.fill = this.color
-
+    this.mmhg = newconfig.mmhg
+    if (this.mmhg) {
+      this.factor = 1
+      this.decimals = 0
+    } else {
+      this.factor = 0.1333
+      this.decimals = 1
+    }
+    
     this.alarmLower.text = this.lowerAlarm
     this.alarmUpper.text = this.upperAlarm
     this.styleAlarm.fill = this.color
@@ -202,22 +213,22 @@ class ParameterChannelSmall {
     }
     if (this.source1 != 'empty') {
       if (this.source2 != '') {
-        this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1]
-        this.currentValue2 = data[this.dataPointsPerUpdate - 1][this.source2]
+        this.currentValue = data[this.dataPointsPerUpdate - 1][this.source1] * this.factor
+        this.currentValue2 = data[this.dataPointsPerUpdate - 1][this.source2] * this.factor
         this.meanValue = parseInt((2 * this.currentValue2 + this.currentValue) / 3)
         this.currentValue = this.meanValue
         if (isNaN(this.currentValue)) {
           this.value.text = '-'
         } else {
-          this.value.text = data[this.dataPointsPerUpdate - 1][this.source1] + '/' + data[this.dataPointsPerUpdate - 1][this.source2] +  '\n (' + this.meanValue + ')'
+          this.value.text = this.currentValue.toFixed(this.decimals) + '/' + this.currentValue2.toFixed(this.decimals) +  '\n (' + this.meanValue.toFixed(this.decimals) + ')'
         }  
       } else {
-        const value = data[this.dataPointsPerUpdate - 1][this.source1]
+        const value = data[this.dataPointsPerUpdate - 1][this.source1] * this.factor
         this.currentValue = value
         if (isNaN(value)) {
           this.value.text = '-'
         } else {
-          this.value.text = value
+          this.value.text = value.toFixed(this.decimals)
         }
       }
     } else {
