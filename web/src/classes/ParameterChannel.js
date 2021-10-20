@@ -133,7 +133,6 @@ class ParameterChannel {
       this.factor = 0.1333
       this.decimals = 1
     }
-    console.log(this.factor)
 
     this.label.text = this.caption
     this.styleLabel.fill = this.color
