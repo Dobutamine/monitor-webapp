@@ -29,7 +29,8 @@ const Config = mongoose.model(
       maxY: 10,
       limiterMax: "",
       limiterMin: "",
-      squeezeFactor: 0
+      squeezeFactor: 0,
+      mmhg: true
     }},
     curve2: { type: Object, default: { 
       label: "SAT(1)",
@@ -51,7 +52,8 @@ const Config = mongoose.model(
       maxY: 50,
       limiterMax: "",
       limiterMin: "",
-      squeezeFactor: 0
+      squeezeFactor: 0,
+      mmhg: true
     }},
     curve3: { type: Object, default: { 
       label: "SAT(2)",
@@ -73,7 +75,8 @@ const Config = mongoose.model(
       maxY: 50,
       limiterMax: "",
       limiterMin: "",
-      squeezeFactor: 0
+      squeezeFactor: 0,
+      mmhg: true
     }},
     curve4: { type: Object, default: { 
       label: "ABP",
@@ -95,7 +98,8 @@ const Config = mongoose.model(
       maxY: 50,
       limiterMax: "",
       limiterMin: "",
-      squeezeFactor: 0
+      squeezeFactor: 0,
+      mmhg: true
     }},
     curve5: { type: Object, default: { 
       label: "RF",
@@ -117,7 +121,8 @@ const Config = mongoose.model(
       maxY: 10,
       limiterMax: "",
       limiterMin: "",
-      squeezeFactor: 0
+      squeezeFactor: 0,
+      mmhg: true
     }},
     curve6: { type: Object, default: { 
       label: "etCO2",
@@ -139,7 +144,8 @@ const Config = mongoose.model(
       maxY: 10,
       limiterMax: "",
       limiterMin: "",
-      squeezeFactor: 0
+      squeezeFactor: 0,
+      mmhg: true
     }},
     param1: { type: Object, default: { 
       label: "",
@@ -150,6 +156,7 @@ const Config = mongoose.model(
       alarmEnabled: false,
       lowerAlarm: 80,
       upperAlarm: 180,
+      mmhg: true
     }},
     param2: { type: Object, default: { 
       label: "Pols",
@@ -160,6 +167,7 @@ const Config = mongoose.model(
       alarmEnabled: false,
       lowerAlarm: 80,
       upperAlarm: 180,
+      mmhg: true
     }},
     param3: { type: Object, default: { 
       label: "",
@@ -170,6 +178,7 @@ const Config = mongoose.model(
       alarmEnabled: false,
       lowerAlarm: 80,
       upperAlarm: 180,
+      mmhg: true
     }},
     param4: { type: Object, default: { 
       label: "",
@@ -180,6 +189,7 @@ const Config = mongoose.model(
       alarmEnabled: false,
       lowerAlarm: 80,
       upperAlarm: 180,
+      mmhg: true
     }},
     param5: { type: Object, default: { 
       label: "NIBD",
@@ -190,6 +200,7 @@ const Config = mongoose.model(
       alarmEnabled: true,
       lowerAlarm: 35,
       upperAlarm: 75,
+      mmhg: true
     }},
     param6: { type: Object, default: { 
       label: "Temp",
@@ -200,6 +211,7 @@ const Config = mongoose.model(
       alarmEnabled: true,
       lowerAlarm: 36.5,
       upperAlarm: 37.5,
+      mmhg: true
     }}
   })
 );

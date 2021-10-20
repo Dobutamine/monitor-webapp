@@ -35,11 +35,10 @@
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 110px"
                   @click="toggleBloodgas"
                 >
-                  Sodium: {{ sodium }}
+                  Sodium
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -49,20 +48,20 @@
                   :min="115"
                   :max="155"
                   :step="1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 110px"
                   @click="toggleBloodgas"
                 >
-                  Potassium: {{ potassium }}
+                  Potassium
                 </q-btn>
               </div>
               <div class="col  q-ml-sm">
@@ -71,20 +70,20 @@
                   :min="1"
                   :max="10"
                   :step="0.1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 110px"
                   @click="toggleBloodgas"
                 >
-                  Chloride: {{ chloride }}
+                  Chloride
                 </q-btn>
               </div>
               <div class="col  q-ml-sm">
@@ -93,20 +92,20 @@
                   :min="75"
                   :max="150"
                   :step="1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 110px"
                   @click="toggleBloodgas"
                 >
-                  Glucose: {{ glucose }}
+                  Glucose
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -115,20 +114,20 @@
                   :min="0"
                   :max="20"
                   :step="0.1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 110px"
                   @click="toggleBloodgas"
                 >
-                  Lactate: {{ lactate }}
+                  Lactate
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -137,6 +136,7 @@
                   :min="0"
                   :max="20"
                   :step="0.1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
@@ -148,11 +148,10 @@
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 110px"
                   @click="toggleBloodgas"
                 >
-                  pH: {{ ph }}
+                  pH
                 </q-btn>
               </div>
               <div class="col">
@@ -161,61 +160,61 @@
                   :min="6.75"
                   :max="7.75"
                   :step="0.01"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   :color="bloodgasColor"
-                  size="sm"
                   @click="toggleBloodgas"
                   style="width: 110px"
                 >
-                  paCO2: {{ pco2 }}
+                  paCO2
                 </q-btn>
               </div>
               <div class="col">
                 <q-slider
                   v-model="pco2"
-                  :min="10"
-                  :max="100"
-                  :step="1"
+                  :min="min_pco2"
+                  :max="max_pco2"
+                  :step="step_unit"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   :color="bloodgasColor"
-                  size="sm"
                   @click="toggleBloodgas"
                   style="width: 110px"
                 >
-                  paO2: {{ po2 }}
+                  paO2
                 </q-btn>
               </div>
               <div class="col">
                 <q-slider
                   v-model="po2"
-                  :min="10"
-                  :max="300"
-                  :step="1"
+                  :min="min_po2"
+                  :max="max_po2"
+                  :step="step_unit"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   :color="bloodgasColor"
-                  size="sm"
                   @click="toggleBloodgas"
                   style="width: 110px"
                 >
-                  HCO3-: {{ bic }}
+                  HCO3-
                 </q-btn>
               </div>
               <div class="col">
@@ -224,19 +223,19 @@
                   :min="5"
                   :max="45"
                   :step="0.1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   :color="bloodgasColor"
-                  size="sm"
                   @click="toggleBloodgas"
                   style="width: 110px"
                 >
-                  BE: {{ be }}
+                  BE
                 </q-btn>
               </div>
               <div class="col">
@@ -245,6 +244,7 @@
                   :min="-40"
                   :max="20"
                   :step="0.1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
@@ -255,7 +255,6 @@
             class="q-mt-md"
             @click="onClickAvailableBloodgas"
             :color="btnAvailableBloodgasColor"
-            size="sm"
             style="margin-left: auto; margin-right: auto"
             >{{ btnAvailableBloodgasText }}</q-btn
           >
@@ -270,11 +269,10 @@
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  hemoglobin: {{ hemoglobin }}
+                  hemoglobin
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -284,20 +282,20 @@
                   :min="1"
                   :max="15"
                   :step="0.1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  Ht: {{ hematocrit }}
+                  Hematocrit
                 </q-btn>
               </div>
               <div class="col  q-ml-sm">
@@ -306,20 +304,20 @@
                   :min="0.05"
                   :max="0.75"
                   :step="0.01"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  leucocytes: {{ leucocytes }}
+                  leucocytes
                 </q-btn>
               </div>
               <div class="col  q-ml-sm">
@@ -328,20 +326,20 @@
                   :min="1"
                   :max="40"
                   :step="0.1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  trombocytes: {{ trombocytes }}
+                  trombocytes
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -350,6 +348,7 @@
                   :min="0"
                   :max="400"
                   :step="1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
@@ -360,7 +359,6 @@
             class="q-mt-md"
             @click="onClickAvailableCBC"
             :color="btnAvailableCBCColor"
-            size="sm"
             style="margin-left: auto; margin-right: auto"
             >{{ btnAvailableCBCText }}</q-btn
           >
@@ -375,11 +373,10 @@
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  CRP: {{ CRP }}
+                  CRP
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -389,20 +386,20 @@
                   :min="0"
                   :max="150"
                   :step="1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  Urea (BUN): {{ urea }}
+                  Urea (BUN)
                 </q-btn>
               </div>
               <div class="col  q-ml-sm">
@@ -411,20 +408,20 @@
                   :min="5"
                   :max="100"
                   :step="1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  creatinine: {{ kreatinine }}
+                  kreatinine
                 </q-btn>
               </div>
               <div class="col  q-ml-sm">
@@ -433,20 +430,20 @@
                   :min="1"
                   :max="300"
                   :step="1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  calcium: {{ calcium }}
+                  calcium
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -455,20 +452,20 @@
                   :min="0.5"
                   :max="5"
                   :step="0.01"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  magnesium: {{ magnesium }}
+                  magnesium
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -477,20 +474,20 @@
                   :min="0.1"
                   :max="2"
                   :step="0.01"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  phosphate: {{ phosphate }}
+                  phosphate
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -499,20 +496,20 @@
                   :min="0.5"
                   :max="5"
                   :step="0.01"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  ammonia: {{ ammonia }}
+                  ammonia
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -521,20 +518,20 @@
                   :min="10"
                   :max="500"
                   :step="1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row q-mt-sm">
               <div class="col q-pt-sm">
                 <q-btn
                   class="q-pa-es"
                   :color="bloodgasColor"
-                  size="sm"
                   style="width: 200px"
                   @click="toggleBloodgas"
                 >
-                  albumin: {{ albumin }}
+                  albumin
                 </q-btn>
               </div>
               <div class="col q-ml-sm">
@@ -543,6 +540,7 @@
                   :min="5"
                   :max="40"
                   :step="1"
+                  label-always
                 ></q-slider>
               </div>
             </div>
@@ -558,11 +556,13 @@
             >{{ btnAvailableOtherText }}</q-btn
           >
         </div>
+     
       </q-card-section>
 
       <q-card-actions align="center">
-        <q-btn color="teal-10" label="Admit" size="sm" @click="onOKClick" />
-        <q-btn color="red-10" label="Cancel" size="sm" @click="onCancelClick" />
+        <q-btn color="teal-10" label="Admit"  @click="onOKClick" />
+        <q-btn color="red-10" label="Cancel"  @click="onCancelClick" />
+        <q-toggle class="q-ml-md" left-label label="units in mmhg" v-model="mmhg" value="mmhg" @input="changeUnit" dense autofocus />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -587,8 +587,14 @@ export default {
     return {
       id: "",
       name:"",
+      mmhg: true,
       apiUrl: "",
       url: "",
+      step_unit: 1,
+      max_po2: 300,
+      min_po2: 0,
+      max_pco2: 100,
+      min_pco2: 0, 
       stepSmall: 0.01,
       electrolytesAvailable: false,
       cbcAvailable: false,
@@ -778,6 +784,27 @@ export default {
           break;
       }
     },
+    changeUnit() {
+      if (this.mmhg) {
+        this.pco2 = this.pco2 * 7.5
+        this.po2 = this.po2 * 7.5
+        this.step_unit = 1
+        this.min_po2 = 0
+        this.max_po2 = 300,
+        this.min_pco2 = 0
+        this.max_pco2 = 100
+        this.factor = 1
+      } else {
+        this.pco2 = this.pco2 * 0.1333
+        this.po2 = this.po2 * 0.1333
+        this.step_unit = 0.1
+        this.min_po2 = 0
+        this.max_po2 = 100,
+        this.min_pco2 = 0
+        this.max_pco2 = 15
+        this.factor = 0.1333
+      }
+    },
     toggleBloodgas() {
       // this.bloodgasEnabled = !this.bloodgasEnabled;
       // if (this.bloodgasEnabled) {
@@ -808,13 +835,14 @@ export default {
         .post(url, { 
           id: this.id,
           name: this.name,
+          mmhg: this.mmhg,
           bloodgas: {
             na: this.sodium,
             k: this.potassium,
             cl: this.chloride,
             ph: this.ph,
-            po2: this.po2,
-            pco2: this.pco2,
+            po2: this.po2 / this.factor,
+            pco2: this.pco2 / this.factor,
             bic: this.bic,
             be: this.be,
             glucose: this.glucose,
@@ -856,6 +884,22 @@ export default {
         .get(url)
         .then(res => {
           this.name = res.data.name
+          this.mmhg = res.data.mmhg
+          if (this.mmhg) {
+            this.step_unit = 1
+            this.min_po2 = 0
+            this.max_po2 = 300,
+            this.min_pco2 = 0
+            this.max_pco2 = 100
+            this.factor = 1
+          } else {
+            this.step_unit = 0.1
+            this.min_po2 = 0
+            this.max_po2 = 100,
+            this.min_pco2 = 0
+            this.max_pco2 = 15
+            this.factor = 0.1333
+          }
           this.bloodgasAvailable = res.data.bloodgasAvailable;
           if (this.bloodgasAvailable) {
             this.btnAvailableBloodgasColor = "teal-10";
@@ -865,8 +909,8 @@ export default {
             this.btnAvailableBloodgasText = "NOT AVAILABLE ON MONITOR";
           }
           this.ph = res.data.bloodgas.ph
-          this.po2 = res.data.bloodgas.po2
-          this.pco2pco2 = res.data.bloodgas.pco2
+          this.po2 = res.data.bloodgas.po2 * this.factor
+          this.pco2 = res.data.bloodgas.pco2 * this.factor
           this.bic = res.data.bloodgas.bic
           this.be = res.data.bloodgas.be
           this.sodium = res.data.bloodgas.na

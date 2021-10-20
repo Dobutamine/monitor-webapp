@@ -7,6 +7,7 @@ const Lab = mongoose.model(
     mes_type: { type: String, default: "mon_lab" },
     id: { type: String, default: "" },
     name: Joi.string().min(3).max(50),
+    mmhg: { type: Boolean, default: true},
     bloodgas: { type: Object, default: {
       na: 140,
       k: 3.8,
@@ -45,6 +46,7 @@ function validateLab(lab) {
   const schema = Joi.object({
     id: Joi.string().min(3).max(255).required(),
     name: Joi.string().min(3).max(50).required(),
+    mmhg: Joi.boolean().required(),
     bloodgas: Joi.object().required(),
     bloodgasAvailable: Joi.boolean().required(),
     cbc: Joi.object().required(),

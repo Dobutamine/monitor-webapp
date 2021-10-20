@@ -19,6 +19,9 @@
                         <div class="q-ma-sm row">
                             <q-color v-model="channel.color" default-view="palette" @change="colorChanged" no-footer dark/>
                         </div>
+                        <div class="q-ma-sm row">
+                            <q-toggle class="row" left-label label="value in mmHg" v-model="channel.mmhg" value="mmhg" dense autofocus />
+                        </div>
 
                         <q-card-actions align="center">
                             <q-btn color="secondary" label="OK" @click="onOKClick" />
@@ -52,13 +55,13 @@ export default {
       parameters: ['EMPTY', 'ECG', 'SAT PRE', 'SAT POST', 'ABP', 'RESP', 'ETCO2', 'NIBD','POLS', 'PFI', 'TEMP', 'CVP', 'PAP'],
       label: '',
       color: '',
+      mmhg: true,
       lowerAlarm: 0,
       upperAlarm: 0,
       alarmEnabled: false,
       alarmEnabled: true,
       lowerAlarm: 0,
       upperAlarm: 100,
-      color: '',
       confirm: false,
       channel: {}
     }

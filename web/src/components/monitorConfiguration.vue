@@ -273,6 +273,7 @@ export default {
       autoscale_ch1: true,
       minY_ch1: 0,
       maxY_ch1: 100,
+      mmhg_ch1: true,
 
       parameter_ch2: '',
       alarmEnabled_ch2: true,
@@ -283,6 +284,7 @@ export default {
       autoscale_ch2: true,
       minY_ch2: 0,
       maxY_ch2: 100,
+      mmhg_ch2: true,
 
 
       parameter_ch3: '',
@@ -294,6 +296,7 @@ export default {
       autoscale_ch3: true,
       minY_ch3: 0,
       maxY_ch3: 100,
+      mmhg_ch3: true,
 
 
       parameter_ch4: '',
@@ -305,6 +308,7 @@ export default {
       autoscale_ch4: true,
       minY_ch4: 0,
       maxY_ch4: 100,
+      mmhg_ch4: true,
 
 
       parameter_ch5: '',
@@ -316,6 +320,7 @@ export default {
       autoscale_ch5: true,
       minY_ch5: 0,
       maxY_ch5: 100,
+      mmhg_ch5: true,
 
 
       parameter_ch6: '',
@@ -327,6 +332,7 @@ export default {
       autoscale_ch6: true,
       minY_ch6: 0,
       maxY_ch6: 100,
+      mmhg_ch6: true,
 
       
     }
@@ -460,12 +466,12 @@ export default {
       this.monitorConfiguration.curve1.upperAlarm = this.upperAlarm_ch1
       this.monitorConfiguration.curve1.lowerAlarm = this.lowerAlarm_ch1
 
-
       this.monitorConfiguration.curve1.autoscale = this.autoscale_ch1
       this.monitorConfiguration.curve1.minY = this.minY_ch1
       this.monitorConfiguration.curve1.maxY = this.maxY_ch1
       this.monitorConfiguration.curve1.grid = config1.grid
       this.monitorConfiguration.curve1.performance = config1.performance
+      this.monitorConfiguration.curve1.mmhg = this.mmhg_ch1
       this.monitorConfiguration.curve1.zoom = config1.zoom
       this.monitorConfiguration.curve1.timeframe = config1.timeframe
 
@@ -486,6 +492,7 @@ export default {
       this.monitorConfiguration.curve2.maxY = this.maxY_ch2
       this.monitorConfiguration.curve2.grid = config2.grid
       this.monitorConfiguration.curve2.performance = config2.performance
+      this.monitorConfiguration.curve2.mmhg = this.mmhg_ch2
       this.monitorConfiguration.curve2.zoom = config2.zoom
       this.monitorConfiguration.curve2.timeframe = config2.timeframe
 
@@ -505,6 +512,7 @@ export default {
       this.monitorConfiguration.curve3.maxY = this.maxY_ch3
       this.monitorConfiguration.curve3.grid = config3.grid
       this.monitorConfiguration.curve3.performance = config3.performance
+      this.monitorConfiguration.curve3.mmhg = this.mmhg_ch3
       this.monitorConfiguration.curve3.zoom = config3.zoom
       this.monitorConfiguration.curve3.timeframe = config3.timeframe
 
@@ -524,6 +532,7 @@ export default {
       this.monitorConfiguration.curve4.maxY = this.maxY_ch4
       this.monitorConfiguration.curve4.grid = config4.grid
       this.monitorConfiguration.curve4.performance = config4.performance
+      this.monitorConfiguration.curve4.mmhg = this.mmhg_ch4
       this.monitorConfiguration.curve4.zoom = config4.zoom
       this.monitorConfiguration.curve4.timeframe = config4.timeframe
 
@@ -544,6 +553,7 @@ export default {
       this.monitorConfiguration.curve5.maxY = this.maxY_ch5
       this.monitorConfiguration.curve5.grid = config5.grid
       this.monitorConfiguration.curve5.performance = config5.performance
+      this.monitorConfiguration.curve5.mmhg = this.mmhg_ch5
       this.monitorConfiguration.curve5.zoom = config5.zoom
       this.monitorConfiguration.curve5.timeframe = config5.timeframe
 
@@ -564,6 +574,7 @@ export default {
       this.monitorConfiguration.curve6.maxY = this.maxY_ch6
       this.monitorConfiguration.curve6.grid = config6.grid
       this.monitorConfiguration.curve6.performance = config6.performance
+      this.monitorConfiguration.curve6.mmhg = this.mmhg_ch6
       this.monitorConfiguration.curve6.zoom = config6.zoom
       this.monitorConfiguration.curve6.timeframe = config6.timeframe
 
@@ -617,12 +628,14 @@ export default {
           configObject.sourceCurve = 'empty'
 
           configObject.autoscale = false
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = false
           configObject.performance = 4
           configObject.zoom = 0
           configObject.timeframe = 5
+
 
           break;
         case "HEARTRATE":
@@ -633,6 +646,7 @@ export default {
           configObject.sourceCurve = 'ecg_signal'
           
           configObject.autoscale = false
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = false
@@ -649,6 +663,7 @@ export default {
           configObject.sourceCurve = 'abp_signal'
 
           configObject.autoscale = true
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
@@ -665,6 +680,7 @@ export default {
           configObject.sourceCurve = 'sat_signal'
 
           configObject.autoscale = true
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
@@ -681,6 +697,7 @@ export default {
           configObject.sourceCurve = 'abp_signal'
 
           configObject.autoscale = true
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
@@ -696,6 +713,7 @@ export default {
           configObject.sourceCurve = 'resp_signal'
 
           configObject.autoscale = true
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
@@ -712,6 +730,7 @@ export default {
           configObject.sourceCurve = 'etco2_signal'
 
           configObject.autoscale = true
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
@@ -728,6 +747,7 @@ export default {
           configObject.sourceCurve = 'cvp_signal'
 
           configObject.autoscale = true
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
@@ -744,6 +764,7 @@ export default {
           configObject.sourceCurve = 'pap_signal'
 
           configObject.autoscale = true
+          configObject.mmhg = true
           configObject.minY = -10
           configObject.maxY = 10
           configObject.grid = true
