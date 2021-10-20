@@ -307,12 +307,24 @@ export default {
       });
     },
     openMonitorConfiguration () {
-      this.$q.dialog({
-        component: monitorConfigurationPopup,
-        parent: this,
-        monitorConfiguration: this.monitorConfiguration,
-        monitorValues: this.monitorValues
-      });
+      // build api url
+      const url = `${this.apiUrl}/api/configs?id=${this.id}`;
+      // get the monitor configuration
+      axios.get(url)
+        .then(res => {
+          console.log('instructor interface got monitor configuration from server')
+          this.monitorConfiguration = res.data;
+          this.updateInterfaceWithMonitorConfiguration()
+          this.$q.dialog({
+            component: monitorConfigurationPopup,
+            parent: this,
+            monitorConfiguration: this.monitorConfiguration,
+            monitorValues: this.monitorValues
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     updateInterfaceWithMonitorValues() {
       // update all instructor interface components with the current monitor values
@@ -514,6 +526,7 @@ export default {
 
     // connect to the server api websockets
     this.connectToWebsocketApi()
+
 
     this.destroy = false
 

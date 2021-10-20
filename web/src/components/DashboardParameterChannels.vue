@@ -255,6 +255,9 @@ export default {
           this.dataPointsPerUpdate,
           this.width
         )
+        channel.value.interactive = true
+        channel.value.on('click', (e) => this.$root.$emit('channelconfigchange', e.currentTarget.channelNo))
+
         // add channel to array
         this.channels.push(channel)
       }
@@ -279,6 +282,8 @@ export default {
           this.dataPointsPerUpdate,
           this.width
         )
+        channel.value.interactive = true
+        channel.value.on('click', (e) => this.$root.$emit('channelconfigchange', e.currentTarget.channelNo))
         // add channel to array
         this.channels.push(channel)
       }

@@ -108,6 +108,7 @@ import MessageBox from "components/MessageBox";
 import ImageView from "components/ImageView";
 import Timer from "components/Timer";
 import LabView from "components/LabView";
+import ChannelSettings from "components/ChannelSettings.vue"
 
 import axios from "axios";
 
@@ -123,7 +124,8 @@ export default {
     AlarmMessage,
     ImageView,
     Timer,
-    LabView
+    LabView,
+    ChannelSettings
   },
   data() {
     return {
@@ -161,8 +163,8 @@ export default {
       barText: "HIDE TOP",
       barVisibility: false,
       prevOverrideState: false,
-
-
+      destroy: false,
+      no_reconnects: 0,
       chartCols: "col-9 text-center",
       parameterCols: "col-3 text-center",
       alarmsEnabled: true,
@@ -439,11 +441,9 @@ export default {
       }
 
     },
-  
     updateInterfaceWithMonitorConfiguration() {
       // update all instructor interface components with the current monitor configuration
       if (this.monitorConfiguration) {
-        
         this.updateModel()
       }
     },
@@ -453,7 +453,7 @@ export default {
       // get the monitor configuration
       axios.get(url)
         .then(res => {
-          // console.log('monitor interface got monitor configuration from server')
+          console.log('monitor interface got monitor configuration from server')
           this.monitorConfiguration = res.data;
           this.updateInterfaceWithMonitorConfiguration()
         })
@@ -465,34 +465,27 @@ export default {
       const url = `${this.apiUrl}/api/configs/new`;
       axios.post(url, {
           id: this.id,
-          configuration: JSON.stringify(this.monitorConfiguration)
+          name: this.monitorConfiguration.name,
+          curve1: this.monitorConfiguration.curve1,
+          curve2: this.monitorConfiguration.curve2,
+          curve3: this.monitorConfiguration.curve3,
+          curve4: this.monitorConfiguration.curve4,
+          curve5: this.monitorConfiguration.curve5,
+          curve6: this.monitorConfiguration.curve6,
+          param1: this.monitorConfiguration.param1,
+          param2: this.monitorConfiguration.param2,
+          param3: this.monitorConfiguration.param3,
+          param4: this.monitorConfiguration.param4,
+          param5: this.monitorConfiguration.param5,
+          param6: this.monitorConfiguration.param6,
         })
         .then(res => {
-          // console.log('monitor interface updated the monitor configuration')
-          clearTimeout(this.configUpdateTimer)
-          this.configUpdateTimer = null
+          this.currentConfigUpdateCounter += 1
+          console.log('monitor interface updated the monitor configuration')
         })
         .catch(error => {}
       );
     },
-    // setMonitorValuesOnServer() {
-    //   console.log('monitor set the values')
-    //   // get the name of the selected image
-    //   this.selectedImage = this.monitorValues.imageName
-
-    //   // first check wether the websocket connection is open
-    //   if (this.websocket.readyState === WebSocket.OPEN) {
-    //     // now get the monitor values by constructing a message object
-    //     const message = {
-    //       "command": "set",
-    //       "payload": this.monitorValues
-    //     }
-    //     this.websocket.send(JSON.stringify(message));
-    //     // console.log('monitor interface updated the monitor values')
-    //     clearTimeout(this.serverUpdateTimer)
-    //     this.serverUpdateTimer = null
-    //   }
-    // },
     getMonitorValuesFromServer() {
       // first check wether the websocket connection is open
       if (this.websocket.readyState === WebSocket.OPEN) {
@@ -507,7 +500,6 @@ export default {
         // console.log('monitor interface websocket requested the monitor values.')
       }
     },
-
     connectToWebsocketApi() {
       // try to establish a websocket connection
       this.websocket = new WebSocket(this.webSocketUrl);
@@ -528,15 +520,28 @@ export default {
       // handle websocket opening
       this.websocket.onopen = () => {
         // console.log('monitor interface websocket connection with api opened.')
-        
-
       }
 
       // handle websocket closing
       this.websocket.onclose = () => {
-        // console.log('monitor interface websocket connection with api closed.')
-        // remove the update timer
-        this.updateTimer = null
+        console.log('monitor websocket connection with api closed.')
+        // clean up
+        if (this.destroy) {
+          this.updateTimer = null
+          this.$router.push("/")
+        } else {
+          console.log('monitor reconnecting')
+          if (this.no_reconnects > 5) {
+            this.destroy = true
+            console.log('monitor lost websocket connection with api.')
+            this.$router.push("/")
+          } else {
+            console.log('monitor trying to reconnect a websocket connection with api.')
+            this.reconnecting = true
+            this.connectToWebsocketApi()
+            this.no_reconnects += 1
+          }
+        }
       }
 
       // handle websocket errors
@@ -552,7 +557,6 @@ export default {
         height: this.$q.screen.height
       });
     },
-  
     blinker() {
       this.blinkerState = !this.blinkerState;
       this.$store.commit("dataPool/blinkerState", this.blinkerState);
@@ -613,13 +617,43 @@ export default {
 
     // connect to the server api websockets
     this.connectToWebsocketApi()
+
+    // attach event handlers
+    this.$root.$on('channelconfigchange', (channelNo) => {
+        this.$q.dialog({
+          component: ChannelSettings,
+          parent: this,
+          channelNo: channelNo,
+          monitorValues: this.monitorValues,
+          monitorConfiguration: this.monitorConfiguration
+        });
+      }
+    )
+
+    // catch the event when channelsettings changes the configuration
+    this.$root.$on('channelsettingschangedconfiguration', () => { 
+      this.setMonitorConfigurationOnServer()
+    })
+
+    this.destroy = false
+
   },
   beforeDestroy() {
+    // stop down the model
+    this.$root.$emit("rt_off");
+
+    // destory is true
+    this.destroy = true
+
+    // message that the window is cleaning 
     console.log('cleaning up monitor window')
   
+    // remove event handlers
+    this.$root.$off('channelconfigchange')
+    this.$root.$off('channelsettingschangedconfiguration')
+
     // removing the blinker timer
     this.blinkerTimer = null
-
 
     // remove the update timer
     clearInterval(this.updateTimer)

@@ -39,6 +39,8 @@ export default {
     this.$root.$on('forceupdate', this.forceUpdate)
   },
   beforeDestroy () {
+    this.modelEventListener = this.$model.engine.removeEventListener('message', (message) => this.processModelMessage(message))
+    this.modelEventListener = null
     this.$root.$off('ff_on')
     this.$root.$off('calc_on')
     this.$root.$off('rt_on')
@@ -105,31 +107,32 @@ export default {
       this.$root.$emit('ff_on')
       this.$model.fastForwardModel(this.timeToCalculate)
     },
-    buildEventListener () {
-      this.modelEventListener = this.$model.engine.addEventListener('message', (message) => {
-        if (this.isEnabled) {
-          switch (message.data.type) {
-            case 'data':
-              switch (message.data.target) {
-                case 'datalogger_output':
-                  this.caption = 'CALCULATE'
-                  this.color = 'teal-10'
-                  this.rtRunning = false
-                  this.captionRT = 'REALTIME'
-                  this.colorRT = 'teal-10'
-                  this.captionGOTO = 'FORWARD'
-                  this.colorGOTO = 'teal-10'
-              }
-              break
-            case 'mes':
-              if (message.data.data[0] === 'ready') {
+    processModelMessage (message) {
+      if (this.isEnabled) {
+        switch (message.data.type) {
+          case 'data':
+            switch (message.data.target) {
+              case 'datalogger_output':
+                this.caption = 'CALCULATE'
+                this.color = 'teal-10'
+                this.rtRunning = false
+                this.captionRT = 'REALTIME'
+                this.colorRT = 'teal-10'
                 this.captionGOTO = 'FORWARD'
                 this.colorGOTO = 'teal-10'
               }
               break
-          }
+          case 'mes':
+            if (message.data.data[0] === 'ready') {
+              this.captionGOTO = 'FORWARD'
+              this.colorGOTO = 'teal-10'
+            }
+            break
         }
-      })
+      }
+    },
+    buildEventListener () {
+      this.modelEventListener = this.$model.engine.addEventListener('message', (message) => this.processModelMessage(message))
     },
     forceUpdate (e) {
       this.$forceUpdate()
@@ -138,8 +141,8 @@ export default {
       this.buildEventListener()
     }
   }
-
 }
+
 </script>
 
 <style>
