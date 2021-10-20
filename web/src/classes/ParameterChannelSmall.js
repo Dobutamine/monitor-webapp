@@ -209,7 +209,7 @@ class ParameterChannelSmall {
         if (isNaN(this.currentValue)) {
           this.value.text = '-'
         } else {
-          this.value.text = data[this.dataPointsPerUpdate - 1][this.source1] + '/' + data[this.dataPointsPerUpdate - 1][this.source2] +  ' (' + this.meanValue + ')'
+          this.value.text = data[this.dataPointsPerUpdate - 1][this.source1] + '/' + data[this.dataPointsPerUpdate - 1][this.source2] +  '\n (' + this.meanValue + ')'
         }  
       } else {
         const value = data[this.dataPointsPerUpdate - 1][this.source1]

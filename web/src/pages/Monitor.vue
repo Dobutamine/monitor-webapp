@@ -91,7 +91,15 @@
       >
 
     </div>
+        
     </div>
+    
+    <div class="row justify-center q-ma-sm">
+      <q-badge class="bg-dark" rounded >
+        Active user : {{ name }}
+      </q-badge>
+    </div>
+
     <q-resize-observer @resize="onResize" />
   </q-page>
 </template>
@@ -132,6 +140,7 @@ export default {
       apiUrl: "",
       webSocketUrl: "",
       id: "",
+      name: "",
       height: 0,
       max_width: 0,
       websocket: null,
@@ -455,6 +464,7 @@ export default {
         .then(res => {
           console.log('monitor interface got monitor configuration from server')
           this.monitorConfiguration = res.data;
+          this.name = this.monitorConfiguration.name
           this.updateInterfaceWithMonitorConfiguration()
         })
         .catch(error => {

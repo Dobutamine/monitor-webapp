@@ -138,8 +138,8 @@
       </q-card>
     </div>
     <div class="row justify-center q-ma-md">
-      <q-badge rounded >
-        Active image : {{ selectedImage }}
+      <q-badge class="bg-dark"  rounded >
+        Active user : {{ name }}
       </q-badge>
     
     </div>
@@ -346,6 +346,7 @@ export default {
         .then(res => {
           console.log('instructor interface got monitor configuration from server')
           this.monitorConfiguration = res.data;
+          this.name = this.monitorConfiguration.name
           this.updateInterfaceWithMonitorConfiguration()
         })
         .catch(error => {
