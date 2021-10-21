@@ -53,7 +53,7 @@
             {{ po2 }}
           </div>
           <div class="col text-left">
-            mmHg
+            {{ unit }}
           </div>
         </div>
 
@@ -74,7 +74,7 @@
             {{ pco2 }}
           </div>
           <div class="col text-left">
-            mmHg
+            {{ unit }}
           </div>
         </div>
 
@@ -292,6 +292,9 @@ export default {
       id: "",
       url: "",
       apiUrl: "",
+      unit: "mmHg",
+      factor: 1,
+      decimals: 0,
       urea: 5,
       CRP: 1,
       kreatinine: 50,
@@ -360,6 +363,15 @@ export default {
       axios
         .get(url)
         .then(res => {
+          if (res.data.mmhg) {
+            this.unit = "mmHg"
+            this.factor = 1
+            this.decmials = 0
+          } else {
+            this.unit = "kPa"
+            this.factor = 0.13333
+            this.decmials = 1
+          }
           this.bloodgasAvailable = res.data.bloodgasAvailable;
           this.cbcAvailable = res.data.cbcAvailable;
           this.otherAvailable = res.data.otherAvailable;
@@ -371,8 +383,8 @@ export default {
           this.glucose = parsedBloodgas.glucose;
           this.lactate = parsedBloodgas.lactate;
           this.ph = parsedBloodgas.ph;
-          this.pco2 = parsedBloodgas.pco2;
-          this.po2 = parsedBloodgas.po2;
+          this.pco2 = (parsedBloodgas.pco2 * this.factor).toFixed(this.decmials);
+          this.po2 = (parsedBloodgas.po2 * this.factor).toFixed(this.decimals);
           this.be = parsedBloodgas.be;
           this.bic = parsedBloodgas.bic;
 

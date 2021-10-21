@@ -355,7 +355,7 @@ export default {
       this.currentLabUpdateCounter = (this.monitorValues.labUpdateCounter)
       this.labButtonColor = "bg-blue-grey-8"
       this.labButtonText = "LAB"
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      const styleImg = `height: ${this.$q.screen.height / 1.5}px; width: ${this.$q.screen.height / 1.5}px`;
       this.$q.dialog({
         component: LabView,
         parent: this,
@@ -389,7 +389,7 @@ export default {
       this.currentImageUpdateCounter = (this.monitorValues.imageUpdateCounter)
       this.imageButtonColor = "bg-blue-grey-8"
       this.imageButtonText = "IMAGING"
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 1.2}px`;
       this.$q.dialog({
         component: ImageView,
         parent: this,
