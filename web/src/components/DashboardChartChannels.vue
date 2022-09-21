@@ -1,47 +1,47 @@
 <template>
   <q-card>
-    <canvas :id="chartId" class="stage" :style="{height: height}"></canvas>
+    <canvas :id="chartId" class="stage" :style="{ height: height }"></canvas>
   </q-card>
 </template>
 
 <script>
 /* eslint-disable */
-import * as PIXI from 'pixi.js'
-import ChartChannel from '../classes/ChartChannel'
+import * as PIXI from "pixi.js";
+import ChartChannel from "../classes/ChartChannel";
 
 export default {
   props: {
     chartId: {
       required: true,
-      type: String
+      type: String,
     },
     dataUpdateInterval: {
       required: true,
-      type: Number
+      type: Number,
     },
     dataPointsPerUpdate: {
       required: true,
-      type: Number
+      type: Number,
     },
     monitorConfiguration: {
       required: true,
-      type: Object
+      type: Object,
     },
     monitorValues: {
       required: true,
-      type: Object
+      type: Object,
     },
     configuration: {
       required: true,
-      type: Array
-    }
+      type: Array,
+    },
   },
   watch: {
-    monitorConfiguration: function (newVal, oldVal)  {
-      this.updateChannelsConfiguration()
-    }
+    monitorConfiguration: function (newVal, oldVal) {
+      this.updateChannelsConfiguration();
+    },
   },
-  data () {
+  data() {
     return {
       pixiApp: null,
       canvas: null,
@@ -54,59 +54,62 @@ export default {
       dataCursorFast: 0,
       dataCursorSlow: 0,
       channels: [],
-      channelConfigurations: []
-    }
+      channelConfigurations: [],
+    };
   },
   methods: {
-    updater (message) {
-      if (message.data.target === 'monitor') {
-        this.updateData(message.data.data)
+    updater(message) {
+      if (message.data.target === "monitor") {
+        this.updateData(message.data.data);
       }
     },
-    updateData (data) {
-      this.channels.forEach(channel => {
-        channel.update(data)
-      })
+    updateData(data) {
+      this.channels.forEach((channel) => {
+        channel.update(data);
+      });
     },
-    onResize (newSize) {
+    onResize(newSize) {
       // get the current width of the canvas
-      this.width = this.canvas.getBoundingClientRect().width
+      this.width = this.canvas.getBoundingClientRect().width;
       // calculate the new height
-      this.height = newSize.height / 8 * this.noOfChannels
+      this.height = (newSize.height / 8) * this.noOfChannels;
       // resize the pixiApp renderer
       if (this.pixiApp) {
-        this.pixiApp.renderer.resize(this.width, this.height)
+        this.pixiApp.renderer.resize(this.width, this.height);
       }
       // update the channels
-      this.channels.forEach(channel => {
-        channel.updateSize(this.width, this.height / this.noOfChannels)
-      })
+      this.channels.forEach((channel) => {
+        channel.updateSize(this.width, this.height / this.noOfChannels);
+      });
     },
-    initialize () {
+    initialize() {
       // get the reference to the canvas
-      this.canvas = document.getElementById(this.chartId)
+      this.canvas = document.getElementById(this.chartId);
       // set the detail level of the pixi js
-      PIXI.settings.RESOLUTION = 2
+      PIXI.settings.RESOLUTION = 2;
       // define a pixi app with the canvas as view
       this.pixiApp = new PIXI.Application({
         view: this.canvas,
         transparent: false,
         antialias: true,
-        backgroundColor: 0x000000
-      })
+        backgroundColor: 0x000000,
+      });
       // add the pixi application to the view
-      this.$el.appendChild(this.pixiApp.view)
-      this.pixiApp.renderer.view.style.display = 'block'
-      this.pixiApp.renderer.autoResize = true
-      this.pixiApp.stage.interactive = false
+      this.$el.appendChild(this.pixiApp.view);
+      this.pixiApp.renderer.view.style.display = "block";
+      this.pixiApp.renderer.autoResize = true;
+      this.pixiApp.stage.interactive = false;
 
-      this.width = this.canvas.getBoundingClientRect().width
+      this.width = this.canvas.getBoundingClientRect().width;
 
       // add a resize event handler
-      this.$root.$on("resize", newSize => this.onResize(newSize));
+      this.$root.$on("resize", (newSize) => this.onResize(newSize));
 
       // add a event listener for the model
-      this.modelEventListener = this.$model.engine.addEventListener("message", this.updater);
+      this.modelEventListener = this.$model.engine.addEventListener(
+        "message",
+        this.updater
+      );
     },
     initializeChannels() {
       // we have to do a initial initialization but we might not yet have a monitor configuration object
@@ -121,7 +124,7 @@ export default {
 
       // configure channels
       // channel 1-6 are curve channels
-      for (let curve=1; curve<7; curve++){
+      for (let curve = 1; curve < 7; curve++) {
         // define a channel
         const channel = new ChartChannel(
           this.pixiApp.stage,
@@ -143,32 +146,32 @@ export default {
             maxY: 10,
             limiterMax: "",
             limiterMin: "",
-            squeezeFactor: 0
+            squeezeFactor: 0,
           },
           this.dataUpdateInterval,
           this.dataPointsPerUpdate,
           this.width
-        )
+        );
         // add channel to array
-        this.channels.push(channel)
+        this.channels.push(channel);
       }
 
-      this.initialized = true
+      this.initialized = true;
     },
     updateChannelsConfiguration() {
       // only do this when the initialization has taken place
       if (this.initialized) {
         // process the modelConfiguration object
         // find channel1 in the channels list
-        this.channels.forEach(channel => {
+        this.channels.forEach((channel) => {
           if (channel.channelNo <= 6) {
             // these are curves
-            const id = 'curve' + channel.channelNo
+            const id = "curve" + channel.channelNo;
             const newConfig = {
               curveLabel: this.monitorConfiguration[id].curveLabel,
               connected: this.monitorConfiguration[id].connected,
               sourceCurve: this.monitorConfiguration[id].sourceCurve,
-              timeframe: this.monitorConfiguration[id].timeframe,
+              timeframe: this.monitorConfiguration[id].timeframe * 2,
               performance: this.monitorConfiguration[id].performance,
               channelNo: channel.channelNo,
               color: this.monitorConfiguration[id].color,
@@ -180,15 +183,15 @@ export default {
               limiterMax: this.monitorConfiguration[id].limiterMax,
               limiterMin: this.monitorConfiguration[id].limiterMin,
               squeezeFactor: this.monitorConfiguration[id].squeezeFactor,
-            }
-            channel.updateConfiguration(newConfig)
+            };
+            channel.updateConfiguration(newConfig);
           }
-        })
+        });
       }
     },
   },
-  mounted () {
-// get the api url
+  mounted() {
+    // get the api url
     this.apiUrl = this.$store.state.dataPool.apiUrl;
 
     // get the patient id
@@ -199,9 +202,8 @@ export default {
 
     // initialize the parameters
     this.initializeChannels();
-
   },
-  beforeDestroy () {
+  beforeDestroy() {
     // clean up
     this.$root.$off("resize");
     this.$model.engine.removeEventListener("message", this.updater);
@@ -210,8 +212,8 @@ export default {
     this.channels = [];
     this.pixiApp.destroy();
     this.pixiApp = null;
-  }
-}
+  },
+};
 </script>
 
 <style>
