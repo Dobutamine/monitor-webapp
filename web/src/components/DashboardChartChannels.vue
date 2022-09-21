@@ -171,7 +171,7 @@ export default {
               curveLabel: this.monitorConfiguration[id].curveLabel,
               connected: this.monitorConfiguration[id].connected,
               sourceCurve: this.monitorConfiguration[id].sourceCurve,
-              timeframe: this.monitorConfiguration[id].timeframe * 1.75,
+              timeframe: this.monitorConfiguration[id].timeframe * 1.5,
               performance: this.monitorConfiguration[id].performance,
               channelNo: channel.channelNo,
               color: this.monitorConfiguration[id].color,
