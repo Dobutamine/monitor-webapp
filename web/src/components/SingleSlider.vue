@@ -68,7 +68,12 @@
     </div>
 
     <div v-if="enabled & buttonArmEnabled" class="row">
-      <q-btn class="q-ma-sm col" :color="buttonColorArm" @click="startChangingParameter" size="sm">
+      <q-btn
+        class="q-ma-sm col"
+        :color="buttonColorArm"
+        @click="startChangingParameter"
+        size="sm"
+      >
         {{ buttonTextArm }}
       </q-btn>
     </div>
@@ -81,73 +86,69 @@ import ChannelSettings from "components/ChannelSettings";
 /* eslint-disable */
 export default {
   components: {
-    ChannelSettings
+    ChannelSettings,
   },
   props: {
     monitorValues: {
       required: true,
-      type: Object
+      type: Object,
     },
     monitorConfiguration: {
       required: true,
-      type: Object
+      type: Object,
     },
     min: {
       required: true,
-      type: Number
+      type: Number,
     },
     max: {
       required: true,
-      type: Number
+      type: Number,
     },
     step: {
       required: true,
-      type: Number
+      type: Number,
     },
     label: {
       required: true,
-      type: String
+      type: String,
     },
     value_name: {
       required: true,
       type: String,
-      default: ""
-    }
-
+      default: "",
+    },
   },
   watch: {
-    monitorValues: function (newVal, oldVal)  {
+    monitorValues: function (newVal, oldVal) {
       // watch if the monitor values are loaded from the server
-      this.currentValue = newVal[this.value_name]
-      this.connected = newVal[this.value_name + 'Connected']
+      this.currentValue = newVal[this.value_name];
+      this.connected = newVal[this.value_name + "Connected"];
       if (this.connected) {
-        this.buttonConnectedText = "CONNECTED"
-        this.buttonConnectedColor = "teal-10"
+        this.buttonConnectedText = "CONNECTED";
+        this.buttonConnectedColor = "teal-10";
       } else {
-        this.buttonConnectedText = "DISCONNECTED"
-        this.buttonConnectedColor = "red-10"
+        this.buttonConnectedText = "DISCONNECTED";
+        this.buttonConnectedColor = "red-10";
       }
       if (this.step < 1) {
-        this.currentValueText = newVal[this.value_name].toFixed(1)
-        this.targetValue = parseFloat(newVal[this.value_name].toFixed(1))
+        this.currentValueText = newVal[this.value_name].toFixed(1);
+        this.targetValue = parseFloat(newVal[this.value_name].toFixed(1));
       } else {
-        this.currentValueText = newVal[this.value_name].toFixed(0)
-        this.targetValue = parseFloat(newVal[this.value_name].toFixed(0))
+        this.currentValueText = newVal[this.value_name].toFixed(0);
+        this.targetValue = parseFloat(newVal[this.value_name].toFixed(0));
       }
-      
-      
     },
     monitorConfiguration: function (newVal, oldVal) {
       // update the connected label
-      this.connectedLabel = this.value_name + "Connected"
-    }
-
+      this.connectedLabel = this.value_name + "Connected";
+    },
   },
   data() {
     return {
       enabled: true,
       visibile: true,
-      labelVisibility: 'CONNECTED',
+      labelVisibility: "CONNECTED",
       buttonColorVisibility: "teal-10",
       buttonColorEnabled: "teal-10",
       buttonArmEnabled: false,
@@ -157,7 +158,7 @@ export default {
       buttonStartText: "START",
       buttonConnectedText: "CONNECTED",
       buttonConnectedColor: "teal-10",
-      connectedLabel: '',
+      connectedLabel: "",
       connected: true,
       currentValue: 10,
       mmhg: true,
@@ -178,23 +179,21 @@ export default {
         "30 sec",
         "1 min",
         "2 min",
-        "3 min"
+        "3 min",
       ],
       timeInOption: "instant",
       timings: [0, 5, 10, 15, 20, 30, 60, 120, 180],
       updateTimer: null,
-      updateTimerRunning: false
+      updateTimerRunning: false,
     };
   },
   methods: {
-    toggleVisibility () {
-  
-    },
+    toggleVisibility() {},
     showPopUp() {
       this.$q.dialog({
         component: ChannelSettings,
         parent: this,
-        channel: null
+        channel: null,
       });
     },
     toggleEnabled() {
@@ -203,152 +202,149 @@ export default {
         this.buttonColorEnabled = "teal-10";
       } else {
         this.buttonColorEnabled = "red-10";
- 
       }
     },
     toggleConnected() {
       if (this.connected) {
-        this.connected = false
-        this.buttonConnectedText = "DISCONNECTED"
-        this.buttonConnectedColor = "red-10"
+        this.connected = false;
+        this.buttonConnectedText = "DISCONNECTED";
+        this.buttonConnectedColor = "red-10";
       } else {
-        this.connected = true
-        this.buttonConnectedText = "CONNECTED"
-        this.buttonConnectedColor = "teal-10"
+        this.connected = true;
+        this.buttonConnectedText = "CONNECTED";
+        this.buttonConnectedColor = "teal-10";
       }
-      // find the channel in monitorConfiguration object which has the value_name 
+      // find the channel in monitorConfiguration object which has the value_name
       if (this.monitorConfiguration.curve1.source1 === this.value_name) {
-        this.monitorConfiguration.curve1.connected = this.connected
+        this.monitorConfiguration.curve1.connected = this.connected;
       }
       if (this.monitorConfiguration.curve2.source1 === this.value_name) {
-        this.monitorConfiguration.curve2.connected = this.connected
+        this.monitorConfiguration.curve2.connected = this.connected;
       }
       if (this.monitorConfiguration.curve2.source1 === this.value_name) {
-        this.monitorConfiguration.curve2.connected = this.connected
+        this.monitorConfiguration.curve2.connected = this.connected;
       }
       if (this.monitorConfiguration.curve3.source1 === this.value_name) {
-        this.monitorConfiguration.curve3.connected = this.connected
+        this.monitorConfiguration.curve3.connected = this.connected;
       }
       if (this.monitorConfiguration.curve4.source1 === this.value_name) {
-        this.monitorConfiguration.curve4.connected = this.connected
+        this.monitorConfiguration.curve4.connected = this.connected;
       }
       if (this.monitorConfiguration.curve5.source1 === this.value_name) {
-        this.monitorConfiguration.curve5.connected = this.connected
+        this.monitorConfiguration.curve5.connected = this.connected;
       }
       if (this.monitorConfiguration.curve6.source1 === this.value_name) {
-        this.monitorConfiguration.curve6.connected = this.connected
+        this.monitorConfiguration.curve6.connected = this.connected;
       }
 
       if (this.monitorConfiguration.param1.source1 === this.value_name) {
-        this.monitorConfiguration.param1.connected = this.connected
+        this.monitorConfiguration.param1.connected = this.connected;
       }
       if (this.monitorConfiguration.param2.source1 === this.value_name) {
-        this.monitorConfiguration.param2.connected = this.connected
+        this.monitorConfiguration.param2.connected = this.connected;
       }
       if (this.monitorConfiguration.param3.source1 === this.value_name) {
-        this.monitorConfiguration.param3.connected = this.connected
+        this.monitorConfiguration.param3.connected = this.connected;
       }
       if (this.monitorConfiguration.param4.source1 === this.value_name) {
-        this.monitorConfiguration.param4.connected = this.connected
+        this.monitorConfiguration.param4.connected = this.connected;
       }
       if (this.monitorConfiguration.param5.source1 === this.value_name) {
-        this.monitorConfiguration.param5.connected = this.connected
+        this.monitorConfiguration.param5.connected = this.connected;
       }
       if (this.monitorConfiguration.param6.source1 === this.value_name) {
-        this.monitorConfiguration.param6.connected = this.connected
+        this.monitorConfiguration.param6.connected = this.connected;
       }
 
-      this.$root.$emit('updatemonitorconfig')
+      this.$root.$emit("updatemonitorconfig");
       // set the monitorvalues connected => not functional for now
-      this.monitorValues[this.value_name + 'Connected'] = this.connected
+      this.monitorValues[this.value_name + "Connected"] = this.connected;
       // increase the update counter
-      this.monitorValues.configurationUpdateCounter += 1
+      this.monitorValues.configurationUpdateCounter += 1;
       // signal the instructor component that the monitor values are changed
-      this.$root.$emit('updatemonitorvitals')    
-
+      this.$root.$emit("updatemonitorvitals");
     },
 
     startChangingParameter() {
       if (this.updateTimerRunning) {
-        this.updateTimerRunning = false
-        this.buttonColorArm = "blue-10"
-        this.buttonTextArm = "START"
+        this.updateTimerRunning = false;
+        this.buttonColorArm = "blue-10";
+        this.buttonTextArm = "START";
         // clear the interval timer
-        clearInterval(this.updateTimer)
-        this.updateTimer = null
+        clearInterval(this.updateTimer);
+        this.updateTimer = null;
         // set the target value to the current value
         if (this.step < 1) {
-          this.targetValue = parseFloat(this.currentValue.toFixed(1))
+          this.targetValue = parseFloat(this.currentValue.toFixed(1));
         } else {
-          this.targetValue = parseInt(this.currentValue.toFixed(0))
+          this.targetValue = parseInt(this.currentValue.toFixed(0));
         }
-        this.stepSize = 0
-        this.buttonArmEnabled = false
-        this.updateCurrentValueLabel()
-
+        this.stepSize = 0;
+        this.buttonArmEnabled = false;
+        this.updateCurrentValueLabel();
       } else {
         // get the selected time in interval
-        this.timeIn = this.getTheTimeInTime()
+        this.timeIn = this.getTheTimeInTime();
         // determine the step size
-        this.stepSize = (this.targetValue - this.currentValue) / this.timeIn
-        this.timeLeft = this.timeIn - 1
+        this.stepSize = (this.targetValue - this.currentValue) / this.timeIn;
+        this.timeLeft = this.timeIn - 1;
         // change button state
-        this.buttonColorArm = "red-10"
-        this.buttonTextArm = `RUNNING ${this.timeLeft} SEC.`
-        
+        this.buttonColorArm = "red-10";
+        this.buttonTextArm = `RUNNING ${this.timeLeft} SEC.`;
+
         // start the timer
-        this.updateTimer = setInterval(() => this.updateParameter(), 1000)
-        this.updateTimerRunning = true
+        this.updateTimer = setInterval(() => this.updateParameter(), 1000);
+        this.updateTimerRunning = true;
       }
     },
     updateCurrentValueLabel() {
       if (this.step < 1) {
-        this.currentValueText = this.currentValue.toFixed(1)
+        this.currentValueText = this.currentValue.toFixed(1);
       } else {
-        this.currentValueText = this.currentValue.toFixed(0)
+        this.currentValueText = this.currentValue.toFixed(0);
       }
-      this.monitorValues[this.value_name] = this.currentValue
-      this.$root.$emit('updatemonitorvitals')
+      this.monitorValues[this.value_name] = this.currentValue;
+      this.$root.$emit("updatemonitorvitals");
     },
     updateParameter() {
-      this.currentValue += this.stepSize
-      this.timeLeft -= 1
-      if (Math.abs(this.targetValue - this.currentValue) < Math.abs(this.stepSize)) {
+      this.currentValue += this.stepSize;
+      this.timeLeft -= 1;
+      if (
+        Math.abs(this.targetValue - this.currentValue) < Math.abs(this.stepSize)
+      ) {
         // ready
-        this.currentValue = this.targetValue
+        this.currentValue = this.targetValue;
         // reset the step size
-        this.stepSize = 0
+        this.stepSize = 0;
         // clear the interval timer
-        clearInterval(this.updateTimer)
-        this.updateTimer = null
+        clearInterval(this.updateTimer);
+        this.updateTimer = null;
         // reset the button
-        this.buttonColorArm = "blue-10"
-        this.buttonTextArm = "START"
-        this.buttonArmEnabled = false
-        this.updateTimerRunning = false
+        this.buttonColorArm = "blue-10";
+        this.buttonTextArm = "START";
+        this.buttonArmEnabled = false;
+        this.updateTimerRunning = false;
       } else {
-        this.buttonTextArm = `RUNNING ${this.timeLeft} SEC.`
+        this.buttonTextArm = `RUNNING ${this.timeLeft} SEC.`;
       }
-      
-      this.updateCurrentValueLabel()
 
+      this.updateCurrentValueLabel();
     },
-    timeInChanged () {
-      if (this.timeInOption === 'instant') {
-        this.buttonArmEnabled = false
+    timeInChanged() {
+      if (this.timeInOption === "instant") {
+        this.buttonArmEnabled = false;
       } else {
-        this.buttonArmEnabled = true
+        this.buttonArmEnabled = true;
       }
     },
     changeTargetValue() {
-      if (this.timeInOption === 'instant') {
-
+      if (this.timeInOption === "instant") {
         // if in instant mode then update the current value immediately
-        this.currentValue = this.targetValue
-        this.updateCurrentValueLabel()
+        this.currentValue = this.targetValue;
+        this.updateCurrentValueLabel();
       } else {
         if (this.targetValue !== this.currentValue) {
-          this.buttonArmEnabled = true
+          this.buttonArmEnabled = true;
         }
       }
     },
@@ -360,16 +356,12 @@ export default {
         return 1;
       }
     },
-
   },
-  mounted() {
-
-  },
+  mounted() {},
   beforeDestroy() {
-    clearInterval(this.updateTimer)
-    this.updateTimer = null
-
-  }
+    clearInterval(this.updateTimer);
+    this.updateTimer = null;
+  },
 };
 </script>
 
