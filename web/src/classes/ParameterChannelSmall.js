@@ -247,7 +247,7 @@ class ParameterChannelSmall {
         if (isNaN(value)) {
           this.value.text = "-";
         } else {
-          if (this.label.text === "TEMP") {
+          if (this.label.text === "Temp") {
             this.value.text = value.toFixed(1);
           } else {
             this.value.text = value.toFixed(this.decimals);
