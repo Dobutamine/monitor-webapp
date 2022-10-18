@@ -79,10 +79,8 @@
           :step="0.1"
         ></SingleSlider>
       </div>
-     </div>
+    </div>
 
-    
-    
     <div class="row justify-center q-ma-es">
       <q-card class="bg-dark">
         <div class="q-gutter-xs">
@@ -129,19 +127,17 @@
             >{{ intubatedButtonText }}</q-btn
           >
           <q-btn
-          :class="sessionColor"
-          style="height: 60px; width: 85px"
-          @click="logout"
-          >{{ sessionText}}</q-btn
+            :class="sessionColor"
+            style="height: 60px; width: 85px"
+            @click="logout"
+            >{{ sessionText }}</q-btn
           >
         </div>
       </q-card>
     </div>
+
     <div class="row justify-center q-ma-md">
-      <q-badge class="bg-dark"  rounded >
-        Active user : {{ name }}
-      </q-badge>
-    
+      <q-badge class="bg-dark" rounded> Active user : {{ name }} </q-badge>
     </div>
   </q-page>
 </template>
@@ -157,8 +153,8 @@ import CompressionsSelector from "components/CompressionsSelector";
 import LabSelector from "components/LabSelector";
 
 import axios from "axios";
-import { setTimeout } from 'timers';
-import { parse } from 'querystring';
+import { setTimeout } from "timers";
+import { parse } from "querystring";
 
 export default {
   name: "PageInstructor",
@@ -169,14 +165,14 @@ export default {
     ImageSelector,
     RhythmSelector,
     CompressionsSelector,
-    LabSelector
+    LabSelector,
   },
   data() {
     return {
       apiUrl: "",
       webSocketUrl: "",
       id: "",
-      name: '',
+      name: "",
       height: 0,
       max_width: 0,
       websocket: null,
@@ -194,169 +190,181 @@ export default {
       red: "bg-red-10",
       serverUpdateTimer: null,
       configUpdateTimer: null,
-      alarmButtonColor: 'bg-blue-grey-10',
-      alarmButtonText: 'ALARMS ENABLED',
-      intubatedButtonColor: 'bg-blue-grey-10',
-      intubatedButtonText: 'NOT INTUBATED',
+      alarmButtonColor: "bg-blue-grey-10",
+      alarmButtonText: "ALARMS ENABLED",
+      intubatedButtonColor: "bg-blue-grey-10",
+      intubatedButtonText: "NOT INTUBATED",
 
-      selectedImage: '',
+      selectedImage: "",
       destroy: false,
       no_reconnects: 0,
-      reconnecting: false
-
+      reconnecting: false,
     };
   },
   methods: {
-    logout () {
-      this.$router.push("/")
+    logout() {
+      this.$router.push("/");
     },
     administerShock(post) {
       // set rhythm to sinus and the heartrate to 0
-      this.monitorValues.rhythmType = 0
-      this.monitorValues.heartrate = 0
-      
+      this.monitorValues.rhythmType = 0;
+      this.monitorValues.heartrate = 0;
+
       // update the monitor values
-      this.setMonitorValuesOnServer()
-      console.log(post.post_rhythm, post.post_parameter)
-      this.shockColor = this.red
+      this.setMonitorValuesOnServer();
+      console.log(post.post_rhythm, post.post_parameter);
+      this.shockColor = this.red;
       let tim = setTimeout(() => {
-        this.monitorValues.rhythmType = post.post_rhythm
-        this.monitorValues.rhythmParameter = parseFloat(post.post_parameter)
+        this.monitorValues.rhythmType = post.post_rhythm;
+        this.monitorValues.rhythmParameter = parseFloat(post.post_parameter);
         switch (post.post_rhythm) {
           case 0: //sinus
-            this.monitorValues.heartrate = parseFloat(post.post_parameter)
-            break
+            this.monitorValues.heartrate = parseFloat(post.post_parameter);
+            break;
           case 1: //av i
-            this.monitorValues.heartrate = parseFloat(post.post_parameter)
-            break
+            this.monitorValues.heartrate = parseFloat(post.post_parameter);
+            break;
           case 2: //av iia
-            this.monitorValues.heartrate = parseFloat(post.post_parameter)
-            break
+            this.monitorValues.heartrate = parseFloat(post.post_parameter);
+            break;
           case 3: //av iib
-            this.monitorValues.heartrate = parseFloat(post.post_parameter)
-            break
+            this.monitorValues.heartrate = parseFloat(post.post_parameter);
+            break;
           case 5: //sinus
-            this.monitorValues.heartrate = parseFloat(post.post_parameter)
-            break
+            this.monitorValues.heartrate = parseFloat(post.post_parameter);
+            break;
           case 8: //sinus
-            this.monitorValues.heartrate = parseFloat(post.post_parameter)
-            break
+            this.monitorValues.heartrate = parseFloat(post.post_parameter);
+            break;
         }
-        this.setMonitorValuesOnServer()
-        this.shockColor = this.bluegrey
-      }, 3000)
+        this.setMonitorValuesOnServer();
+        this.shockColor = this.bluegrey;
+      }, 3000);
     },
     toggleIntubation() {
-      if (this.monitorValues['intubated']) {
-        this.monitorValues['intubated'] = false
-        this.intubatedButtonColor = 'bg-blue-grey-10'
-        this.intubatedButtonText = 'NOT INTUBATED'
+      if (this.monitorValues["intubated"]) {
+        this.monitorValues["intubated"] = false;
+        this.intubatedButtonColor = "bg-blue-grey-10";
+        this.intubatedButtonText = "NOT INTUBATED";
       } else {
-        this.monitorValues['intubated'] = true
-        this.intubatedButtonColor = 'bg-red-10'
-        this.intubatedButtonText = 'INTUBATED'
+        this.monitorValues["intubated"] = true;
+        this.intubatedButtonColor = "bg-red-10";
+        this.intubatedButtonText = "INTUBATED";
       }
-      this.$root.$emit('updatemonitorvitals')
+      this.$root.$emit("updatemonitorvitals");
     },
     toggleMasterAlarms() {
-      if (this.monitorValues['alarmOverride']) {
-        this.monitorValues['alarmOverride'] = false
-        this.alarmButtonColor = 'bg-blue-grey-10'
-        this.alarmButtonText = 'ALARMS ENABLED'
+      if (this.monitorValues["alarmOverride"]) {
+        this.monitorValues["alarmOverride"] = false;
+        this.alarmButtonColor = "bg-blue-grey-10";
+        this.alarmButtonText = "ALARMS ENABLED";
       } else {
-        this.monitorValues['alarmOverride'] = true
-        this.alarmButtonColor = 'bg-red-10'
-        this.alarmButtonText = 'ALARMS DISABLED'
+        this.monitorValues["alarmOverride"] = true;
+        this.alarmButtonColor = "bg-red-10";
+        this.alarmButtonText = "ALARMS DISABLED";
       }
-      this.$root.$emit('updatemonitorvitals')
+      this.$root.$emit("updatemonitorvitals");
     },
     openCompressionsSelector() {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${
+        this.$q.screen.height / 2
+      }px`;
       this.$q.dialog({
         component: CompressionsSelector,
         parent: this,
         imgSize: styleImg,
-        monitorValues: this.monitorValues
+        monitorValues: this.monitorValues,
       });
     },
     openRhythmSelector() {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${
+        this.$q.screen.height / 2
+      }px`;
       this.$q.dialog({
         component: RhythmSelector,
         parent: this,
         imgSize: styleImg,
-        monitorValues: this.monitorValues
+        monitorValues: this.monitorValues,
       });
     },
     openLabSelector() {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${ this.$q.screen.height }px`;
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${
+        this.$q.screen.height
+      }px`;
       this.$q.dialog({
         component: LabSelector,
         parent: this,
         imgSize: styleImg,
-        monitorValues: this.monitorValues
+        monitorValues: this.monitorValues,
       });
     },
     openImageSelector() {
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 2}px`;
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${
+        this.$q.screen.height / 2
+      }px`;
       this.$q.dialog({
         component: ImageSelector,
         parent: this,
         image_no: 2,
         imgSize: styleImg,
-        monitorValues: this.monitorValues
+        monitorValues: this.monitorValues,
       });
     },
-    openMonitorConfiguration () {
+    openMonitorConfiguration() {
       // build api url
       const url = `${this.apiUrl}/api/configs?id=${this.id}`;
       // get the monitor configuration
-      axios.get(url)
-        .then(res => {
-          console.log('instructor interface got monitor configuration from server')
+      axios
+        .get(url)
+        .then((res) => {
+          console.log(
+            "instructor interface got monitor configuration from server"
+          );
           this.monitorConfiguration = res.data;
-          this.updateInterfaceWithMonitorConfiguration()
+          this.updateInterfaceWithMonitorConfiguration();
           this.$q.dialog({
             component: monitorConfigurationPopup,
             parent: this,
             monitorConfiguration: this.monitorConfiguration,
-            monitorValues: this.monitorValues
+            monitorValues: this.monitorValues,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
     updateInterfaceWithMonitorValues() {
       // update all instructor interface components with the current monitor values
       if (this.monitorValues) {
-
       }
-
     },
     updateInterfaceWithMonitorConfiguration() {
       // update all instructor interface components with the current monitor configuration
       if (this.monitorConfiguration) {
       }
     },
-    getMonitorConfigurationFromServer () {
+    getMonitorConfigurationFromServer() {
       // build api url
       const url = `${this.apiUrl}/api/configs?id=${this.id}`;
       // get the monitor configuration
-      axios.get(url)
-        .then(res => {
-          console.log('instructor interface got monitor configuration from server')
+      axios
+        .get(url)
+        .then((res) => {
+          console.log(
+            "instructor interface got monitor configuration from server"
+          );
           this.monitorConfiguration = res.data;
-          this.name = this.monitorConfiguration.name
-          this.updateInterfaceWithMonitorConfiguration()
+          this.name = this.monitorConfiguration.name;
+          this.updateInterfaceWithMonitorConfiguration();
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
-    setMonitorConfigurationOnServer () {
+    setMonitorConfigurationOnServer() {
       const url = `${this.apiUrl}/api/configs/new`;
-      axios.post(url, {
+      axios
+        .post(url, {
           id: this.id,
           name: this.monitorConfiguration.name,
           curve1: this.monitorConfiguration.curve1,
@@ -372,44 +380,42 @@ export default {
           param5: this.monitorConfiguration.param5,
           param6: this.monitorConfiguration.param6,
         })
-        .then(res => {
-          console.log('instructor interface updated the monitor configuration')
-          clearTimeout(this.configUpdateTimer)
-          this.configUpdateTimer = null
+        .then((res) => {
+          console.log("instructor interface updated the monitor configuration");
+          clearTimeout(this.configUpdateTimer);
+          this.configUpdateTimer = null;
         })
-        .catch(error => {}
-      );
+        .catch((error) => {});
     },
     setMonitorValuesOnServer() {
       // get whether compressions are going
-      if (this.monitorValues.compressionsFrequency != 'none') {
-        this.chestCompressionsColor = this.red
+      if (this.monitorValues.compressionsFrequency != "none") {
+        this.chestCompressionsColor = this.red;
       } else {
-        this.chestCompressionsColor = this.bluegrey
+        this.chestCompressionsColor = this.bluegrey;
       }
       if (this.monitorValues.rhythmType != 0) {
-        this.rhythmButtonColor = this.red
+        this.rhythmButtonColor = this.red;
       } else {
-        this.rhythmButtonColor = this.bluegrey
+        this.rhythmButtonColor = this.bluegrey;
       }
-
 
       // get whether rhythm is different
 
       // get the name of the selected image
-      this.selectedImage = this.monitorValues.imageName
+      this.selectedImage = this.monitorValues.imageName;
 
       // first check wether the websocket connection is open
       if (this.websocket.readyState === WebSocket.OPEN) {
         // now get the monitor values by constructing a message object
         const message = {
-          "command": "set",
-          "payload": this.monitorValues
-        }
+          command: "set",
+          payload: this.monitorValues,
+        };
         this.websocket.send(JSON.stringify(message));
-        console.log('instructor interface updated the monitor values')
-        clearTimeout(this.serverUpdateTimer)
-        this.serverUpdateTimer = null
+        console.log("instructor interface updated the monitor values");
+        clearTimeout(this.serverUpdateTimer);
+        this.serverUpdateTimer = null;
       }
     },
     getMonitorValuesFromServer() {
@@ -417,13 +423,15 @@ export default {
       if (this.websocket.readyState === WebSocket.OPEN) {
         // now get the monitor values by constructing a message object
         const message = {
-          "command": "get",
-          "payload": {
-            "id": this.id
-          }
-        }
+          command: "get",
+          payload: {
+            id: this.id,
+          },
+        };
         this.websocket.send(JSON.stringify(message));
-        console.log('instructor interface websocket requested the monitor values.')
+        console.log(
+          "instructor interface websocket requested the monitor values."
+        );
       }
     },
     connectToWebsocketApi() {
@@ -433,58 +441,64 @@ export default {
       // attach a message handler to handle recieved messages
       this.websocket.onmessage = (message) => {
         // check whether the received object is a monitor values object
-        let mes = JSON.parse(message.data)
+        let mes = JSON.parse(message.data);
         if (mes.mes_type === "mon_values") {
           // update the monitor valeus object
-          this.monitorValues = mes
+          this.monitorValues = mes;
           // update the monitor values in the instructor interface
-          this.updateInterfaceWithMonitorValues()
-          console.log('instructor interface received monitor values from api.')
+          this.updateInterfaceWithMonitorValues();
+          console.log("instructor interface received monitor values from api.");
         }
       };
 
       // handle websocket opening
       this.websocket.onopen = () => {
-        console.log('instructor interface websocket connection with api opened.')
+        console.log(
+          "instructor interface websocket connection with api opened."
+        );
         // get the current monitor values from the api (websocket)
         if (this.reconnecting) {
-          this.setMonitorValuesOnServer()
-          this.reconnecting = false
+          this.setMonitorValuesOnServer();
+          this.reconnecting = false;
         } else {
-          this.getMonitorValuesFromServer()
+          this.getMonitorValuesFromServer();
         }
-        
-        this.no_reconnects = 0
-      }
+
+        this.no_reconnects = 0;
+      };
 
       // handle websocket closing
       this.websocket.onclose = () => {
-        console.log('instructor interface websocket connection with api closed.')
+        console.log(
+          "instructor interface websocket connection with api closed."
+        );
         // clean up
         if (this.destroy) {
-           this.$router.push("/")
+          this.$router.push("/");
         } else {
-          console.log('reconnecting')
+          console.log("reconnecting");
           if (this.no_reconnects > 5) {
-            this.destroy = true
-            console.log('instructor interface lost websocket connection with api.')
-            this.$router.push("/")
+            this.destroy = true;
+            console.log(
+              "instructor interface lost websocket connection with api."
+            );
+            this.$router.push("/");
           } else {
-            console.log('instructor interface trying to reconnect a websocket connection with api.')
-            this.reconnecting = true
-            this.connectToWebsocketApi()
-            this.no_reconnects += 1
+            console.log(
+              "instructor interface trying to reconnect a websocket connection with api."
+            );
+            this.reconnecting = true;
+            this.connectToWebsocketApi();
+            this.no_reconnects += 1;
           }
-          
         }
-       
-      }
+      };
 
       // handle websocket errors
       this.websocket.onerror = (err) => {
-        console.log('instructor interface websocket connection error: ', err)
-      }
-    }
+        console.log("instructor interface websocket connection error: ", err);
+      };
+    },
   },
   mounted() {
     this.$root.$emit("barvisible", false);
@@ -493,16 +507,16 @@ export default {
     this.id = this.$store.state.dataPool.id;
 
     // if the id is empty then return to the login screen
-    if (this.id === '') {
-      this.$router.push("/")
-      return
+    if (this.id === "") {
+      this.$router.push("/");
+      return;
     }
 
     // if the id is not empty then build the instructor page
     // first get the api and websocket api url from the store
     this.apiUrl = this.$store.state.dataPool.apiUrl;
     this.webSocketUrl = this.$store.state.dataPool.apiWebSocketUrl;
-    
+
     // set the color scheme
     this.$q.dark.set(true);
 
@@ -510,40 +524,38 @@ export default {
     this.$root.$on("updatemonitorvitals", () => {
       if (!this.serverUpdateTimer) {
         this.serverUpdateTimer = setTimeout(() => {
-        this.setMonitorValuesOnServer()
-      }, 1000);
+          this.setMonitorValuesOnServer();
+        }, 1000);
       }
-    })
+    });
 
     this.$root.$on("updatemonitorconfig", () => {
-      this.setMonitorConfigurationOnServer()
-    })
+      this.setMonitorConfigurationOnServer();
+    });
 
     this.$root.$on("shock", (post) => {
-      this.administerShock(post)
-    })
+      this.administerShock(post);
+    });
 
     // get the current monitor configuration from the api
-    this.getMonitorConfigurationFromServer()
+    this.getMonitorConfigurationFromServer();
 
     // connect to the server api websockets
-    this.connectToWebsocketApi()
+    this.connectToWebsocketApi();
 
-
-    this.destroy = false
-
+    this.destroy = false;
   },
   beforeDestroy() {
-    this.destroy = true
+    this.destroy = true;
     // remove event handlers
-    this.$root.$off("updatemonitorvitals")
-    this.$root.$off("updatemonitorconfig")
-    this.$root.$off("shock")
+    this.$root.$off("updatemonitorvitals");
+    this.$root.$off("updatemonitorconfig");
+    this.$root.$off("shock");
 
     // close the websocket connection with the api
     if (this.websocket) {
-      this.websocket.close()
+      this.websocket.close();
     }
-  }
+  },
 };
 </script>

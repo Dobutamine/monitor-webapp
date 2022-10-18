@@ -19,8 +19,8 @@
           :configuration="channelConfigurations"
           :dataUpdateInterval="0.025"
           :dataPointsPerUpdate="5"
-          :monitorConfiguration=this.monitorConfiguration
-          :monitorValues=this.monitorValues
+          :monitorConfiguration="this.monitorConfiguration"
+          :monitorValues="this.monitorValues"
         ></DashboardChartChannels>
       </div>
       <div :class="parameterCols">
@@ -28,13 +28,13 @@
           chartId="300"
           :dataUpdateInterval="0.025"
           :dataPointsPerUpdate="5"
-          :monitorConfiguration=this.monitorConfiguration
-          :monitorValues=this.monitorValues
+          :monitorConfiguration="this.monitorConfiguration"
+          :monitorValues="this.monitorValues"
         ></DashboardParameterChannels>
       </div>
     </div>
     <div class="row justify-center items-start q-ma-es">
-       <div class="q-gutter-xs">
+      <div class="q-gutter-xs">
         <q-btn
           @click="silenceAlarms"
           class="bg-warning"
@@ -57,13 +57,13 @@
           :class="imageButtonColor"
           style="height: 60px; width: 85px"
           @click="showImage"
-          >{{imageButtonText}}</q-btn
+          >{{ imageButtonText }}</q-btn
         >
         <q-btn
           :class="labButtonColor"
           @click="showLabs"
           style="height: 60px; width: 85px"
-          >{{labButtonText}}</q-btn
+          >{{ labButtonText }}</q-btn
         >
         <q-btn
           @click="toggleTimer"
@@ -72,32 +72,28 @@
           >{{ timerBtnText }}</q-btn
         >
         <q-btn
-        class="bg-blue-grey-8"
-        style="height: 60px; width: 85px"
-        @click="toggleTopBar"
-        >{{ barText }}</q-btn
+          class="bg-blue-grey-8"
+          style="height: 60px; width: 85px"
+          @click="toggleTopBar"
+          >{{ barText }}</q-btn
         >
-      <q-btn
-        :class="standbyColor"
-        style="height: 60px; width: 85px"
-        @click="standby"
-        >{{ standbyText}}</q-btn
-      >
-      <q-btn
-        :class="sessionColor"
-        style="height: 60px; width: 85px"
-        @click="logout"
-        >{{ sessionText}}</q-btn
-      >
+        <q-btn
+          :class="standbyColor"
+          style="height: 60px; width: 85px"
+          @click="standby"
+          >{{ standbyText }}</q-btn
+        >
+        <q-btn
+          :class="sessionColor"
+          style="height: 60px; width: 85px"
+          @click="logout"
+          >{{ sessionText }}</q-btn
+        >
+      </div>
+    </div>
 
-    </div>
-        
-    </div>
-    
     <div class="row justify-center q-ma-sm">
-      <q-badge class="bg-dark" rounded >
-        Active user : {{ name }}
-      </q-badge>
+      <q-badge class="bg-dark" rounded> Active user : {{ name }} </q-badge>
     </div>
 
     <q-resize-observer @resize="onResize" />
@@ -116,7 +112,7 @@ import MessageBox from "components/MessageBox";
 import ImageView from "components/ImageView";
 import Timer from "components/Timer";
 import LabView from "components/LabView";
-import ChannelSettings from "components/ChannelSettings.vue"
+import ChannelSettings from "components/ChannelSettings.vue";
 
 import axios from "axios";
 
@@ -160,7 +156,7 @@ export default {
       nibdCounter: 15,
       nibdTimer: null,
       timerState: false,
-      timerBtnText: "SHOW TIMER",
+      timerBtnText: "START TIMER",
       timerBtnColor: "bg-blue-grey-8",
       imageButtonColor: "bg-blue-grey-8",
       imageButtonText: "IMAGING",
@@ -307,13 +303,12 @@ export default {
           limiterMin: "zero",
           squeezeFactor: 50
         }
-      ],
- 
+      ]
     };
   },
   methods: {
-    logout () {
-      this.$router.push("/")
+    logout() {
+      this.$router.push("/");
     },
     silenceAlarms() {
       //this.$root.$on('hires_on', () => { this.hires = true })
@@ -330,32 +325,35 @@ export default {
       if (this.standbyMonitor) {
         this.alarmLo.play();
         this.alarmHi.play();
-        this.standbyMonitor = false
+        this.standbyMonitor = false;
         // start the modeing engine
         this.$root.$emit("rt_on");
         // set the buttons
-        this.standbyColor = "bg-teal-10"
-        this.standbyText = "STOP MONITOR"
+        this.standbyColor = "bg-teal-10";
+        this.standbyText = "STOP MONITOR";
         // start the pulling timer
-        this.updateTimer = setInterval(() => this.getMonitorValuesFromServer(), 1000)
+        this.updateTimer = setInterval(
+          () => this.getMonitorValuesFromServer(),
+          1000
+        );
       } else {
-        this.standbyMonitor = true
-         // stop the modeling engine
-         this.$root.$emit("rt_off");
+        this.standbyMonitor = true;
+        // stop the modeling engine
+        this.$root.$emit("rt_off");
         // set the buttons
-        this.standbyColor = "bg-red-10"
-        this.standbyText = "START MONITOR"
+        this.standbyColor = "bg-red-10";
+        this.standbyText = "START MONITOR";
         // stop the pulling timer
-        clearInterval(this.updateTimer)
-        this.updateTimer = null
+        clearInterval(this.updateTimer);
+        this.updateTimer = null;
       }
-
     },
     showLabs() {
-      this.currentLabUpdateCounter = (this.monitorValues.labUpdateCounter)
-      this.labButtonColor = "bg-blue-grey-8"
-      this.labButtonText = "LAB"
-      const styleImg = `height: ${this.$q.screen.height / 1.5}px; width: ${this.$q.screen.height / 1.5}px`;
+      this.currentLabUpdateCounter = this.monitorValues.labUpdateCounter;
+      this.labButtonColor = "bg-blue-grey-8";
+      this.labButtonText = "LAB";
+      const styleImg = `height: ${this.$q.screen.height / 1.5}px; width: ${this
+        .$q.screen.height / 1.5}px`;
       this.$q.dialog({
         component: LabView,
         parent: this,
@@ -377,26 +375,25 @@ export default {
       if (this.timerState) {
         this.$root.$emit("timeron");
         this.timerBtnText = "HIDE TIMER";
-        this.timerBtnColor = 'bg-blue-10';
+        this.timerBtnColor = "bg-blue-10";
       } else {
         this.$root.$emit("timeroff");
-        this.timerBtnText = "SHOW TIMER";
-        this.timerBtnColor = 'bg-blue-grey-8';
+        this.timerBtnText = "START TIMER";
+        this.timerBtnColor = "bg-blue-grey-8";
       }
-
     },
     showImage() {
-      this.currentImageUpdateCounter = (this.monitorValues.imageUpdateCounter)
-      this.imageButtonColor = "bg-blue-grey-8"
-      this.imageButtonText = "IMAGING"
-      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q.screen.height / 1.2}px`;
+      this.currentImageUpdateCounter = this.monitorValues.imageUpdateCounter;
+      this.imageButtonColor = "bg-blue-grey-8";
+      this.imageButtonText = "IMAGING";
+      const styleImg = `height: ${this.$q.screen.height / 2}px; width: ${this.$q
+        .screen.height / 1.2}px`;
       this.$q.dialog({
         component: ImageView,
         parent: this,
         imgName: this.monitorValues.imageName,
         imgSize: styleImg
       });
-
     },
     startNIBD() {
       this.nibdTimer = setInterval(() => {
@@ -420,60 +417,71 @@ export default {
       if (this.monitorValues) {
         // check whether lab or image is available
         if (this.firstReception) {
-          this.currentImageUpdateCounter = (this.monitorValues.imageUpdateCounter)
-          this.currentLabUpdateCounter = (this.monitorValues.labUpdateCounter)
-          this.firstReception = false
+          this.currentImageUpdateCounter = this.monitorValues.imageUpdateCounter;
+          this.currentLabUpdateCounter = this.monitorValues.labUpdateCounter;
+          this.firstReception = false;
         }
-        if (this.monitorValues.imageUpdateCounter != this.currentImageUpdateCounter){
+        if (
+          this.monitorValues.imageUpdateCounter !=
+          this.currentImageUpdateCounter
+        ) {
           // signal button that an update is available
-          this.imageButtonColor = "bg-red-10"
+          this.imageButtonColor = "bg-red-10";
         }
-        if (this.monitorValues.labUpdateCounter != this.currentLabUpdateCounter){
+        if (
+          this.monitorValues.labUpdateCounter != this.currentLabUpdateCounter
+        ) {
           // signal button that an update is available
-          this.labButtonColor = "bg-red-10"
+          this.labButtonColor = "bg-red-10";
         }
-        if (this.monitorValues.configurationUpdateCounter != this.currentConfigUpdateCounter){
+        if (
+          this.monitorValues.configurationUpdateCounter !=
+          this.currentConfigUpdateCounter
+        ) {
           // signal button that an update is available
-          this.currentConfigUpdateCounter = this.monitorValues.configurationUpdateCounter
-          this.getMonitorConfigurationFromServer()
+          this.currentConfigUpdateCounter = this.monitorValues.configurationUpdateCounter;
+          this.getMonitorConfigurationFromServer();
         }
         // check whether the alarm override is changed?
         if (this.monitorValues.alarmOverride != this.prevOverrideState) {
           // override has changed
-          this.silenceState = this.monitorValues.alarmOverride
-          this.silenceDuration = 180
+          this.silenceState = this.monitorValues.alarmOverride;
+          this.silenceDuration = 180;
           this.$root.$emit("pause", this.silenceState);
         }
-        this.prevOverrideState = this.monitorValues.alarmOverride
+        this.prevOverrideState = this.monitorValues.alarmOverride;
 
-        this.updateModel()
+        this.updateModel();
       }
-
     },
     updateInterfaceWithMonitorConfiguration() {
       // update all instructor interface components with the current monitor configuration
       if (this.monitorConfiguration) {
-        this.updateModel()
+        this.updateModel();
       }
     },
-    getMonitorConfigurationFromServer () {
+    getMonitorConfigurationFromServer() {
       // build api url
       const url = `${this.apiUrl}/api/configs?id=${this.id}`;
       // get the monitor configuration
-      axios.get(url)
+      axios
+        .get(url)
         .then(res => {
-          console.log('monitor interface got monitor configuration from server')
+          console.log(
+            "monitor interface got monitor configuration from server"
+          );
           this.monitorConfiguration = res.data;
-          this.name = this.monitorConfiguration.name
-          this.updateInterfaceWithMonitorConfiguration()
+          this.name = this.monitorConfiguration.name;
+          this.updateInterfaceWithMonitorConfiguration();
         })
         .catch(error => {
           console.log(error);
         });
     },
-    setMonitorConfigurationOnServer () {
+    setMonitorConfigurationOnServer() {
       const url = `${this.apiUrl}/api/configs/new`;
-      axios.post(url, {
+      axios
+        .post(url, {
           id: this.id,
           name: this.monitorConfiguration.name,
           curve1: this.monitorConfiguration.curve1,
@@ -487,25 +495,24 @@ export default {
           param3: this.monitorConfiguration.param3,
           param4: this.monitorConfiguration.param4,
           param5: this.monitorConfiguration.param5,
-          param6: this.monitorConfiguration.param6,
+          param6: this.monitorConfiguration.param6
         })
         .then(res => {
-          this.currentConfigUpdateCounter += 1
-          console.log('monitor interface updated the monitor configuration')
+          this.currentConfigUpdateCounter += 1;
+          console.log("monitor interface updated the monitor configuration");
         })
-        .catch(error => {}
-      );
+        .catch(error => {});
     },
     getMonitorValuesFromServer() {
       // first check wether the websocket connection is open
       if (this.websocket.readyState === WebSocket.OPEN) {
         // now get the monitor values by constructing a message object
         const message = {
-          "command": "get",
-          "payload": {
-            "id": this.id
+          command: "get",
+          payload: {
+            id: this.id
           }
-        }
+        };
         this.websocket.send(JSON.stringify(message));
         // console.log('monitor interface websocket requested the monitor values.')
       }
@@ -515,14 +522,14 @@ export default {
       this.websocket = new WebSocket(this.webSocketUrl);
 
       // attach a message handler to handle recieved messages
-      this.websocket.onmessage = (message) => {
+      this.websocket.onmessage = message => {
         // check whether the received object is a monitor values object
-        let mes = JSON.parse(message.data)
+        let mes = JSON.parse(message.data);
         if (mes.mes_type === "mon_values") {
           // update the monitor valeus object
-          this.monitorValues = mes
+          this.monitorValues = mes;
           // update the monitor values in the instructor interface
-          this.updateInterfaceWithMonitorValues()
+          this.updateInterfaceWithMonitorValues();
           // console.log('monitor interface received monitor values from api.')
         }
       };
@@ -530,36 +537,38 @@ export default {
       // handle websocket opening
       this.websocket.onopen = () => {
         // console.log('monitor interface websocket connection with api opened.')
-      }
+      };
 
       // handle websocket closing
       this.websocket.onclose = () => {
-        console.log('monitor websocket connection with api closed.')
+        console.log("monitor websocket connection with api closed.");
         // clean up
         if (this.destroy) {
-          this.updateTimer = null
-          this.$router.push("/")
+          this.updateTimer = null;
+          this.$router.push("/");
         } else {
-          console.log('monitor reconnecting')
+          console.log("monitor reconnecting");
           if (this.no_reconnects > 5) {
-            this.destroy = true
-            console.log('monitor lost websocket connection with api.')
-            this.$router.push("/")
+            this.destroy = true;
+            console.log("monitor lost websocket connection with api.");
+            this.$router.push("/");
           } else {
-            console.log('monitor trying to reconnect a websocket connection with api.')
-            this.reconnecting = true
-            this.connectToWebsocketApi()
-            this.no_reconnects += 1
+            console.log(
+              "monitor trying to reconnect a websocket connection with api."
+            );
+            this.reconnecting = true;
+            this.connectToWebsocketApi();
+            this.no_reconnects += 1;
           }
         }
-      }
+      };
 
       // handle websocket errors
-      this.websocket.onerror = (err) => {
+      this.websocket.onerror = err => {
         // console.log('monitor interface websocket connection error: ', err)
         // remove the update timer
-        this.updateTimer = null
-      }
+        this.updateTimer = null;
+      };
     },
     onResize() {
       this.$root.$emit("resize", {
@@ -601,9 +610,9 @@ export default {
     this.id = this.$store.state.dataPool.id;
 
     // if the id is empty then return to the login screen
-    if (this.id === '') {
-      this.$router.push("/")
-      return
+    if (this.id === "") {
+      this.$router.push("/");
+      return;
     }
 
     // if the id is not empty then build the instructor page
@@ -623,55 +632,53 @@ export default {
     this.blinkerTimer = setInterval(this.blinker, 750);
 
     // get the current monitor configuration from the api
-    this.getMonitorConfigurationFromServer()
+    this.getMonitorConfigurationFromServer();
 
     // connect to the server api websockets
-    this.connectToWebsocketApi()
+    this.connectToWebsocketApi();
 
     // attach event handlers
-    this.$root.$on('channelconfigchange', (channelNo) => {
-        this.$q.dialog({
-          component: ChannelSettings,
-          parent: this,
-          channelNo: channelNo,
-          monitorValues: this.monitorValues,
-          monitorConfiguration: this.monitorConfiguration
-        });
-      }
-    )
+    this.$root.$on("channelconfigchange", channelNo => {
+      this.$q.dialog({
+        component: ChannelSettings,
+        parent: this,
+        channelNo: channelNo,
+        monitorValues: this.monitorValues,
+        monitorConfiguration: this.monitorConfiguration
+      });
+    });
 
     // catch the event when channelsettings changes the configuration
-    this.$root.$on('channelsettingschangedconfiguration', () => { 
-      this.setMonitorConfigurationOnServer()
-    })
+    this.$root.$on("channelsettingschangedconfiguration", () => {
+      this.setMonitorConfigurationOnServer();
+    });
 
-    this.destroy = false
-
+    this.destroy = false;
   },
   beforeDestroy() {
     // stop down the model
     this.$root.$emit("rt_off");
 
     // destory is true
-    this.destroy = true
+    this.destroy = true;
 
-    // message that the window is cleaning 
-    console.log('cleaning up monitor window')
-  
+    // message that the window is cleaning
+    console.log("cleaning up monitor window");
+
     // remove event handlers
-    this.$root.$off('channelconfigchange')
-    this.$root.$off('channelsettingschangedconfiguration')
+    this.$root.$off("channelconfigchange");
+    this.$root.$off("channelsettingschangedconfiguration");
 
     // removing the blinker timer
-    this.blinkerTimer = null
+    this.blinkerTimer = null;
 
     // remove the update timer
-    clearInterval(this.updateTimer)
-    this.updateTimer = null
+    clearInterval(this.updateTimer);
+    this.updateTimer = null;
 
     // close the websocket connection with the api
     if (this.websocket) {
-      this.websocket.close()
+      this.websocket.close();
     }
   }
 };

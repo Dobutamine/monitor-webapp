@@ -70,7 +70,7 @@ class ParameterChannelSmall {
       dropShadowDistance: 6,
       wordWrap: true,
       wordWrapWidth: 440,
-      lineJoin: "round",
+      lineJoin: "round"
     });
 
     this.label = new PIXI.Text(this.caption, this.styleLabel);
@@ -90,7 +90,7 @@ class ParameterChannelSmall {
       dropShadowDistance: 6,
       wordWrap: true,
       wordWrapWidth: 440,
-      lineJoin: "round",
+      lineJoin: "round"
     });
 
     this.value = new PIXI.Text("-", this.styleValue);
@@ -111,7 +111,7 @@ class ParameterChannelSmall {
       dropShadowDistance: 6,
       wordWrap: true,
       wordWrapWidth: 440,
-      lineJoin: "round",
+      lineJoin: "round"
     });
     this.alarmLower = new PIXI.Text("10", this.styleAlarm);
     this.alarmUpper = new PIXI.Text("100", this.styleAlarm);
@@ -275,7 +275,7 @@ class ParameterChannelSmall {
 
     let alarmChange = {
       yellow: 0,
-      red: 0,
+      red: 0
     };
 
     if (this.currentValue < this.lowerAlarm) {
